@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('sarpras_id')->constrained('sarpras');
             $table->integer('jumlah');
             $table->date('tgl_pinjam');
-            $table->date('tgl_kembali rencana');
+            $table->date('tgl_kembali_rencana');
             $table->date('tgl_kembali_actual')->nullable();
             $table->text('tujuan')->nullable();
             $table->enum('status', ['Menunggu', 'Disetujui', 'Ditolak', 'Dikembalikan'])->default('Menunggu');

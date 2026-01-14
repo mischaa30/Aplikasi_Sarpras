@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('peminjaman_id')
             ->unique()
-            ->constrained('peminjaman')
-            ->onDelete('cascade');
+            ->constrained('peminjaman');
             $table->foreignId('id_kondisi_sarpras')->constrained('kondisi_sarpras');
             $table->date('tgl_pengembalian');
             $table->text('deskripsi_kerusakan')->nullable();

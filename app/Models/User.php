@@ -7,5 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    use HasFactory;
+    protected $table = 'users';
+    protected $fillable = ['username', 'password', 'id_role'];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'id_role');
+    }
+    //use HasFactory;
 }

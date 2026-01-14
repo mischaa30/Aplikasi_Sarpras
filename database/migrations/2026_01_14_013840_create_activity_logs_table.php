@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role__users', function (Blueprint $table) {
+        Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_role');
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('aksi');
+            $table->text('deskripsi')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role__users');
+        Schema::dropIfExists('activity_logs');
     }
 };

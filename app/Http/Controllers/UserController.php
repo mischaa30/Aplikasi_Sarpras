@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -12,6 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $user = User::with('role')->get();
+        return view('user.index',compact('user'));
         //
     }
 
@@ -20,16 +23,25 @@ class UserController extends Controller
      */
     public function create()
     {
+        $role = Role::all();
+        return view('user.create',compact('role'));
         //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        //
+        User::create([
+            'username' => $r->username,
+            'password' => $r->password,
+            'id_role'  => $r->id_role
+        ]);
+
+        return redirect('/user');
     }
+
 
     /**
      * Display the specified resource.

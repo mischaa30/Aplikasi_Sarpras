@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('kode_sarpras')->unique();
             $table->string('nama_sarpras');
             $table->foreignId('kategori_id')->constrained('kategori_sarpras');
-            $table->string('jumlah_stok')->default(0);
+            $table->integer('jumlah_stok')->default(0);
             $table->timestamps();
         });
     }

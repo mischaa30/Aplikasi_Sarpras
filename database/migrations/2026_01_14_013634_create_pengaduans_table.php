@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('pengaduans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('status_pengaduan')->constrained('status_pengaduans');
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('lokasi');
             $table->string('jenis_sarpras')->nullable();
-            $table->enum('status',['Menunggu','Diproses','Selesai','Ditutup'])->default('Menunggu');
             $table->timestamps();
         });
     }

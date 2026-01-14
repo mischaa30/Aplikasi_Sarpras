@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('activity__logs', function (Blueprint $table) {
+        Schema::create('kondisi_sarpras', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->string('aksi');
-            $table->text('deskripsi')->nullable();
+            $table->string('kondisi_sarpras');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('activity__logs');
+        Schema::dropIfExists('kondisi_sarpras');
     }
 };

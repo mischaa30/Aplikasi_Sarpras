@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('sarpras', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_lokasi')->constrained('lokasis');
+            $table->foreignId('id_kondisi_sarpras')->constrained('kondisi_sarpras');
             $table->string('kode_sarpras')->unique();
             $table->string('nama_sarpras');
             $table->foreignId('kategori_id')->constrained('kategori_sarpras');
-            $table->string('lokasi');
             $table->string('jumlah_stok')->default(0);
-            $table->enum('kondisi_saat_ini',['Baik','Rusak Ringan','Rusak Berat','Hilang'])->default('Baik');
             $table->timestamps();
         });
     }

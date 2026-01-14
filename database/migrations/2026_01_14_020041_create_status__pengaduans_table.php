@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('catatan_pengaduan', function (Blueprint $table) {
+        Schema::create('status__pengaduans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pengaduan_id')
-            ->constrained('pengaduan')
-            ->onDelete('cascade');
-            $table->foreignId('user_id')->constrained('users');
-            $table->text('catatan');
+            $table->string('nama_status_pengaduan');
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('catatan_pengaduan');
+        Schema::dropIfExists('status__pengaduans');
     }
 };

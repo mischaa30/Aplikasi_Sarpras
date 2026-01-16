@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+//ambil atau memanggil data model
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Models\Role;
+
+//ambil data dari form
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -13,8 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::with('role')->get();
-        return view('user.index', compact('user'));
+        $user = User::with('role')->get(); //ambil semua data user dan role
+        return view('user.index', compact('user')); //kirim data ke view user.index
         //
     }
 
@@ -23,8 +26,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        $role = Role::all();
-        return view('user.create', compact('role'));
+        $role = Role::all(); //ambil data role
+        return view('user.create', compact('role')); //kirim data
         //
     }
 
@@ -33,13 +36,14 @@ class UserController extends Controller
      */
     public function store(Request $r)
     {
+        //menyimpan data user ke database
         User::create([
             'username' => $r->username,
             'password' => $r->password,
             'id_role'  => $r->id_role
         ]);
 
-        return redirect('/user');
+        return redirect('/user'); //kembali ke halaman data user
     }
 
 
@@ -56,9 +60,9 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id);
-        $role = Role::all();
-        return view('user.edit', compact('user', 'role'));
+        $user = User::findOrFail($id); // Mengambil data user berdasarkan id
+        $role = Role::all(); //Mengambil semua role
+        return view('user.edit', compact('user', 'role')); //Mengirim data ke view edit
         //
     }
 
@@ -67,12 +71,13 @@ class UserController extends Controller
      */
     public function update(Request $r, User $user)
     {
+        //Update data user
         $user->update([
             'username' => $r->username,
             'id_role' => $r->id_role
         ]);
 
-        return redirect('/user');
+        return redirect('/user'); //kembali ke halaman data user
         //
     }
 
@@ -81,8 +86,9 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        //menghapus data user sesuai id
         User::destroy($id);
-        return redirect('/user');
+        return redirect('/user'); //kembali ke halaman data user
         //
     }
 }

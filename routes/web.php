@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,4 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Login
+Route::get('/login',[AuthController::class,'login']);
+Route::post('/login',[AuthController::class,'prosesLogin']);
+Route::get('/logout',[AuthController::class,'logout']);
+
+//Proteksi User
 Route::resource('user',UserController::class);

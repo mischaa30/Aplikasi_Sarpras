@@ -24,5 +24,21 @@ Route::get('/login',[AuthController::class,'login']);
 Route::post('/login',[AuthController::class,'prosesLogin']);
 Route::get('/logout',[AuthController::class,'logout']);
 
-//Proteksi User
-Route::resource('user',UserController::class);
+// Admin
+Route::middleware(['login','admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    });
+
+    Route::resource('user', UserController::class);
+});
+
+// Petugas
+Route::middleware(['login','petugas'])->get('/petugas/dashboard', function () {
+    return view('petugas.dashboard');
+});
+
+// Pengguna
+Route::middleware(['login','pengguna'])->get('/pengguna/dashboard', function () {
+    return view('pengguna.dashboard');
+});

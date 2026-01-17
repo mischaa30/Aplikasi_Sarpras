@@ -1,3 +1,5 @@
+<h2>Dashboard Admin</h2>
+<p>Selamat datang {{ session('user')->username }}</p>
 <h3>Data User</h3>
 <a href="/user/create">Tambah User</a>
 
@@ -26,3 +28,5 @@
     </tr>
     @endforeach
 </table>
+
+<a href="/logout">Logout</a>

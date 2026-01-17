@@ -26,7 +26,14 @@ class AuthController extends Controller
             Session::put('login',true);
             Session::put('user',$user);
 
-            return redirect('/user');
+            //Arahkan sesuai role
+            if($user->id_role == 1){
+                return redirect('/user');
+            }elseif($user->id_role == 2){
+                return redirect('/petugas/dashboard');
+            }else{
+                return redirect('/pengguna/dashboard');
+            }
         }
 
         //Jika gagal
@@ -36,7 +43,7 @@ class AuthController extends Controller
     //Logout
     public function logout()
     {
-        Session::flush();
+        Session::flush(); //hapus semua session
         return redirect('/login');
     }
 }

@@ -9,6 +9,10 @@ use App\Models\Role;
 //ambil data dari form
 use Illuminate\Http\Request;
 
+//hash pw
+use Illuminate\Support\Facades\Hash;
+
+
 class UserController extends Controller
 {
     /**
@@ -17,7 +21,7 @@ class UserController extends Controller
     public function index()
     {
         $user = User::with('role')->get(); //ambil semua data user dan role
-        return view('user.index', compact('user')); //kirim data ke view user.index
+        return view('admin.user.index', compact('user')); //kirim data ke view user.index
         //
     }
 
@@ -27,7 +31,7 @@ class UserController extends Controller
     public function create()
     {
         $role = Role::all(); //ambil data role
-        return view('user.create', compact('role')); //kirim data
+        return view('admin.user.create', compact('role')); //kirim data
         //
     }
 
@@ -36,15 +40,15 @@ class UserController extends Controller
      */
     public function store(Request $r)
     {
-        //menyimpan data user ke database
         User::create([
             'username' => $r->username,
-            'password' => $r->password,
+            'password' => Hash::make($r->password),
             'id_role'  => $r->id_role
         ]);
 
-        return redirect('/user'); //kembali ke halaman data user
+        return redirect()->route('admin.user.index');
     }
+
 
 
     /**
@@ -62,7 +66,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id); // Mengambil data user berdasarkan id
         $role = Role::all(); //Mengambil semua role
-        return view('user.edit', compact('user', 'role')); //Mengirim data ke view edit
+        return view('admin.user.edit', compact('user', 'role')); //Mengirim data ke view edit
         //
     }
 
@@ -71,15 +75,20 @@ class UserController extends Controller
      */
     public function update(Request $r, User $user)
     {
-        //Update data user
-        $user->update([
+        $data = [
             'username' => $r->username,
             'id_role' => $r->id_role
-        ]);
+        ];
 
-        return redirect('/user'); //kembali ke halaman data user
-        //
+        if ($r->password) {
+            $data['password'] = Hash::make($r->password);
+        }
+
+        $user->update($data);
+
+        return redirect()->route('admin.user.index');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -88,7 +97,7 @@ class UserController extends Controller
     {
         //menghapus data user sesuai id
         User::destroy($id);
-        return redirect('/user'); //kembali ke halaman data user
+        return redirect()->route('admin.user.index'); //kembali ke halaman data user
         //
     }
 }

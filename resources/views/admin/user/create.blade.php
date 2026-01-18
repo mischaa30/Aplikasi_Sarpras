@@ -1,4 +1,4 @@
-<form method="POST" action="/user">
+<form action="{{ route('admin.user.store') }}" method="POST">
 @csrf
 
 <input name="username" placeholder="Username">

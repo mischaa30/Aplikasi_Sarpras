@@ -1,7 +1,7 @@
 <h2>Dashboard Admin</h2>
 <p>Selamat datang {{ session('user')->username }}</p>
 <h3>Data User</h3>
-<a href="/user/create">Tambah User</a>
+<a href="{{ route('admin.user.create') }}">Tambah User</a>
 
 <table border="1" cellpadding="5">
     <tr>
@@ -15,9 +15,9 @@
         <td>{{ $u->username }}</td>
         <td>{{ $u->role->nama_role }}</td>
         <td>
-            <a href="/user/{{ $u->id }}/edit">Edit</a>
+            <a href="{{ route('admin.user.edit', $u->id) }}">Edit</a>
 
-            <form action="/user/{{ $u->id }}" method="POST" style="display:inline">
+            <form action="{{ route('admin.user.destroy', $u->id) }}" method="POST" style="display:inline">
                 @csrf
                 @method('DELETE')
                 <button onclick="return confirm('Yakin hapus user?')">

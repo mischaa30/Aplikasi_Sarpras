@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Kategori_Sarpras extends Model
 {
-    use HasFactory;
+    // menentukan tabel
+    protected $table = 'kategori_sarpras';
+
+    //field yang boleh diisi lewat form
+    protected $fillable = ['nama_kategori'];
+
+    //use HasFactory;
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KategoriSarprasController;
+use App\Http\Controllers\SarprasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,6 +27,7 @@ Route::middleware(['login','admin'])
 
     Route::resource('user', UserController::class);
     Route::resource('kategori', KategoriSarprasController::class);
+    Route::resource('sarpras',SarprasController::class);
 });
 
 // Petugas

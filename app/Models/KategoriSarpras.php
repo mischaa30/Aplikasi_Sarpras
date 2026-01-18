@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Kategori_Sarpras extends Model
+class KategoriSarpras extends Model
 {
     // menentukan tabel
     protected $table = 'kategori_sarpras';

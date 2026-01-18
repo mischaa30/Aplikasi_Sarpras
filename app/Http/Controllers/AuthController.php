@@ -17,6 +17,12 @@ class AuthController extends Controller
     //Proses Login
     public function prosesLogin(Request $r)
     {
+        //Buat user tidak bisa login tanpa isi form
+        $r->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
         $user = User::where('username', $r->username)->first();
 
         if ($user && Hash::check($r->password, $user->password)) {

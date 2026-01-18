@@ -20,7 +20,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::with('role')->get(); //ambil semua data user dan role
+        //ambil semua data user dan role
+        $user = User::with('role')->paginate(10); //Menggunakan paginate
         return view('admin.user.index', compact('user')); //kirim data ke view user.index
         //
     }
@@ -40,6 +41,13 @@ class UserController extends Controller
      */
     public function store(Request $r)
     {
+        //Menghindari data ganda & tidak valid
+        $r->validate([
+            'username' => 'required|unique:users',
+            'password' => 'required|min:5',
+            'id_role'  => 'required'
+        ]);
+
         User::create([
             'username' => $r->username,
             'password' => Hash::make($r->password),
@@ -75,6 +83,11 @@ class UserController extends Controller
      */
     public function update(Request $r, User $user)
     {
+        $r->validate([
+            'username' => 'required',
+            'id_role'  => 'required'
+        ]);
+
         $data = [
             'username' => $r->username,
             'id_role' => $r->id_role

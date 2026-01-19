@@ -44,7 +44,7 @@ class UserController extends Controller
         //Menghindari data ganda & tidak valid
         $r->validate([
             'username' => 'required|unique:users',
-            'password' => 'required|min:5',
+            'password' => 'required|min:4',
             'id_role'  => 'required'
         ]);
 
@@ -109,8 +109,18 @@ class UserController extends Controller
     public function destroy($id)
     {
         //menghapus data user sesuai id
-        User::destroy($id);
+        User::findOrFail($id)->delete();
         return redirect()->route('admin.user.index'); //kembali ke halaman data user
         //
+    }
+
+    public function restore($id)
+    {
+        User::withTrashed()
+        ->findOrFail($id)
+        ->restore();
+
+        return redirect()->route('admin.user.index')
+        ->with('success','Data berhasil di restore');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kategori_Sarpras;
+use App\Models\KategoriSarpras;
 use Illuminate\Http\Request;
 
 class KategoriSarprasController extends Controller
@@ -12,7 +12,7 @@ class KategoriSarprasController extends Controller
      */
     public function index()
     {
-        $kategori = Kategori_Sarpras::all();
+        $kategori = KategoriSarpras::all();
         return view('admin.kategori.index', compact('kategori'));
     }
 
@@ -31,7 +31,7 @@ class KategoriSarprasController extends Controller
     //Menyimpan data baru(create)
     public function store(Request $r)
     {
-        Kategori_Sarpras::create([
+        KategoriSarpras::create([
             'nama_kategori' => $r->nama_kategori //ambil input dari form
         ]);
         return redirect()->route('admin.kategori.index'); //kembali ke index
@@ -40,7 +40,7 @@ class KategoriSarprasController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kategori_Sarpras $kategori_Sarpras)
+    public function show(KategoriSarpras $kategori_Sarpras)
     {
         //
     }
@@ -51,7 +51,7 @@ class KategoriSarprasController extends Controller
     //Menampilkan form edit
     public function edit($id)
     {
-        $kategori = Kategori_Sarpras::findOrFail($id);
+        $kategori = KategoriSarpras::findOrFail($id);
         return view('admin.kategori.edit',compact('kategori'));
     }
 
@@ -61,7 +61,7 @@ class KategoriSarprasController extends Controller
     //Menyimpan perubahan (update)
     public function update(Request $r,$id)
     {
-        Kategori_Sarpras::where('id',$id)->update([
+        KategoriSarpras::where('id',$id)->update([
             'nama_kategori' => $r->nama_kategori  //update data
         ]);
 
@@ -74,7 +74,7 @@ class KategoriSarprasController extends Controller
     //menghapus data
     public function destroy($id)
     {
-        Kategori_Sarpras::destroy($id); //hapus data berdasarkan id
+        KategoriSarpras::destroy($id); //hapus data berdasarkan id
         return redirect()->route('admin.kategori.index');
     }
 }

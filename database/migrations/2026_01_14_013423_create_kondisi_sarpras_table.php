@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sarpras', function (Blueprint $table) {
+        if(!Schema::hasTable('kondisi_sarpras')) {
+        Schema::create('kondisi_sarpras', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_lokasi')->constrained('lokasis');
-            $table->string('kode_sarpras')->unique();
-            $table->string('nama_sarpras');
-            $table->foreignId('kategori_id')->constrained('kategori_sarpras');
+            $table->string('kondisi_sarpras');
             $table->timestamps();
         });
+        }
     }
 
     /**
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sarpras');
+        Schema::dropIfExists('kondisi_sarpras');
     }
 };

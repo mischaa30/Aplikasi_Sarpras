@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KategoriSarprasController;
 use App\Http\Controllers\SarprasController;
+use App\Http\Controllers\SarprasKondisiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,7 +28,27 @@ Route::middleware(['login','admin'])
 
     Route::resource('user', UserController::class);
     Route::resource('kategori', KategoriSarprasController::class);
-    Route::resource('sarpras',SarprasController::class);
+    Route::resource('sarpras', SarprasController::class);
+
+    // Restore user
+    Route::get('user/{id}/restore', [UserController::class, 'restore'])
+        ->name('user.restore');
+
+    // Restore sarpras
+    Route::get('sarpras/{id}/restore', [SarprasController::class, 'restore'])
+        ->name('sarpras.restore');
+
+    // Tambah stok sarpras
+    Route::get(
+        'sarpras/{sarpras}/kondisi/create',
+        [SarprasKondisiController::class, 'create']
+    )->name('sarpras.kondisi.create');
+
+    Route::post(
+        'sarpras/{sarpras}/kondisi',
+        [SarprasKondisiController::class, 'store']
+    )->name('sarpras.kondisi.store');
+
 });
 
 // Petugas

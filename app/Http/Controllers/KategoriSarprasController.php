@@ -74,7 +74,9 @@ class KategoriSarprasController extends Controller
     //menghapus data
     public function destroy($id)
     {
-        KategoriSarpras::destroy($id); //hapus data berdasarkan id
+        KategoriSarpras::findOrFail($id)->delete();
         return redirect()->route('admin.kategori.index');
     }
+
+    //restore
 }

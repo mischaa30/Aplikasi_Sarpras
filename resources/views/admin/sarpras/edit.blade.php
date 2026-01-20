@@ -1,6 +1,6 @@
 <h2>Edit Sarpras</h2>
 
-<form method="POST" action="{{ route('admin.sarpras.update',$sarpras->id) }}">
+<form method="POST" action="{{ route('admin.sarpras.update',$sarpras) }}">
 @csrf @method('PUT')
 
 Kode:
@@ -26,18 +26,6 @@ Kategori:
 </option>
 @endforeach
 </select><br>
-
-Kondisi:
-<select name="id_kondisi_sarpras">
-@foreach($kondisi as $k)
-<option value="{{ $k->id }}" @selected($sarpras->id_kondisi_sarpras==$k->id)>
-    {{ $k->nama_kondisi }}
-</option>
-@endforeach
-</select><br>
-
-Jumlah:
-<input type="number" name="jumlah_stok" value="{{ $sarpras->jumlah_stok }}"><br>
 
 <button>Update</button>
 </form>

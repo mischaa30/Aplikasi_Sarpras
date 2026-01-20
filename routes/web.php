@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\KategoriSarprasController;
 use App\Http\Controllers\SarprasController;
 use App\Http\Controllers\SarprasKondisiController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\LokasiController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -28,7 +30,10 @@ Route::middleware(['login','admin'])
 
     Route::resource('user', UserController::class);
     Route::resource('kategori', KategoriSarprasController::class);
-    Route::resource('sarpras', SarprasController::class);
+    Route::resource('sarpras', SarprasController::class)
+    ->parameters(['sarpras' => 'sarpras']);
+    Route::resource('role',RoleController::class);
+    Route::resource('lokasi',LokasiController::class);
 
     // Restore user
     Route::get('user/{id}/restore', [UserController::class, 'restore'])
@@ -37,6 +42,10 @@ Route::middleware(['login','admin'])
     // Restore sarpras
     Route::get('sarpras/{id}/restore', [SarprasController::class, 'restore'])
         ->name('sarpras.restore');
+
+    //Restore Kategori Sarpras
+    //Restore Role
+    //Restore Lokasi
 
     // Tambah stok sarpras
     Route::get(

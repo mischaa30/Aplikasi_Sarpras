@@ -7,59 +7,33 @@ use Illuminate\Http\Request;
 
 class LokasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $lokasi = Lokasi::all();
+        return view('admin.lokasi.index', compact('lokasi'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('admin.lokasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $r)
     {
-        //
+        $r->validate([
+            'nama_lokasi' => 'required|unique:lokasi,nama_lokasi'
+        ]);
+
+        Lokasi::create([
+            'nama_lokasi' => $r->nama_lokasi
+        ]);
+
+        return redirect()->route('admin.lokasi.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Lokasi $lokasi)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Lokasi $lokasi)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Lokasi $lokasi)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Lokasi $lokasi)
-    {
-        //
+        Lokasi::findOrFail($id)->delete();
+        return redirect()->route('admin.lokasi.index');
     }
 }

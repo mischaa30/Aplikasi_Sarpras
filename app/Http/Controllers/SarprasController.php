@@ -101,7 +101,7 @@ class SarprasController extends Controller
     public function destroy($id)
     {
         Sarpras::findOrFail($id)->delete();
-        return redirect()->route('admin.user.index');
+        return redirect()->route('admin.sarpras.index');
     }
 
     //restore

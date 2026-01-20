@@ -12,8 +12,8 @@ class Sarpras extends Model
     protected $fillable = [
         'kode_sarpras',
         'nama_sarpras',
-        'id_lokasi',
-        'kategori_id'
+        'kategori_id',
+        'id_lokasi'
     ];
 
     public function lokasi()
@@ -23,11 +23,11 @@ class Sarpras extends Model
 
     public function kategori()
     {
-        return $this->belongsTo(KategoriSarpras::class,'kategori_id');
+        return $this->belongsTo(KategoriSarpras::class);
     }
 
-    public function kondisiDetail()
+    public function items()
     {
-        return $this->hasMany(SarprasKondisi::class);
+        return $this->hasMany(SarprasItem::class);
     }
 }

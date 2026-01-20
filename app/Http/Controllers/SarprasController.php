@@ -15,7 +15,7 @@ class SarprasController extends Controller
         $sarpras = Sarpras::with([
             'lokasi',
             'kategori',
-            'kondisiDetail.kondisi'
+            'items.kondisi'
         ])->paginate(10);
 
         return view('admin.sarpras.index', compact('sarpras'));
@@ -23,13 +23,10 @@ class SarprasController extends Controller
 
     public function create()
     {
-        $lokasi   = Lokasi::all();
-        $kategori = KategoriSarpras::all();
-
-        return view('admin.sarpras.create', compact(
-            'lokasi',
-            'kategori'
-        ));
+        return view('admin.sarpras.create', [
+            'kategori' => KategoriSarpras::all(),
+            'lokasi' => Lokasi::all()
+        ]);
     }
 
     public function store(Request $r)
@@ -37,72 +34,42 @@ class SarprasController extends Controller
         $r->validate([
             'kode_sarpras' => 'required|unique:sarpras',
             'nama_sarpras' => 'required',
-            'id_lokasi'    => 'required',
-            'kategori_id'  => 'required'
+            'kategori_id' => 'required',
+            'id_lokasi' => 'required'
         ]);
 
-        Sarpras::create($r->only([
-            'kode_sarpras',
-            'nama_sarpras',
-            'id_lokasi',
-            'kategori_id'
-        ]));
-
+        Sarpras::create($r->all());
         return redirect()->route('admin.sarpras.index');
     }
 
     public function show(Sarpras $sarpras)
     {
-        $sarpras->load([
-            'lokasi',
-            'kategori',
-            'kondisiDetail.kondisi'
+        $sarpras->load('items.kondisi');
+
+        return view('admin.sarpras.show', [
+            'sarpras' => $sarpras,
+            'listKondisi' => KondisiSarpras::all()
         ]);
-
-        $listKondisi = KondisiSarpras::all();
-
-        return view('admin.sarpras.show', compact(
-            'sarpras',
-            'listKondisi'
-        ));
     }
 
     public function edit(Sarpras $sarpras)
     {
-        $lokasi   = Lokasi::all();
-        $kategori = KategoriSarpras::all();
-
-        return view('admin.sarpras.edit', compact(
-            'sarpras',
-            'lokasi',
-            'kategori'
-        ));
+        return view('admin.sarpras.edit', [
+            'sarpras' => $sarpras,
+            'kategori' => KategoriSarpras::all(),
+            'lokasi' => Lokasi::all()
+        ]);
     }
 
     public function update(Request $r, Sarpras $sarpras)
     {
-        $r->validate([
-            'kode_sarpras' => 'required',
-            'nama_sarpras' => 'required',
-            'id_lokasi'    => 'required',
-            'kategori_id'  => 'required'
-        ]);
-
-        $sarpras->update($r->only([
-            'kode_sarpras',
-            'nama_sarpras',
-            'id_lokasi',
-            'kategori_id'
-        ]));
-
+        $sarpras->update($r->all());
         return redirect()->route('admin.sarpras.index');
     }
 
-    public function destroy($id)
+    public function destroy(Sarpras $sarpras)
     {
-        Sarpras::findOrFail($id)->delete();
+        $sarpras->delete();
         return redirect()->route('admin.sarpras.index');
     }
-
-    //restore
 }

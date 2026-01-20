@@ -4,7 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KategoriSarprasController;
 use App\Http\Controllers\SarprasController;
-use App\Http\Controllers\SarprasKondisiController;
+use App\Http\Controllers\SarprasItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LokasiController;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +35,20 @@ Route::middleware(['login','admin'])
     Route::resource('role',RoleController::class);
     Route::resource('lokasi',LokasiController::class);
 
+    //Sarpras
+    Route::post('sarpras/{sarpras}/item', [SarprasItemController::class, 'store'])
+        ->name('sarpras.item.store');
+
+    Route::get('sarpras/item/{item}/edit', [SarprasItemController::class, 'edit'])
+        ->name('sarpras.item.edit');
+
+    Route::put('sarpras/item/{item}', [SarprasItemController::class, 'update'])
+        ->name('sarpras.item.update');
+
+    Route::delete('sarpras/item/{item}', [SarprasItemController::class, 'destroy'])
+        ->name('sarpras.item.destroy');
+
+
     // Restore user
     Route::get('user/{id}/restore', [UserController::class, 'restore'])
         ->name('user.restore');
@@ -46,17 +60,6 @@ Route::middleware(['login','admin'])
     //Restore Kategori Sarpras
     //Restore Role
     //Restore Lokasi
-
-    // Tambah stok sarpras
-    Route::get(
-        'sarpras/{sarpras}/kondisi/create',
-        [SarprasKondisiController::class, 'create']
-    )->name('sarpras.kondisi.create');
-
-    Route::post(
-        'sarpras/{sarpras}/kondisi',
-        [SarprasKondisiController::class, 'store']
-    )->name('sarpras.kondisi.store');
 
 });
 

@@ -35,7 +35,10 @@ Route::middleware(['login','admin'])
     Route::resource('role',RoleController::class);
     Route::resource('lokasi',LokasiController::class);
 
-    //Sarpras
+    //Sarpras Item
+    Route::get('sarpras/{sarpras}/item/create', [SarprasItemController::class, 'create'])
+        ->name('sarpras.item.create');
+
     Route::post('sarpras/{sarpras}/item', [SarprasItemController::class, 'store'])
         ->name('sarpras.item.store');
 
@@ -47,7 +50,6 @@ Route::middleware(['login','admin'])
 
     Route::delete('sarpras/item/{item}', [SarprasItemController::class, 'destroy'])
         ->name('sarpras.item.destroy');
-
 
     // Restore user
     Route::get('user/{id}/restore', [UserController::class, 'restore'])

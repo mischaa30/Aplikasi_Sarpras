@@ -9,6 +9,14 @@ use App\Models\KondisiSarpras;
 
 class SarprasItemController extends Controller
 {
+    public function create(Sarpras $sarpras)
+    {
+        return view('admin.sarpras.item_create', [
+            'sarpras' => $sarpras,
+            'listKondisi' => KondisiSarpras::all()
+        ]);
+    }
+
     public function store(Request $r, Sarpras $sarpras)
     {
         SarprasItem::create([

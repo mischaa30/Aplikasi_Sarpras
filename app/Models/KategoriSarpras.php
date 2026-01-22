@@ -8,12 +8,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KategoriSarpras extends Model
 {
+    use HasFactory;
     use SoftDeletes;
     // menentukan tabel
     protected $table = 'kategori_sarpras';
 
     //field yang boleh diisi lewat form
-    protected $fillable = ['nama_kategori'];
+    protected $fillable = ['nama_kategori','parent_id'];
 
-    //use HasFactory;
+    public function parent()
+    {
+        return $this->belongsTo(KategoriSarpras::class,'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(KategoriSarpras::class,'parent_id');
+    }
 }

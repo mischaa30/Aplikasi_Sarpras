@@ -1,32 +1,48 @@
-@extends('layouts.admin')
+<h2>Data Kategori</h2>
 
-@section('content')
-<h3>Kategori Sarpras</h3>
+<a href="{{ route('admin.kategori.create') }}">Tambah Kategori</a>
 
-<a href="{{ route('admin.kategori.create') }}">Tambah</a>
+<table border="1" cellpadding="5">
+<tr>
+    <th>Nama Kategori</th>
+    <th>Parent</th>
+    <th>Aksi</th>
+</tr>
 
-<table border="1">
-    <tr>
-        <th>No</th>
-        <th>Nama</th>
-        <th>Aksi</th>
-    </tr>
+@foreach($kategori as $parent)
+<tr>
+    <td><b>{{ $parent->nama_kategori }}</b></td>
+    <td>Root</td>
+    <td>
+        <a href="{{ route('admin.kategori.edit', $parent->id) }}">Edit</a> |
 
-    @foreach ( $kategori as $k )
-    <tr>
-        <td>{{ $loop->iteration }}</td>
-        <td>{{ $k->nama_kategori }}</td>
-        <td>
-            <a href="{{ route('admin.kategori.edit',$k->id) }}">Edit</a>
-            <form action="{{ route('admin.kategori.destroy',$k->id) }}" method="POST" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button>hapus</button>
-            </form>
-        </td>
-    </tr>
-    
-    @endforeach
+        <form method="POST"
+              action="{{ route('admin.kategori.destroy', $parent->id) }}"
+              style="display:inline">
+            @csrf
+            @method('DELETE')
+            <button>Hapus</button>
+        </form>
+    </td>
+</tr>
+
+@foreach($parent->children as $child)
+<tr>
+    <td>— {{ $child->nama_kategori }}</td>
+    <td>{{ $parent->nama_kategori }}</td>
+    <td>
+        <a href="{{ route('admin.kategori.edit', $child->id) }}">Edit</a> |
+
+        <form method="POST"
+              action="{{ route('admin.kategori.destroy', $child->id) }}"
+              style="display:inline">
+            @csrf
+            @method('DELETE')
+            <button>Hapus</button>
+        </form>
+    </td>
+</tr>
+@endforeach
+
+@endforeach
 </table>
-
-@endsection

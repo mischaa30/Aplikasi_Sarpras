@@ -17,12 +17,26 @@
     <td>{{ $s->kode_sarpras }}</td>
     <td>{{ $s->nama_sarpras }}</td>
     <td>{{ $s->lokasi->nama_lokasi }}</td>
-    <td>{{ $s->kategori->nama_kategori }}</td>
-    <td>{{ $s->items->count() }}</td>
+
+    {{-- KATEGORI AMAN (TIDAK ERROR) --}}
     <td>
-        <a href="{{ route('admin.sarpras.show', $s->id) }}">Detail</a>
-        |
-        <a href="{{ route('admin.sarpras.edit', $s->id) }}">Edit</a>
+        @if($s->kategori && $s->kategori->parent)
+            {{ $s->kategori->parent->nama_kategori }}
+            -
+            {{ $s->kategori->nama_kategori }}
+        @elseif($s->kategori)
+            {{ $s->kategori->nama_kategori }}
+        @else
+            -
+        @endif
+    </td>
+
+    <td>{{ $s->items->count() }}</td>
+
+    <td>
+        <a href="{{ route('admin.sarpras.show', $s->id) }}">Detail</a> |
+        <a href="{{ route('admin.sarpras.edit', $s->id) }}">Edit</a> |
+        <a href="{{ route('admin.sarpras.item.create', $s->id) }}">Tambah Data</a>
     </td>
 </tr>
 @endforeach

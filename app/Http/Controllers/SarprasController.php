@@ -24,7 +24,8 @@ class SarprasController extends Controller
     public function create()
     {
         return view('admin.sarpras.create', [
-            'kategori' => KategoriSarpras::all(),
+            'parentKategori' => KategoriSarpras::whereNull('parent_id')->get(),
+            'childKategori' => KategoriSarpras::whereNull('parent_id')->get(),
             'lokasi' => Lokasi::all()
         ]);
     }
@@ -34,7 +35,14 @@ class SarprasController extends Controller
         $r->validate([
             'kode_sarpras' => 'required|unique:sarpras',
             'nama_sarpras' => 'required',
-            'kategori_id' => 'required',
+            'kategori_id' => [
+                'required',
+                function ($attr, $value, $fail){
+                    if(KategoriSarpras::find($value)->parent_id === null ){
+                        $fail('kategori harus sub kategori');
+                    }
+                }
+            ],
             'id_lokasi' => 'required'
         ]);
 
@@ -56,7 +64,7 @@ class SarprasController extends Controller
     {
         return view('admin.sarpras.edit', [
             'sarpras' => $sarpras,
-            'kategori' => KategoriSarpras::all(),
+            'kategori' => KategoriSarpras::whereNotNull('parent_id')->get(),
             'lokasi' => Lokasi::all()
         ]);
     }

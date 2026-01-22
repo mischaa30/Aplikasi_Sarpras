@@ -6,6 +6,9 @@ use App\Models\Sarpras;
 use App\Models\Lokasi;
 use App\Models\KategoriSarpras;
 use App\Models\KondisiSarpras;
+use App\Models\Peminjaman;
+use App\Models\SarprasItem;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 
 class SarprasController extends Controller
@@ -21,32 +24,83 @@ class SarprasController extends Controller
         return view('admin.sarpras.index', compact('sarpras'));
     }
 
+    public function tersedia()
+    {
+        $sarpras = SarprasItem::where('jumlah', '>', 0)
+            ->whereHas('kondisi', function ($q) {
+                $q->where('nama_kondisi', 'Baik');
+            })
+            ->with('sarpras')
+            ->get();
+
+        return view('pengguna.sarpras.index', compact('sarpras'));
+    }
+    // simpan peminjaman
+    public function pinjam(Request $r, $id)
+    {
+        $r->validate([
+            'jumlah' => 'required|integer|min:1',
+            'tujuan' => 'nullable'
+        ]);
+
+        Peminjaman::create([
+            'user_id'   => Session::get('user')->id,
+            'sarpras_id'=> $id,
+            'jumlah'    => $r->jumlah,
+            'tgl_pinjam'=> now(),
+            'tujuan'    => $r->tujuan,
+            'status'    => 'Menunggu'
+        ]);
+
+        return back()->with('success', 'Pengajuan peminjaman berhasil');
+    }
+
     public function create()
     {
         return view('admin.sarpras.create', [
             'parentKategori' => KategoriSarpras::whereNull('parent_id')->get(),
-            'childKategori' => KategoriSarpras::whereNull('parent_id')->get(),
+            'childKategori' => KategoriSarpras::whereNotNull('parent_id')->with('parent')
+                ->get(),
             'lokasi' => Lokasi::all()
         ]);
     }
 
-    public function store(Request $r)
+    public function store(Request $request)
     {
-        $r->validate([
-            'kode_sarpras' => 'required|unique:sarpras',
-            'nama_sarpras' => 'required',
-            'kategori_id' => [
-                'required',
-                function ($attr, $value, $fail){
-                    if(KategoriSarpras::find($value)->parent_id === null ){
-                        $fail('kategori harus sub kategori');
-                    }
-                }
-            ],
-            'id_lokasi' => 'required'
+        $kategori = KategoriSarpras::with('parent')
+            ->findOrFail($request->kategori_id);
+
+        // VALIDASI KODE
+        if (!$kategori->kode_kategori) {
+            return back()->with('error', 'Kode sub kategori belum diisi');
+        }
+
+        if ($kategori->parent && !$kategori->parent->kode_kategori) {
+            return back()->with('error', 'Kode kategori utama belum diisi');
+        }
+
+        // PREFIX (FIX)
+        $prefix = $kategori->parent
+            ? $kategori->parent->kode_kategori . $kategori->kode_kategori
+            : $kategori->kode_kategori;
+
+        $last = Sarpras::where('kode_sarpras', 'like', $prefix . '%')
+            ->orderBy('kode_sarpras', 'desc')
+            ->first();
+
+        $urutan = $last
+            ? intval(substr($last->kode_sarpras, strlen($prefix))) + 1
+            : 1;
+
+        $kodeSarpras = $prefix . str_pad($urutan, 3, '0', STR_PAD_LEFT);
+
+        Sarpras::create([
+            'kode_sarpras' => $kodeSarpras,
+            'nama_sarpras' => $request->nama_sarpras,
+            'kategori_id' => $request->kategori_id,
+            'id_lokasi' => $request->id_lokasi
         ]);
 
-        Sarpras::create($r->all());
         return redirect()->route('admin.sarpras.index');
     }
 
@@ -64,7 +118,7 @@ class SarprasController extends Controller
     {
         return view('admin.sarpras.edit', [
             'sarpras' => $sarpras,
-            'kategori' => KategoriSarpras::whereNotNull('parent_id')->get(),
+            'kategori' => KategoriSarpras::whereNotNull('parent_id')->with('parent')->get(),
             'lokasi' => Lokasi::all()
         ]);
     }

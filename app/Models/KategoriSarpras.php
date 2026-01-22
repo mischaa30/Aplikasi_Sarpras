@@ -14,7 +14,7 @@ class KategoriSarpras extends Model
     protected $table = 'kategori_sarpras';
 
     //field yang boleh diisi lewat form
-    protected $fillable = ['nama_kategori','parent_id'];
+    protected $fillable = ['nama_kategori','parent_id','kode_kategori'];
 
     public function parent()
     {

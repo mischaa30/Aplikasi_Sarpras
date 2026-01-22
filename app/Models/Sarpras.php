@@ -30,4 +30,13 @@ class Sarpras extends Model
     {
         return $this->hasMany(SarprasItem::class);
     }
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class);
+    }
+
+    public function kondisi()
+    {
+        return $this->belongsTo(KondisiSarpras::class, 'kondisi_id');
+    }
 }

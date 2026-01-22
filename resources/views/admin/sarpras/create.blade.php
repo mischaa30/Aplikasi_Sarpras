@@ -3,10 +3,7 @@
 <form method="POST" action="{{ route('admin.sarpras.store') }}">
 @csrf
 
-Kode:
-<input name="kode_sarpras" required><br><br>
-
-Nama:
+Nama Sarpras:
 <input name="nama_sarpras" required><br><br>
 
 Lokasi:
@@ -27,5 +24,6 @@ Sub Kategori:
     @endforeach
 </select>
 
+<br><br>
 <button>Simpan</button>
 </form>

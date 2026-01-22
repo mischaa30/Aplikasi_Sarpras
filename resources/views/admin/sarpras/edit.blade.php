@@ -22,13 +22,14 @@
 
     Kategori:
     <select name="kategori_id">
-        @foreach ($childKategori as $c)
+        @foreach ($kategori as $c)
         <option value="{{ $c->id }}"
             {{ $sarpras->kategori_id == $c->id ? 'selected' : '' }}>
-            {{ $c->parent->nama_kategori }} - {{ $c->nama_kategori }}
+            {{ optional($c->parent)->nama_kategori }} - {{ $c->nama_kategori }}
         </option>
         @endforeach
-    </select><br><br>
+    </select>
+
 
     <button>Update</button>
 </form>

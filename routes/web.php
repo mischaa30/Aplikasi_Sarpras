@@ -7,6 +7,8 @@ use App\Http\Controllers\SarprasController;
 use App\Http\Controllers\SarprasItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,6 +19,11 @@ Route::get('/', function () {
 Route::get('/login',[AuthController::class,'login']);
 Route::post('/login',[AuthController::class,'prosesLogin']);
 Route::get('/logout',[AuthController::class,'logout']);
+
+//Profil
+Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
+Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update');
+
 
 // Admin
 Route::middleware(['login','admin'])
@@ -71,6 +78,20 @@ Route::middleware(['login','petugas'])->get('/petugas/dashboard', function () {
 });
 
 // Pengguna
-Route::middleware(['login','pengguna'])->get('/pengguna/dashboard', function () {
-    return view('pengguna.dashboard');
-});
+Route::middleware(['login', 'pengguna'])
+    ->prefix('pengguna')
+    ->name('pengguna.')
+    ->group(function () {
+
+        Route::get('/dashboard', function () {
+            return view('pengguna.dashboard');
+        });
+
+        Route::get('/sarpras', [SarprasController::class, 'tersedia'])
+            ->name('sarpras.index');
+
+        Route::post('/sarpras/{id}/pinjam', [SarprasController::class, 'pinjam'])
+            ->name('sarpras.pinjam');
+        Route::get('/peminjaman', [PeminjamanController::class, 'index'])
+            ->name('peminjaman.index');
+    });

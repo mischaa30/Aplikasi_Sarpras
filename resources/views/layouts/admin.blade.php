@@ -13,6 +13,7 @@
         <a href="{{ route('admin.user.index') }}">User</a> |
         <a href="{{ route('admin.kategori.index') }}">Kategori Sarpras</a> |
         <a href="{{ route('admin.sarpras.index') }}">Sarpras</a> |
+        <a href="{{ route('admin.peminjaman.index') }}">Data Peminjaman</a> |
         <a href="{{ route('profil.edit') }}">Profil</a> |
         <a href="/logout">Logout</a>
     </nav>

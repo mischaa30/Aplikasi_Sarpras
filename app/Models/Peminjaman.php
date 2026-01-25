@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\User;
+use App\Models\Sarpras;
+use App\Models\SarprasItem;
 use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
@@ -22,5 +24,14 @@ class Peminjaman extends Model
     public function item()
     {
         return $this->belongsTo(SarprasItem::class, 'sarpras_item_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function sarpras()
+    {
+        return $this->belongsTo(Sarpras::class, 'sarpras_id');
     }
 }

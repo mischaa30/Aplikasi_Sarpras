@@ -83,15 +83,37 @@ Route::middleware(['login', 'pengguna'])
     ->name('pengguna.')
     ->group(function () {
 
-        Route::get('/dashboard', function () {
-            return view('pengguna.dashboard');
-        });
+    Route::get('/dashboard', function () {
+        return view('pengguna.dashboard');
+    })->name('dashboard');
 
-        Route::get('/sarpras', [SarprasController::class, 'tersedia'])
-            ->name('sarpras.index');
+    // 1. daftar kategori
+    Route::get('/kategori', 
+        [KategoriSarprasController::class, 'userIndex']
+    )->name('kategori.index');
 
-        Route::post('/sarpras/{id}/pinjam', [SarprasController::class, 'pinjam'])
-            ->name('sarpras.pinjam');
-        Route::get('/peminjaman', [PeminjamanController::class, 'index'])
-            ->name('peminjaman.index');
-    });
+    // 2. isi kategori → sarpras
+    Route::get('/kategori/{kategori}', 
+        [KategoriSarprasController::class, 'userShow']
+    )->name('kategori.show');
+
+    // 3. detail sarpras → item
+    Route::get('/sarpras/{sarpras}',
+        [SarprasController::class, 'showUser']
+    )->name('sarpras.show');
+
+    // 4. form pinjam item
+    Route::get('/peminjaman/{item}/create',
+        [PeminjamanController::class, 'create']
+    )->name('peminjaman.create');
+
+    // 5. simpan peminjaman
+    Route::post('/peminjaman/{item}',
+        [PeminjamanController::class, 'store']
+    )->name('peminjaman.store');
+
+    // 6. pinjaman saya
+    Route::get('/peminjaman',
+        [PeminjamanController::class, 'index']
+    )->name('peminjaman.index');
+});

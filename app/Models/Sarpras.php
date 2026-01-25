@@ -13,7 +13,8 @@ class Sarpras extends Model
         'kode_sarpras',
         'nama_sarpras',
         'kategori_id',
-        'id_lokasi'
+        'id_lokasi',
+        'stok'
     ];
 
     public function lokasi()

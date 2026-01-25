@@ -9,6 +9,14 @@ use App\Models\KondisiSarpras;
 
 class SarprasItemController extends Controller
 {
+    public function userIndex(Sarpras $sarpras)
+    {
+        $items = SarprasItem::with('kondisi')
+            ->where('sarpras_id', $sarpras->id)
+            ->get();
+
+        return view('pengguna.item.index', compact('sarpras', 'items'));
+    }
     public function create(Sarpras $sarpras)
     {
         return view('admin.sarpras.item_create', [

@@ -6,9 +6,6 @@ use App\Models\Sarpras;
 use App\Models\Lokasi;
 use App\Models\KategoriSarpras;
 use App\Models\KondisiSarpras;
-use App\Models\Peminjaman;
-use App\Models\SarprasItem;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 
 class SarprasController extends Controller
@@ -24,53 +21,42 @@ class SarprasController extends Controller
         return view('admin.sarpras.index', compact('sarpras'));
     }
 
-    public function tersedia()
+    public function userIndex($kategoriId)
     {
-        $sarpras = SarprasItem::where('jumlah', '>', 0)
-            ->whereHas('kondisi', function ($q) {
-                $q->where('nama_kondisi', 'Baik');
-            })
-            ->with('sarpras')
+        $sarpras = Sarpras::withCount('items')
+            ->where('kategori_id', $kategoriId)
             ->get();
 
         return view('pengguna.sarpras.index', compact('sarpras'));
     }
-    // simpan peminjaman
-    public function pinjam(Request $r, $id)
+
+    // menampilkan sarpras yang punya item dengan kondisi "Tersedia"
+    public function tersedia(Request $request)
     {
-        $r->validate([
-            'jumlah' => 'required|integer|min:1',
-            'tujuan' => 'nullable'
-        ]);
+        $sarpras = Sarpras::with(['kategori', 'items.kondisi'])
+            ->whereHas('items', function ($q) {
+                $q->whereHas('kondisi', function ($k) {
+                    $k->where('nama_kondisi', 'Tersedia');
+                });
+            })
+            ->get();
 
-        Peminjaman::create([
-            'user_id'   => Session::get('user')->id,
-            'sarpras_id'=> $id,
-            'jumlah'    => $r->jumlah,
-            'tgl_pinjam'=> now(),
-            'tujuan'    => $r->tujuan,
-            'status'    => 'Menunggu'
-        ]);
-
-        return back()->with('success', 'Pengajuan peminjaman berhasil');
+        return view('pengguna.sarpras.index', compact('sarpras'));
     }
 
     public function create()
     {
         return view('admin.sarpras.create', [
             'parentKategori' => KategoriSarpras::whereNull('parent_id')->get(),
-            'childKategori' => KategoriSarpras::whereNotNull('parent_id')->with('parent')
-                ->get(),
+            'childKategori' => KategoriSarpras::whereNotNull('parent_id')->with('parent')->get(),
             'lokasi' => Lokasi::all()
         ]);
     }
-
     public function store(Request $request)
     {
         $kategori = KategoriSarpras::with('parent')
             ->findOrFail($request->kategori_id);
 
-        // VALIDASI KODE
         if (!$kategori->kode_kategori) {
             return back()->with('error', 'Kode sub kategori belum diisi');
         }
@@ -79,13 +65,14 @@ class SarprasController extends Controller
             return back()->with('error', 'Kode kategori utama belum diisi');
         }
 
-        // PREFIX (FIX)
         $prefix = $kategori->parent
             ? $kategori->parent->kode_kategori . $kategori->kode_kategori
             : $kategori->kode_kategori;
 
-        $last = Sarpras::where('kode_sarpras', 'like', $prefix . '%')
-            ->orderBy('kode_sarpras', 'desc')
+        // include data yang sudah dihapus
+        $last = Sarpras::withTrashed()
+            ->where('kode_sarpras', 'like', $prefix . '%')
+            ->orderByRaw("CAST(SUBSTRING(kode_sarpras, " . (strlen($prefix) + 1) . ") AS UNSIGNED) DESC")
             ->first();
 
         $urutan = $last
@@ -112,6 +99,16 @@ class SarprasController extends Controller
             'sarpras' => $sarpras,
             'listKondisi' => KondisiSarpras::all()
         ]);
+    }
+
+    public function showUser($id)
+    {
+        $sarpras = Sarpras::with([
+            'items.kondisi',
+            'items.peminjamanAktif'
+        ])->findOrFail($id);
+
+        return view('pengguna.sarpras.show', compact('sarpras'));
     }
 
     public function edit(Sarpras $sarpras)

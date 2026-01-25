@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
@@ -12,10 +11,16 @@ class Peminjaman extends Model
     protected $fillable = [
         'user_id',
         'sarpras_id',
+        'sarpras_item_id',
         'jumlah',
         'tgl_pinjam',
         'tgl_kembali_actual',
         'tujuan',
         'status'
     ];
+
+    public function item()
+    {
+        return $this->belongsTo(SarprasItem::class, 'sarpras_item_id');
+    }
 }

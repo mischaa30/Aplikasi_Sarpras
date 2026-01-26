@@ -1,14 +1,48 @@
-<h2>Bukti Peminjaman Sarpras</h2>
+<h2 style="text-align:center">STRUK PEMINJAMAN</h2>
 
-<p><b>Kode:</b> {{ $p->kode_pinjam }}</p>
-<p><b>Peminjam:</b> {{ $p->user->username }}</p>
-<p><b>Sarpras:</b> {{ $p->sarpras->nama_sarpras }}</p>
-<p><b>Jumlah:</b> {{ $p->jumlah }}</p>
-<p><b>Tanggal:</b> {{ $p->tgl_pinjam }} s/d {{ $p->tgl_kembali }}</p>
-<p><b>Tujuan:</b> {{ $p->tujuan }}</p>
-<p><b>Status:</b> {{ $p->status }}</p>
+<div style="width: 350px; border: 1px solid #000; padding: 10px; font-family: Arial;">
+    <div style="text-align:center; font-weight:bold;">
+        APLIKASI SARPRAS<br>
+        SMKN 1 BOYOLANGU
+    </div>
 
-{!! QrCode::size(150)->generate($p->kode_pinjam) !!}
+    <hr>
 
-<br><br>
-<button onclick="window.print()">Cetak</button>
+    <table width="100%" cellpadding="4">
+        <tr>
+            <th align="left">Peminjam</th>
+            <td>{{ $peminjaman->user->username }}</td>
+        </tr>
+        <tr>
+            <th align="left">Item</th>
+            <td>{{ $peminjaman->item?->nama_item ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th align="left">Pinjam</th>
+            <td>{{ $peminjaman->tgl_pinjam }}</td>
+        </tr>
+        <tr>
+            <th align="left">Kembali</th>
+            <td>{{ $peminjaman->tgl_kembali_actual }}</td>
+        </tr>
+        <tr>
+            <th align="left">Tujuan</th>
+            <td>{{ $peminjaman->tujuan }}</td>
+        </tr>
+        <tr>
+            <th align="left">Status</th>
+            <td>{{ $peminjaman->status }}</td>
+        </tr>
+        <tr>
+            <th align="left">Kode</th>
+            <td>{{ $peminjaman->kode_pinjam }}</td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <div style="text-align:center;">
+        {!! QrCode::size(120)->generate(json_encode($qrData)) !!}
+        <div style="font-size: 10px;">Scan untuk verifikasi</div>
+    </div>
+</div>

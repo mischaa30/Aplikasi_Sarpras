@@ -59,10 +59,12 @@ Route::middleware(['login','admin'])
     Route::delete('sarpras/item/{item}', [SarprasItemController::class, 'destroy'])
         ->name('sarpras.item.destroy');
 
-    //Approve Admin
-    Route::get('peminjaman', [AdminApproveController::class, 'index'])->name('peminjaman.index');
-    Route::post('peminjaman/{id}/setujui', [AdminApproveController::class, 'setujui'])->name('peminjaman.setujui');
-    Route::post('peminjaman/{id}/tolak', [AdminApproveController::class, 'tolak'])->name('peminjaman.tolak');
+    // Approve Admin
+    Route::get('/peminjaman', [AdminApproveController::class, 'index'])->name('peminjaman.index');
+    Route::get('/peminjaman/{id}/bukti', [AdminApproveController::class, 'bukti'])->name('peminjaman.bukti');
+    Route::post('/peminjaman/{id}/setujui', [AdminApproveController::class, 'setujui'])->name('peminjaman.setujui');
+    Route::post('/peminjaman/{id}/tolak', [AdminApproveController::class, 'tolak'])->name('peminjaman.tolak');
+
 
     // Restore user
     Route::get('user/{id}/restore', [UserController::class, 'restore'])

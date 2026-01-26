@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\Qrcode;
 
 class AdminApproveController extends Controller
 {
@@ -30,5 +31,21 @@ class AdminApproveController extends Controller
         $peminjaman->save();
 
         return redirect()->back()->with('success', 'Peminjaman ditolak');
+    }
+
+    public function bukti($id)
+    {
+        $peminjaman = Peminjaman::with(['user', 'item.sarpras'])
+            ->findOrFail($id);
+
+            $qrData = [
+                'peminjam' => $peminjaman->user->username,
+                'item' => $peminjaman->item?->nama_item?? '-',
+                'tgl_pinjam' => $peminjaman->tgl_pinjam,
+                'tgl_kembali' => $peminjaman->tgl_kembali_actual,
+                'status' => $peminjaman->status,
+            ];
+
+        return view('admin.peminjaman.bukti', compact('peminjaman','qrData'));
     }
 }

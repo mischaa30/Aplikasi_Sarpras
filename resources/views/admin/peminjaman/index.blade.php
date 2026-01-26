@@ -36,7 +36,7 @@
             @endif
 
             @if($p->status == 'Disetujui')
-            <a href="/admin/peminjaman/{{ $p->id }}/bukti">
+            <a href="{{ route('admin.peminjaman.bukti', $p->id) }}">
                 Cetak Bukti
             </a>
             @endif

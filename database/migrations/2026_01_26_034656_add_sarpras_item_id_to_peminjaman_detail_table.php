@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('peminjaman_detail', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('peminjaman_id');
-            $table->foreignId('sarpras_id');
-            $table->timestamps();
+        Schema::table('peminjaman_detail', function (Blueprint $table) {
+            $table->foreignId('sarpras_item_id')->nullable()->after('sarpras_id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('peminjaman_detail');
+        Schema::table('peminjaman_detail', function (Blueprint $table) {
+            //
+        });
     }
 };

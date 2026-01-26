@@ -34,4 +34,8 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(Sarpras::class, 'sarpras_id');
     }
+    public function detail()
+    {
+        return $this->hasMany(PeminjamanDetail::class, 'peminjaman_id');
+    }
 }

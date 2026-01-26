@@ -14,11 +14,14 @@ return new class extends Migration
         Schema::create('pengaduans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('status_pengaduan')->constrained('status_pengaduans');
+            $table->foreignId('status_pengaduan_id')
+                ->constrained('status_pengaduans');
+            $table->foreignId('kategori_sarpras_id')
+                ->constrained('kategori_sarpras');
             $table->string('judul');
             $table->text('deskripsi');
             $table->string('lokasi');
-            $table->string('jenis_sarpras')->nullable();
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
     }

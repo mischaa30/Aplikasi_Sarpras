@@ -38,8 +38,9 @@
             @if($p->status == 'Disetujui')
             <a href="{{ route('admin.peminjaman.bukti', $p->id) }}">
                 Cetak Bukti
-            </a>
+            </a> |
             @endif
+            <a href="{{ route('admin.pengembalian.create', $p->id) }}">Pengembalian</a>
         </td>
     </tr>
     @endforeach

@@ -1,31 +1,26 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('catatan_pengaduans', function (Blueprint $table) {
+        Schema::create('pengaduan_catatans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pengaduan_id')
-            ->constrained('pengaduans');
-            $table->foreignId('user_id')->constrained('users');
+                  ->constrained('pengaduans');
+            // admin / petugas yang memberi catatan
+            $table->foreignId('user_id')
+                  ->constrained('users');
             $table->text('catatan');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('catatan_pengaduans');
+        Schema::dropIfExists('pengaduan_catatans');
     }
 };

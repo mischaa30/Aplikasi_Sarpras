@@ -13,4 +13,7 @@ class PeminjamanDetail extends Model
     public function sarpras(){
         return $this->belongsTo(Sarpras::class);
     }
+    public function kondisi(){
+        return $this->belongsTo(KondisiSarpras::class,'kondisi_sarpras_id');
+    }
 }

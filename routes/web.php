@@ -10,6 +10,8 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AdminApproveController;
+use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\PengaduanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -64,6 +66,14 @@ Route::middleware(['login','admin'])
     Route::get('/peminjaman/{id}/bukti', [AdminApproveController::class, 'bukti'])->name('peminjaman.bukti');
     Route::post('/peminjaman/{id}/setujui', [AdminApproveController::class, 'setujui'])->name('peminjaman.setujui');
     Route::post('/peminjaman/{id}/tolak', [AdminApproveController::class, 'tolak'])->name('peminjaman.tolak');
+
+    // Form pengembalian
+    Route::get('/pengembalian/{peminjaman}', [PengembalianController::class, 'create'])
+        ->name('pengembalian.create');
+
+    // Simpan pengembalian
+    Route::post('/pengembalian/store', [PengembalianController::class, 'store'])
+        ->name('pengembalian.store');
 
 
     // Restore user
@@ -124,4 +134,30 @@ Route::middleware(['login', 'pengguna'])
     Route::get('/peminjaman',
         [PeminjamanController::class, 'index']
     )->name('peminjaman.index');
+});
+
+//Pengaduan
+// USER
+Route::middleware(['login', 'pengguna'])
+    ->prefix('pengguna')
+    ->name('pengguna.')
+    ->group(function () {
+
+        Route::get('/pengaduan', [PengaduanController::class, 'myPengaduan'])
+            ->name('pengaduan.index');
+
+        Route::get('/pengaduan/create', [PengaduanController::class, 'create'])
+            ->name('pengaduan.create');
+
+        Route::post('/pengaduan', [PengaduanController::class, 'store'])
+            ->name('pengaduan.store');
+    });
+
+
+// ADMIN/PETUGAS
+Route::middleware(['login', 'admin'])->group(function () {
+    Route::get('/admin/pengaduan', [PengaduanController::class, 'index'])->name('admin.pengaduan.index');
+    Route::get('/admin/pengaduan/{id}', [PengaduanController::class, 'show'])->name('admin.pengaduan.show');
+    Route::post('/admin/pengaduan/{id}/status', [PengaduanController::class, 'updateStatus'])->name('admin.pengaduan.status');
+    Route::post('/admin/pengaduan/{id}/catatan', [PengaduanController::class, 'addCatatan'])->name('admin.pengaduan.catatan');
 });

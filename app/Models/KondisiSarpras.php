@@ -20,4 +20,7 @@ class KondisiSarpras extends Model
     {
         return $this->belongsTo(KondisiSarpras::class, 'kondisi_sarpras_id');
     }
+    public function riwayat(){
+        return $this->hasMany(RiwayatKondisiAlat::class,'kondisi_sarpras_id');
+    }
 }

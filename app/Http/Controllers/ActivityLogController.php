@@ -2,64 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Activity_Log;
 use Illuminate\Http\Request;
+use App\Models\Peminjaman;
+use App\Models\Pengaduan;
 
 class ActivityLogController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // LOG PEMINJAMAN
+    public function peminjaman(Request $request)
     {
-        //
+        $query = Peminjaman::with(['user', 'item.sarpras'])
+            ->whereNotIn('status', ['Menunggu', 'Dipinjam']); // kecuali masih dalam proses peminjaman
+
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->whereBetween('created_at', [ 
+                $request->from,
+                $request->to
+            ]);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return view('admin.activity-log.peminjaman', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    // LOG PENGADUAN
+    public function pengaduan(Request $request)
     {
-        //
-    }
+        $query = Pengaduan::with(['user', 'status'])
+        ->whereHas('status', fn ($q) => $q->where('nama_status_pengaduan', 'Ditutup'));
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->whereBetween('created_at', [
+                $request->from,
+                $request->to
+            ]);
+        }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Activity_Log $activity_Log)
-    {
-        //
-    }
+        $data = $query->orderBy('created_at', 'desc')->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Activity_Log $activity_Log)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Activity_Log $activity_Log)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Activity_Log $activity_Log)
-    {
-        //
+        return view('admin.activity-log.pengaduan', compact('data'));
     }
 }

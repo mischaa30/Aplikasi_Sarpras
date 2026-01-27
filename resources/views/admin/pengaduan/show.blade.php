@@ -1,8 +1,8 @@
 <h2>{{ $pengaduan->judul }}</h2>
 <p>{{ $pengaduan->deskripsi }}</p>
-<p>Lokasi: {{ $pengaduan->lokasi }}</p>
+<p>Lokasi : {{ $pengaduan->lokasi->nama_lokasi ?? '-' }}</p>
 <p>Kategori: {{ $pengaduan->kategori->nama_kategori }}</p>
-<p>Status: {{ $pengaduan->status->nama_status }}</p>
+<p>Status: {{ $pengaduan->status->nama_status_pengaduan }}</p>
 
 @if($pengaduan->foto)
     <img src="{{ asset('storage/' . $pengaduan->foto) }}" width="300">
@@ -15,7 +15,7 @@
     <select name="status_pengaduan_id">
         @foreach($status as $s)
             <option value="{{ $s->id }}" {{ $pengaduan->status_pengaduan_id == $s->id ? 'selected' : '' }}>
-                {{ $s->nama_status }}
+                {{ $s->nama_status_pengaduan }}
             </option>
         @endforeach
     </select>

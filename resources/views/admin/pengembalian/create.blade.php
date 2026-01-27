@@ -5,12 +5,18 @@
 
     <input type="hidden" name="peminjaman_id" value="{{ $peminjaman->id }}">
 
+    {{-- TANGGAL KEMBALI --}}
+    <div>
+        <label>Tanggal Kembali</label>
+        <input type="date" name="tgl_kembali_actual" value="{{ date('Y-m-d') }}" required>
+    </div>
+
     <div>
         <h4>{{ $peminjaman->sarpras->nama_item }}</h4>
 
         <input type="hidden" name="detail_id[]" value="{{ $peminjaman->id }}">
 
-        <select name="kondisi_sarpras_id[]">
+        <select name="kondisi_sarpras_id[]" required>
             @foreach($listKondisi as $k)
                 <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
             @endforeach

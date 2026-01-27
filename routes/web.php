@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\KategoriSarprasController;
@@ -29,7 +30,7 @@ Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update
 
 
 // Admin
-Route::middleware(['login','admin'])
+Route::middleware(['auth','admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -91,12 +92,12 @@ Route::middleware(['login','admin'])
 });
 
 // Petugas
-Route::middleware(['login','petugas'])->get('/petugas/dashboard', function () {
+Route::middleware(['auth','petugas'])->get('/petugas/dashboard', function () {
     return view('petugas.dashboard');
 });
 
 // Pengguna
-Route::middleware(['login', 'pengguna'])
+Route::middleware(['auth', 'pengguna'])
     ->prefix('pengguna')
     ->name('pengguna.')
     ->group(function () {
@@ -138,7 +139,7 @@ Route::middleware(['login', 'pengguna'])
 
 //Pengaduan
 // USER
-Route::middleware(['login', 'pengguna'])
+Route::middleware(['auth', 'pengguna'])
     ->prefix('pengguna')
     ->name('pengguna.')
     ->group(function () {
@@ -155,9 +156,19 @@ Route::middleware(['login', 'pengguna'])
 
 
 // ADMIN/PETUGAS
-Route::middleware(['login', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/pengaduan', [PengaduanController::class, 'index'])->name('admin.pengaduan.index');
     Route::get('/admin/pengaduan/{id}', [PengaduanController::class, 'show'])->name('admin.pengaduan.show');
     Route::post('/admin/pengaduan/{id}/status', [PengaduanController::class, 'updateStatus'])->name('admin.pengaduan.status');
     Route::post('/admin/pengaduan/{id}/catatan', [PengaduanController::class, 'addCatatan'])->name('admin.pengaduan.catatan');
 });
+
+
+//ActivityLogController
+ Route::get('/admin/activity-log/peminjaman', 
+        [ActivityLogController::class, 'peminjaman']
+    )->name('admin.activity.peminjaman');
+
+    Route::get('/admin/activity-log/pengaduan', 
+        [ActivityLogController::class, 'pengaduan']
+    )->name('admin.activity.pengaduan');

@@ -10,7 +10,12 @@ class AdminApproveController extends Controller
 {
     public function index()
     {
-        $peminjaman = Peminjaman::with(['user', 'sarpras', 'item'])->get();
+        $peminjaman = Peminjaman::with(['user', 'sarpras', 'item'])
+            ->whereNull('tgl_kembali_actual') //belum dikembalikan
+            ->whereIn('status',['Menunggu','Disetujui'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return view('admin.peminjaman.index', compact('peminjaman'));
     }
 

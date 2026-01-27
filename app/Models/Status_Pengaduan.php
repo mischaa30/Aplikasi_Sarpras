@@ -14,4 +14,9 @@ class Status_Pengaduan extends Model
     protected $fillable = [
         'nama_status_pengaduan'
     ];
+
+    public function pengaduans()
+    {
+        return $this->hasMany(Pengaduan::class, 'status_pengaduan_id');
+    }
 }

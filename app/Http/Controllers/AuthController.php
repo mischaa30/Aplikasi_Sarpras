@@ -3,31 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    //Menampilkan halaman login
-    public function login(){
+    // Halaman login
+    public function login()
+    {
         return view('auth.login');
     }
 
-    //Proses Login
+    // Proses login (FULL AUTH)
     public function prosesLogin(Request $r)
     {
-        //Buat user tidak bisa login tanpa isi form
         $r->validate([
             'username' => 'required',
             'password' => 'required'
         ]);
 
-        $user = User::where('username', $r->username)->first();
+        if (Auth::attempt([
+            'username' => $r->username,
+            'password' => $r->password
+        ])) {
+            $r->session()->regenerate();
 
-        if ($user && Hash::check($r->password, $user->password)) {
-            Session::put('login', true);
-            Session::put('user', $user);
+            $user = Auth::user();
 
             if ($user->id_role == 1) {
                 return redirect('/admin/dashboard');
@@ -41,10 +41,13 @@ class AuthController extends Controller
         return back()->with('eror', 'Login gagal');
     }
 
-    //Logout
-    public function logout()
+    // Logout
+    public function logout(Request $r)
     {
-        Session::flush(); //hapus semua session
+        Auth::logout();
+        $r->session()->invalidate();
+        $r->session()->regenerateToken();
+
         return redirect('/login');
     }
 }

@@ -21,30 +21,39 @@ class PengembalianController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'peminjaman_id' => 'required|exists:peminjaman,id',
+            'tgl_kembali_actual' => 'required|date',
+            'detail_id' => 'required|array',
+            'kondisi_sarpras_id' => 'required|array',
+        ]);
+
         $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
 
         $peminjaman->update([
             'status' => 'Dikembalikan',
-            'tanggal_kembali_actual' => now()
+            'tgl_kembali_actual' => $request->tgl_kembali_actual
         ]);
 
         foreach ($request->detail_id as $index => $detailId) {
 
             $kondisiId = $request->kondisi_sarpras_id[$index];
-            $deskripsi = $request->deskripsi[$index];
+            $deskripsi = $request->deskripsi[$index] ?? null;
 
             $foto = null;
-            if ($request->hasFile('foto.' . $index)) {
-                $foto = $request->file('foto.' . $index)->store('pengembalian', 'public');
+            if ($request->hasFile("foto.$index")) {
+                $foto = $request->file("foto.$index")
+                    ->store('pengembalian', 'public');
             }
 
             $detail = \App\Models\PeminjamanDetail::find($detailId);
-
             if (!$detail) continue;
 
             $sarprasItem = \App\Models\SarprasItem::find($detail->sarpras_item_id);
             if ($sarprasItem) {
-                $sarprasItem->update(['kondisi_sarpras_id' => $kondisiId]);
+                $sarprasItem->update([
+                    'kondisi_sarpras_id' => $kondisiId
+                ]);
             }
 
             RiwayatKondisiAlat::create([
@@ -56,14 +65,15 @@ class PengembalianController extends Controller
                 'foto' => $foto
             ]);
 
+            // flag hilang
             $kondisi = \App\Models\KondisiSarpras::find($kondisiId);
-            if ($kondisi && $kondisi->nama_kondisi == 'Hilang') {
+            if ($kondisi && $kondisi->nama_kondisi === 'Hilang') {
                 $peminjaman->update(['flag_hilang' => 1]);
             }
         }
 
-        return redirect()->route('admin.peminjaman.index')
+        return redirect()
+            ->route('admin.peminjaman.index')
             ->with('success', 'Pengembalian berhasil dicatat');
     }
-
 }

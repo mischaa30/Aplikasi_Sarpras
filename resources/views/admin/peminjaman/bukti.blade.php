@@ -2,7 +2,7 @@
 
 <div style="width: 350px; border: 1px solid #000; padding: 10px; font-family: Arial;">
     <div style="text-align:center; font-weight:bold;">
-        APLIKASI SARPRAS<br>
+        CETAK BUKTI PEMINJAMAN SARPRAS<br>
         SMKN 1 BOYOLANGU
     </div>
 
@@ -22,20 +22,12 @@
             <td>{{ $peminjaman->tgl_pinjam }}</td>
         </tr>
         <tr>
-            <th align="left">Kembali</th>
-            <td>{{ $peminjaman->tgl_kembali_actual }}</td>
-        </tr>
-        <tr>
             <th align="left">Tujuan</th>
             <td>{{ $peminjaman->tujuan }}</td>
         </tr>
         <tr>
             <th align="left">Status</th>
             <td>{{ $peminjaman->status }}</td>
-        </tr>
-        <tr>
-            <th align="left">Kode</th>
-            <td>{{ $peminjaman->kode_pinjam }}</td>
         </tr>
     </table>
 

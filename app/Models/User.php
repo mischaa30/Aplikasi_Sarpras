@@ -2,19 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model
+class User extends Authenticatable
 {
     use SoftDeletes;
+
     protected $table = 'users';
-    protected $fillable = ['username', 'password', 'id_role'];
+
+    protected $fillable = [
+        'username',
+        'password',
+        'id_role'
+    ];
 
     public function role()
     {
         return $this->belongsTo(Role::class, 'id_role');
     }
-    //use HasFactory;
 }

@@ -6,7 +6,6 @@
         <th>Peminjam</th>
         <th>Sarpras</th>
         <th>Tgl Pinjam</th>
-        <th>Tgl Kembali</th>
         <th>Tujuan</th>
         <th>Status</th>
         <th>Aksi</th>
@@ -18,29 +17,38 @@
         <td>{{ $p->user->username }}</td>
         <td>{{ $p->item?->nama_item ?? '-' }}</td>
         <td>{{ $p->tgl_pinjam }}</td>
-        <td>{{ $p->tgl_kembali_actual }}</td>
         <td>{{ $p->tujuan }}</td>
         <td>{{ $p->status }}</td>
         <td>
-            @if($p->status == 'Menunggu')
-            <form method="POST" action="/admin/peminjaman/{{ $p->id }}/setujui">
-                @csrf
-                <button>Setujui</button>
-            </form>
 
-            <form method="POST" action="/admin/peminjaman/{{ $p->id }}/tolak">
-                @csrf
-                <input type="text" name="alasan" placeholder="Alasan penolakan">
-                <button>Tolak</button>
-            </form>
+            {{-- MENUNGGU --}}
+            @if($p->status === 'Menunggu')
+                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/setujui">
+                    @csrf
+                    <button>Setujui</button>
+                </form>
+
+                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/tolak">
+                    @csrf
+                    <input type="text" name="alasan" placeholder="Alasan penolakan">
+                    <button>Tolak</button>
+                </form>
+
+            {{-- DISETUJUI --}}
+            @elseif($p->status === 'Disetujui')
+                <a href="{{ route('admin.peminjaman.bukti', $p->id) }}">
+                    Cetak Bukti
+                </a>
+                |
+                <a href="{{ route('admin.pengembalian.create', $p->id) }}">
+                    Pengembalian
+                </a>
+
+            {{-- DITOLAK --}}
+            @else
+                -
             @endif
 
-            @if($p->status == 'Disetujui')
-            <a href="{{ route('admin.peminjaman.bukti', $p->id) }}">
-                Cetak Bukti
-            </a> |
-            @endif
-            <a href="{{ route('admin.pengembalian.create', $p->id) }}">Pengembalian</a>
         </td>
     </tr>
     @endforeach

@@ -13,6 +13,7 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AdminApproveController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PengaduanController;
+use App\Http\Controllers\LaporanAssetHealthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -172,3 +173,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/activity-log/pengaduan', 
         [ActivityLogController::class, 'pengaduan']
     )->name('admin.activity.pengaduan');
+
+
+//Laporan Asset Health
+Route::get('/admin/laporan/asset-health',
+[LaporanAssetHealthController::class,'index']
+)->name('admin.laporan.asset_health');

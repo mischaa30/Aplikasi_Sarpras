@@ -25,11 +25,6 @@ class RiwayatKondisiAlat extends Model
         return $this->belongsTo(Peminjaman::class);
     }
 
-    public function detail()
-    {
-        return $this->belongsTo(PeminjamanDetail::class, 'peminjaman_detail_id');
-    }
-
     public function sarpras()
     {
         return $this->belongsTo(Sarpras::class);

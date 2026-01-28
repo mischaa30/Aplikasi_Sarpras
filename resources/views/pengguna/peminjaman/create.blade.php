@@ -11,9 +11,6 @@
 <label>Tanggal Pinjam</label><br>
 <input type="date" name="tgl_pinjam" value="{{ date('Y-m-d') }}" readonly><br><br>
 
-<label>Tanggal Pengembalian</label><br>
-<input type="date" name="tgl_kembali" required><br><br>
-
 <label>Tujuan</label><br>
 <input type="text" name="tujuan" required><br><br>
 

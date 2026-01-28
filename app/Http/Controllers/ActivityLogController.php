@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\Pengaduan;
+use App\Models\Status_Pengaduan;
 
 class ActivityLogController extends Controller
 {
@@ -29,9 +30,9 @@ class ActivityLogController extends Controller
     // LOG PENGADUAN
     public function pengaduan(Request $request)
     {
-        $query = Pengaduan::with(['user', 'status'])
-        ->whereHas('status', fn ($q) => $q->where('nama_status_pengaduan', 'Ditutup'));
+        $query = Pengaduan::with(['user', 'status']);
 
+        //filter tanggal,belum digunakan
         if ($request->filled('from') && $request->filled('to')) {
             $query->whereBetween('created_at', [
                 $request->from,
@@ -39,8 +40,17 @@ class ActivityLogController extends Controller
             ]);
         }
 
-        $data = $query->orderBy('created_at', 'desc')->get();
+        //filter status
+        if ($request->filled('status')) {
+            $status = $request->status;
+            $query->whereHas('status', function ($q) use ($status) {
+                $q->where('nama_status_pengaduan', $status); // harus sama dengan kolom DB
+            });
+        }
 
-        return view('admin.activity-log.pengaduan', compact('data'));
+        $data = $query->orderBy('created_at', 'desc')->get();
+        $listStatus = Status_Pengaduan::all();
+
+        return view('admin.activity-log.pengaduan', compact('data','listStatus'));
     }
 }

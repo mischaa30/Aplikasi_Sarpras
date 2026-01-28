@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Peminjaman;
+use App\Models\PeminjamanDetail;
+use App\Models\SarprasItem;
 use App\Models\RiwayatKondisiAlat;
-use App\Models\Sarpras;
+use App\Models\KondisiSarpras;
 use Illuminate\Support\Facades\DB;
 
 class PengembalianController extends Controller
 {
     public function create($id)
     {
-        $peminjaman = Peminjaman::with(['detail.sarpras'])->findOrFail($id);
-        $listKondisi = \App\Models\KondisiSarpras::all();
+        $peminjaman = Peminjaman::with(['detail.item'])->findOrFail($id);
+        $listKondisi = KondisiSarpras::all();
 
         return view('admin.pengembalian.create', compact('peminjaman', 'listKondisi'));
     }
@@ -28,49 +29,55 @@ class PengembalianController extends Controller
             'kondisi_sarpras_id' => 'required|array',
         ]);
 
-        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+        DB::transaction(function () use ($request) {
 
-        $peminjaman->update([
-            'status' => 'Dikembalikan',
-            'tgl_kembali_actual' => $request->tgl_kembali_actual
-        ]);
+            $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
 
-        foreach ($request->detail_id as $index => $detailId) {
-
-            $kondisiId = $request->kondisi_sarpras_id[$index];
-            $deskripsi = $request->deskripsi[$index] ?? null;
-
-            $foto = null;
-            if ($request->hasFile("foto.$index")) {
-                $foto = $request->file("foto.$index")
-                    ->store('pengembalian', 'public');
-            }
-
-            $detail = \App\Models\PeminjamanDetail::find($detailId);
-            if (!$detail) continue;
-
-            $sarprasItem = \App\Models\SarprasItem::find($detail->sarpras_item_id);
-            if ($sarprasItem) {
-                $sarprasItem->update([
-                    'kondisi_sarpras_id' => $kondisiId
-                ]);
-            }
-
-            RiwayatKondisiAlat::create([
-                'peminjaman_id' => $peminjaman->id,
-                'peminjaman_detail_id' => $detailId,
-                'sarpras_item_id' => $detail->sarpras_item_id,
-                'kondisi_sarpras_id' => $kondisiId,
-                'deskripsi' => $deskripsi,
-                'foto' => $foto
+            $peminjaman->update([
+                'status' => 'Dikembalikan',
+                'tgl_kembali_actual' => $request->tgl_kembali_actual
             ]);
 
-            // flag hilang
-            $kondisi = \App\Models\KondisiSarpras::find($kondisiId);
-            if ($kondisi && $kondisi->nama_kondisi === 'Hilang') {
-                $peminjaman->update(['flag_hilang' => 1]);
+            foreach ($request->detail_id as $index => $detailId) {
+
+                $detail = PeminjamanDetail::find($detailId);
+                if (!$detail) continue;
+
+                $kondisiId = $request->kondisi_sarpras_id[$index];
+                $deskripsi = $request->deskripsi[$index] ?? null;
+
+                // upload foto
+                $foto = null;
+                if ($request->hasFile("foto.$index")) {
+                    $foto = $request->file("foto.$index")
+                        ->store('pengembalian', 'public');
+                }
+
+                // update kondisi item
+                $item = SarprasItem::find($detail->sarpras_item_id);
+                if ($item) {
+                    $item->update([
+                        'kondisi_sarpras_id' => $kondisiId
+                    ]);
+                }
+
+                // simpan riwayat
+                RiwayatKondisiAlat::create([
+                    'peminjaman_id' => $peminjaman->id,
+                    'peminjaman_detail_id' => $detail->id,
+                    'sarpras_item_id' => $detail->sarpras_item_id,
+                    'kondisi_sarpras_id' => $kondisiId,
+                    'deskripsi' => $deskripsi,
+                    'foto' => $foto
+                ]);
+
+                // flag hilang
+                $kondisi = KondisiSarpras::find($kondisiId);
+                if ($kondisi && $kondisi->nama_kondisi === 'Hilang') {
+                    $peminjaman->update(['flag_hilang' => 1]);
+                }
             }
-        }
+        });
 
         return redirect()
             ->route('admin.peminjaman.index')

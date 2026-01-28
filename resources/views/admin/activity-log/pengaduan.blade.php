@@ -1,8 +1,16 @@
 <h2>Activity Log Pengaduan</h2>
 
 <form method="GET">
-    Dari <input type="date" name="from" value="{{ request('from') }}">
-    Sampai <input type="date" name="to" value="{{ request('to') }}">
+    Status
+    <select name="status">
+        <option value="">Semua</option>
+        @foreach($listStatus as $status)
+        <option value="{{ $status->nama_status_pengaduan }}"
+            {{ request('status') == $status->nama_status_pengaduan ? 'selected' : '' }}>
+            {{ $status->nama_status_pengaduan }}
+        </option>
+        @endforeach
+    </select>
     <button>Filter</button>
 </form>
 

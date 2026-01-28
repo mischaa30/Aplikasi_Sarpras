@@ -38,7 +38,6 @@ class PeminjamanController extends Controller
         }
 
         $r->validate([
-            'tgl_kembali' => 'required|date|after_or_equal:today',
             'tujuan' => 'required'
         ]);
 

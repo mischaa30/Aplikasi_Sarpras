@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Peminjaman;
 use App\Models\Pengaduan;
 use App\Models\Status_Pengaduan;
+use App\Models\Activity_Log;
 
 class ActivityLogController extends Controller
 {
@@ -13,13 +14,10 @@ class ActivityLogController extends Controller
     public function peminjaman(Request $request)
     {
         $query = Peminjaman::with(['user', 'item.sarpras'])
-            ->whereNotIn('status', ['Menunggu', 'Dipinjam']); // kecuali masih dalam proses peminjaman
+            ->whereNotIn('status', ['Menunggu', 'Dipinjam']);
 
-        if ($request->filled('from') && $request->filled('to')) {
-            $query->whereBetween('created_at', [ 
-                $request->from,
-                $request->to
-            ]);
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
         }
 
         $data = $query->orderBy('created_at', 'desc')->get();
@@ -52,5 +50,21 @@ class ActivityLogController extends Controller
         $listStatus = Status_Pengaduan::all();
 
         return view('admin.activity-log.pengaduan', compact('data','listStatus'));
+    }
+
+    //LOG LOGIN
+    public function login(Request $request)
+    {
+        $query = Activity_Log::with('user')
+            ->whereIn('aksi', ['login', 'logout']);
+
+        //FILTER TANGGAL
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        return view('admin.activity-log.login', compact('data'));
     }
 }

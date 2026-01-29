@@ -14,7 +14,7 @@ class PengembalianController extends Controller
 {
     public function create($id)
     {
-        $peminjaman = Peminjaman::with(['detail.item'])->findOrFail($id);
+        $peminjaman = Peminjaman::with(['detail.sarpras'])->findOrFail($id);
         $listKondisi = KondisiSarpras::all();
 
         return view('admin.pengembalian.create', compact('peminjaman', 'listKondisi'));
@@ -65,6 +65,7 @@ class PengembalianController extends Controller
                 RiwayatKondisiAlat::create([
                     'peminjaman_id' => $peminjaman->id,
                     'peminjaman_detail_id' => $detail->id,
+                    'sarpras_id' => $detail->sarpras_id,
                     'sarpras_item_id' => $detail->sarpras_item_id,
                     'kondisi_sarpras_id' => $kondisiId,
                     'deskripsi' => $deskripsi,

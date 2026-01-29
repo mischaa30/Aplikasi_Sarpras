@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 //ambil atau memanggil data model
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Activity_Log;
 
 //ambil data dari form
 use Illuminate\Http\Request;
@@ -116,11 +117,17 @@ class UserController extends Controller
 
     public function restore($id)
     {
-        User::withTrashed()
-        ->findOrFail($id)
-        ->restore();
+        $user = User::onlyTrashed()->findOrFail($id);
 
-        return redirect()->route('admin.user.index')
-        ->with('success','Data berhasil di restore');
+        $user->restore();
+
+        // CATAT ACTIVITY LOG
+        Activity_Log::create([
+            'user_id'   => auth()->id(), // admin yg restore
+            'aksi'      => 'restore_user',
+            'deskripsi' => 'Restore user: ' . $user->name,
+        ]);
+
+        return redirect()->back()->with('success', 'User berhasil direstore');
     }
 }

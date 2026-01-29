@@ -1,6 +1,9 @@
 <h2>Dashboard Admin</h2>
-<p>Selamat datang {{ session('user')->username }}</p>
+
+<p>Selamat datang {{ Auth::user()->username }}</p>
+
 <h3>Data User</h3>
+
 <a href="{{ route('admin.user.create') }}">Tambah User</a>
 
 <table border="1" cellpadding="5">
@@ -28,5 +31,3 @@
     </tr>
     @endforeach
 </table>
-
-<a href="/logout">Logout</a>

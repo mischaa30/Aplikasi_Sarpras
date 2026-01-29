@@ -1,18 +1,18 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\facades\Session;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ProfilController extends Controller
 {
     public function edit()
     {
-        return view('profil.edit',[
-            'user' => Session::get('user')
+        return view('profil.edit', [
+            'user' => Auth::user()
         ]);
     }
 
@@ -23,18 +23,15 @@ class ProfilController extends Controller
             'password' => 'nullable|min:4'
         ]);
 
-        $userSession = Session::get('user');
-        $user = User::find($userSession->id);
+        $user = User::findOrFail(Auth::id());
+
         $user->username = $r->username;
 
-        if($r->password){
+        if ($r->password) {
             $user->password = Hash::make($r->password);
         }
 
         $user->save();
-
-        //update session agar langsung berubah
-        Session::put('user',$user);
-        return back()->with('succes','Profil berhasil di update');
+        return back()->with('succes', 'Profil berhasil di update');
     }
 }

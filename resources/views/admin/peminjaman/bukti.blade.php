@@ -11,7 +11,7 @@
     <table width="100%" cellpadding="4">
         <tr>
             <th align="left">Peminjam</th>
-            <td>{{ $peminjaman->user->username }}</td>
+            <td>{{ $peminjaman->user->username ?? '-'}}</td>
         </tr>
         <tr>
             <th align="left">Item</th>

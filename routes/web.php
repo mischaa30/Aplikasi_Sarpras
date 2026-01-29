@@ -11,6 +11,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\AdminApproveController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\LaporanAssetHealthController;
@@ -26,8 +27,11 @@ Route::post('/login',[AuthController::class,'prosesLogin']);
 Route::get('/logout',[AuthController::class,'logout']);
 
 //Profil
-Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
-Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
+    Route::post('/profil', [ProfilController::class, 'update'])->name('profil.update');
+});
+
 
 
 // Admin
@@ -79,7 +83,8 @@ Route::middleware(['auth','admin'])
 
 
     // Restore user
-    Route::get('user/{id}/restore', [UserController::class, 'restore'])
+    // routes/web.php
+    Route::put('/admin/user/{id}/restore', [UserController::class, 'restore'])
         ->name('user.restore');
 
     // Restore sarpras
@@ -166,16 +171,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
 //ActivityLogController
- Route::get('/admin/activity-log/peminjaman', 
-        [ActivityLogController::class, 'peminjaman']
-    )->name('admin.activity.peminjaman');
+Route::get(
+    '/admin/activity-log/peminjaman',
+    [ActivityLogController::class, 'peminjaman']
+)->name('admin.activity.peminjaman');
 
-    Route::get('/admin/activity-log/pengaduan', 
-        [ActivityLogController::class, 'pengaduan']
-    )->name('admin.activity.pengaduan');
-
+Route::get(
+    '/admin/activity-log/pengaduan',
+    [ActivityLogController::class, 'pengaduan']
+)->name('admin.activity.pengaduan');
+Route::get(
+    '/admin/activity-log/login',
+    [ActivityLogController::class, 'login']
+)->name('activity.login');
 
 //Laporan Asset Health
 Route::get('/admin/laporan/asset-health',
 [LaporanAssetHealthController::class,'index']
 )->name('admin.laporan.asset_health');
+
+//Dashboard
+Route::get('/admin/dashboard',[AdminDashboardController::class,'index'])
+->middleware('auth')
+->name('admin.dashboard');

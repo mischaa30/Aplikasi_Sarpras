@@ -4,7 +4,7 @@
     @csrf
 
     <label>Username</label><br>
-    <input type="text" name="username" value="{{ $user->username }}"><br><br>
+    <input type="text" name="username" value="{{ $user->username ?? '' }}"><br><br>
 
     <label>Password Baru</label><br>
     <input type="password" name="password">

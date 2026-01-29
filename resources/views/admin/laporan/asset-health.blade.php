@@ -1,129 +1,96 @@
 @extends('layouts.admin')
 
+@section('title','Asset Health')
+
 @section('content')
-<div class="container mt-4">
 
-    <h3 class="mb-4">📊 Laporan Asset Health</h3>
+<h3 class="mb-4 text-primary fw-semibold">📊 Laporan Asset Health</h3>
 
-    {{-- ================= ALAT RUSAK ================= --}}
-    <div class="card mb-4">
-        <div class="card-header bg-danger text-white">
-            Daftar Alat Rusak / Butuh Maintenance
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Nama Alat</th>
-                        <th>Kondisi</th>
-                        <th>Tanggal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($alatRusak as $item)
-                    <tr>
-                        <td>{{ $item->sarpras->nama_sarpras }}</td>
-                        <td>{{ $item->kondisi->nama_kondisi }}</td>
-                        <td>{{ $item->created_at->format('d-m-Y') }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="3" class="text-center">Tidak ada data</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+{{-- ALAT RUSAK --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary bg-opacity-10 text-primary fw-semibold">
+        Alat Rusak / Butuh Maintenance
     </div>
-
-    {{-- ================= TOP 10 RUSAK ================= --}}
-    <div class="card mb-4">
-        <div class="card-header bg-warning">
-            Top 10 Alat Paling Sering Rusak
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nama Alat</th>
-                        <th>Jumlah Rusak</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($alatSeringRusak as $row)
-                    <tr>
-                        <td>{{ $row->sarpras->nama_sarpras }}</td>
-                        <td>{{ $row->total }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nama Alat</th>
+                    <th>Kondisi</th>
+                    <th>Tanggal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($alatRusak as $item)
+                <tr>
+                    <td>{{ $item->sarpras->nama_sarpras }}</td>
+                    <td>
+                        <span class="badge bg-primary-subtle text-primary">
+                            {{ $item->kondisi->nama_kondisi }}
+                        </span>
+                    </td>
+                    <td>{{ $item->created_at->format('d-m-Y') }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3" class="text-center text-muted">Tidak ada data</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-
-    {{-- ================= ALAT HILANG ================= --}}
-    <div class="card mb-4">
-        <div class="card-header bg-dark text-white">
-            Alat Hilang
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Nama Alat</th>
-                        <th>Peminjam Terakhir</th>
-                        <th>Tanggal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($alatHilang as $item)
-                    <tr>
-                        <td>{{ $item->sarpras->nama_sarpras }}</td>
-                        <td>{{ $item->peminjaman->user->username ?? '-' }}</td>
-                        <td>{{ $item->created_at->format('d-m-Y') }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    {{-- ================= CHART ================= --}}
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            Trend Kerusakan Per Bulan
-        </div>
-        <div class="card-body">
-            <canvas
-                id="chartKerusakan"
-                data-labels='@json($trendKerusakan->pluck("bulan"))'
-                data-totals='@json($trendKerusakan->pluck("total"))'>
-            </canvas>
-
-        </div>
-    </div>
-
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
 
-        const canvas = document.getElementById('chartKerusakan');
+{{-- TOP 10 --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary bg-opacity-10 text-primary fw-semibold">
+        Top 10 Alat Paling Sering Rusak
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nama Alat</th>
+                    <th>Jumlah Rusak</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($alatSeringRusak as $row)
+                <tr>
+                    <td>{{ $row->sarpras->nama_sarpras }}</td>
+                    <td>{{ $row->total }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        const labels = JSON.parse(canvas.dataset.labels);
-        const totals = JSON.parse(canvas.dataset.totals);
+{{-- ALAT HILANG --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary bg-opacity-10 text-primary fw-semibold">
+        Alat Hilang
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nama Alat</th>
+                    <th>Peminjam Terakhir</th>
+                    <th>Tanggal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($alatHilang as $item)
+                <tr>
+                    <td>{{ $item->sarpras->nama_sarpras }}</td>
+                    <td>{{ $item->peminjaman->user->username ?? '-' }}</td>
+                    <td>{{ $item->created_at->format('d-m-Y') }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        new Chart(canvas, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Jumlah Kerusakan',
-                    data: totals,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
-                }]
-            }
-        });
-
-    });
-</script>
 @endsection

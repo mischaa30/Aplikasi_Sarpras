@@ -1,30 +1,30 @@
-<h2>Pengembalian - {{ $peminjaman->kode_peminjaman }}</h2>
+<form method="POST" action="{{ route('admin.pengembalian.store') }}" enctype="multipart/form-data">
+@csrf
 
-<form action="{{ route('admin.pengembalian.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
+<input type="hidden" name="peminjaman_id" value="{{ $peminjaman->id }}">
 
-    <input type="hidden" name="peminjaman_id" value="{{ $peminjaman->id }}">
+<label>Tanggal Kembali</label>
+<input type="date" name="tgl_kembali_actual" required>
 
-    {{-- TANGGAL KEMBALI --}}
-    <div>
-        <label>Tanggal Kembali</label>
-        <input type="date" name="tgl_kembali_actual" value="{{ date('Y-m-d') }}" required>
-    </div>
+<hr>
 
-    <div>
-        <h4>{{ $peminjaman->sarpras->nama_item }}</h4>
+@foreach($peminjaman->detail as $i => $d)
+    <h4>{{ $d->sarprasItem->nama_item }}</h4>
 
-        <input type="hidden" name="detail_id[]" value="{{ $peminjaman->id }}">
+    <input type="hidden" name="detail_id[]" value="{{ $d->id }}">
 
-        <select name="kondisi_sarpras_id[]" required>
-            @foreach($listKondisi as $k)
-                <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
-            @endforeach
-        </select>
+    <select name="kondisi_sarpras_id[]" required>
+        @foreach($listKondisi as $k)
+            <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
+        @endforeach
+    </select>
 
-        <input type="text" name="deskripsi[]" placeholder="Deskripsi (opsional)">
-        <input type="file" name="foto[]">
-    </div>
+    <textarea name="deskripsi[]" placeholder="Keterangan (opsional)"></textarea>
 
-    <button type="submit">Simpan</button>
+    <input type="file" name="foto[]">
+
+    <hr>
+@endforeach
+
+<button type="submit">Simpan Pengembalian</button>
 </form>

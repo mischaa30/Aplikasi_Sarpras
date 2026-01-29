@@ -44,7 +44,7 @@ class AdminApproveController extends Controller
             ->findOrFail($id);
 
             $qrData = [
-                'peminjam' => $peminjaman->user->username,
+                'peminjam' => $peminjaman->user->username ?? '-',
                 'item' => $peminjaman->item?->nama_item?? '-',
                 'tgl_pinjam' => $peminjaman->tgl_pinjam,
                 'tgl_kembali' => $peminjaman->tgl_kembali_actual,

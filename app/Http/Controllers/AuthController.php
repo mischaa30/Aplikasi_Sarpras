@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Activity_Log;
 
 class AuthController extends Controller
 {
@@ -13,7 +14,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Proses login (FULL AUTH)
+    // Proses login
     public function prosesLogin(Request $r)
     {
         $r->validate([
@@ -26,6 +27,13 @@ class AuthController extends Controller
             'password' => $r->password
         ])) {
             $r->session()->regenerate();
+
+            //LOG LOGIN
+            Activity_Log::create([
+                'user_id' => Auth::id(),
+                'aksi' => 'login',
+                'deskripsi' => 'User login ke sistem',
+            ]);
 
             $user = Auth::user();
 
@@ -44,6 +52,13 @@ class AuthController extends Controller
     // Logout
     public function logout(Request $r)
     {
+        //LOG LOGOUT
+        Activity_Log::create([
+            'user_id' => Auth::id(),
+            'aksi' => 'logout',
+            'deskripsi' => 'User logout dari sistem',
+        ]);
+
         Auth::logout();
         $r->session()->invalidate();
         $r->session()->regenerateToken();

@@ -14,7 +14,7 @@
     @foreach($peminjaman as $p)
     <tr>
         <td>{{ $loop->iteration }}</td>
-        <td>{{ $p->user->username }}</td>
+        <td>{{ $p->user->username ?? '-'}}</td>
         <td>{{ $p->item?->nama_item ?? '-' }}</td>
         <td>{{ $p->tgl_pinjam }}</td>
         <td>{{ $p->tujuan }}</td>

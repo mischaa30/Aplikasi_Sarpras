@@ -64,6 +64,9 @@ class PengaduanController extends Controller
     public function index()
     {
         $data = Pengaduan::with('user', 'status', 'kategori')
+            ->whereHas('status', function ($q) {
+                $q->whereNotIn('nama_status_pengaduan', ['Selesai', 'Ditutup']);
+            })
             ->latest()
             ->get();
 

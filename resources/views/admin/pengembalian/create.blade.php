@@ -1,30 +1,109 @@
-<form method="POST" action="{{ route('admin.pengembalian.store') }}" enctype="multipart/form-data">
-@csrf
+@extends('layouts.admin')
 
-<input type="hidden" name="peminjaman_id" value="{{ $peminjaman->id }}">
+@section('title', 'Form Pengembalian')
 
-<label>Tanggal Kembali</label>
-<input type="date" name="tgl_kembali_actual" required>
+@section('content')
 
-<hr>
+<h4 class="mb-4 fw-semibold">Form Pengembalian Barang</h4>
 
-@foreach($peminjaman->detail as $i => $d)
-    <h4>{{ $d->sarprasItem->nama_item }}</h4>
+<div class="card">
+    <div class="card-body">
 
-    <input type="hidden" name="detail_id[]" value="{{ $d->id }}">
+        <form method="POST"
+              action="{{ route('admin.pengembalian.store') }}"
+              enctype="multipart/form-data">
 
-    <select name="kondisi_sarpras_id[]" required>
-        @foreach($listKondisi as $k)
-            <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
-        @endforeach
-    </select>
+            @csrf
 
-    <textarea name="deskripsi[]" placeholder="Keterangan (opsional)"></textarea>
+            <input type="hidden" name="peminjaman_id" value="{{ $peminjaman->id }}">
 
-    <input type="file" name="foto[]">
+            {{-- TANGGAL KEMBALI --}}
+            <div class="mb-4">
+                <label class="form-label fw-semibold">
+                    Tanggal Kembali
+                </label>
 
-    <hr>
-@endforeach
+                <input type="date"
+                       name="tgl_kembali_actual"
+                       class="form-control"
+                       required>
+            </div>
 
-<button type="submit">Simpan Pengembalian</button>
-</form>
+            <hr>
+
+            {{-- LIST BARANG --}}
+            @foreach($peminjaman->detail as $i => $d)
+
+                <div class="border rounded p-3 mb-4">
+
+                    <h6 class="fw-bold mb-3">
+                        {{ $d->sarprasItem->nama_item }}
+                    </h6>
+
+                    <input type="hidden"
+                           name="detail_id[]"
+                           value="{{ $d->id }}">
+
+                    {{-- KONDISI --}}
+                    <div class="mb-3">
+                        <label class="form-label">Kondisi Barang</label>
+
+                        <select name="kondisi_sarpras_id[]"
+                                class="form-select"
+                                required>
+
+                            <option value="">-- Pilih Kondisi --</option>
+
+                            @foreach($listKondisi as $k)
+                                <option value="{{ $k->id }}">
+                                    {{ $k->nama_kondisi }}
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- KETERANGAN --}}
+                    <div class="mb-3">
+                        <label class="form-label">Keterangan</label>
+
+                        <textarea name="deskripsi[]"
+                                  class="form-control"
+                                  rows="2"
+                                  placeholder="Keterangan (opsional)"></textarea>
+                    </div>
+
+                    {{-- FOTO --}}
+                    <div class="mb-3">
+                        <label class="form-label">Foto Kondisi</label>
+
+                        <input type="file"
+                               name="foto[]"
+                               class="form-control"
+                               accept="image/*">
+                    </div>
+
+                </div>
+
+            @endforeach
+
+
+            {{-- TOMBOL --}}
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary px-4">
+                    Simpan Pengembalian
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+<br>
+<div class="d-flex justify-content-end gap-2">
+    <a href="{{ route('admin.peminjaman.index') }}" class="btn btn-outline-secondary">
+        Batal
+    </a>
+</div>
+
+@endsection

@@ -16,11 +16,8 @@
                         value="{{ request('tanggal') }}"
                         class="form-control">
                 </div>
-                <div class="col-md-auto">
-                    <button class="btn btn-primary">Filter</button>
-                    <a href="{{ route('activity.login') }}" class="btn btn-secondary">
-                        Reset
-                    </a>
+                <div class="col-md-auto mt-4">
+                    <button class="btn btn-primary px-4">Filter</button>
                 </div>
             </form>
         </div>

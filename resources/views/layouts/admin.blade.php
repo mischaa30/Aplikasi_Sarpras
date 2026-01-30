@@ -93,10 +93,24 @@
             Dashboard
         </a>
 
+              <span class="text-white fw-bold mt-3 mb-2">Master Data</span>
+
         <a href="{{ route('admin.user.index') }}"
-            class="nav-link {{ request()->routeIs('admin.user.*') ? 'active bg-primary text-white' : '' }}">
+            class="{{ request()->routeIs('admin.user.*') ? 'active bg-primary text-white' : '' }}">
             User
         </a>
+
+        <a href="{{ route('admin.kategori.index') }}"
+            class="{{ request()->routeIs('admin.kategori.*') ? 'active bg-primary text-white' : '' }}">
+            Kategori Sarpras
+        </a>
+
+        <a href="{{ route('admin.sarpras.index') }}"
+            class="{{ request()->routeIs('admin.sarpras.*') ? 'active bg-primary text-white' : '' }}">
+            Sarpras
+        </a>
+
+        <hr class="text-gray-400">
 
         <a href="{{ route('admin.peminjaman.index') }}"
             class="nav-link {{ request()->routeIs('admin.peminjaman.*') ? 'active bg-primary text-white' : '' }}">
@@ -112,6 +126,8 @@
 
         <span class="text-white fw-bold mb-2">Laporan</span>
         <a href="{{ route('admin.laporan.asset_health') }}">Asset Health</a>
+
+        <hr class="text-gray-400">
 
         <span class="text-white fw-bold mt-3 mb-2">Activity Log</span>
 

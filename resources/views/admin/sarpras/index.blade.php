@@ -1,54 +1,96 @@
-<h2>Data Sarpras</h2>
+@extends('layouts.admin')
 
-<a href="{{ route('admin.sarpras.create') }}">Tambah Sarpras</a>
+@section('title','Data Sarpras')
 
-<table border="1" cellpadding="5">
-    <tr>
-        <th>Kode</th>
-        <th>Nama</th>
-        <th>Lokasi</th>
-        <th>Kategori</th>
-        <th>Stok</th>
-        <th>Aksi</th>
-    </tr>
+@section('content')
 
-    @foreach($sarpras as $s)
-    <tr>
-        <td>{{ $s->kode_sarpras }}</td>
-        <td>{{ $s->nama_sarpras }}</td>
-        <td>{{ $s->lokasi->nama_lokasi }}</td>
+<h3 class="mb-4 text-primary fw-semibold">Data Sarpras</h3>
 
-        {{-- KATEGORI AMAN (TIDAK ERROR) --}}
-        <td>
-            @if($s->kategori && $s->kategori->parent)
-            {{ $s->kategori->parent->nama_kategori }}
-            -
-            {{ $s->kategori->nama_kategori }}
-            @elseif($s->kategori)
-            {{ $s->kategori->nama_kategori }}
-            @else
-            -
-            @endif
-        </td>
+<div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold text-primary">Daftar Sarpras</span>
 
-        <td>{{ $s->items->count() }}</td>
+        <a href="{{ route('admin.sarpras.create') }}" class="btn btn-primary btn-sm">
+            + Tambah Sarpras
+        </a>
+    </div>
 
-        <td>
-            <a href="{{ route('admin.sarpras.show', $s->id) }}">Detail</a> |
-            <a href="{{ route('admin.sarpras.edit', $s->id) }}">Edit</a> |
-            <a href="{{ route('admin.sarpras.item.create', $s->id) }}">Tambah Data</a> |
+    <div class="card-body p-0">
+        <table class="table table-bordered table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Kode</th>
+                    <th>Nama</th>
+                    <th>Lokasi</th>
+                    <th>Kategori</th>
+                    <th>Stok</th>
+                    <th style="width:220px">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($sarpras as $s)
+                <tr>
+                    <td>{{ $s->kode_sarpras }}</td>
+                    <td>{{ $s->nama_sarpras }}</td>
+                    <td>{{ $s->lokasi->nama_lokasi }}</td>
+                    <td>
+                        @if($s->kategori && $s->kategori->parent)
+                        {{ $s->kategori->parent->nama_kategori }} - {{ $s->kategori->nama_kategori }}
+                        @elseif($s->kategori)
+                        {{ $s->kategori->nama_kategori }}
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td>{{ $s->items->count() }}</td>
+                    <td>
+                        <div class="d-flex flex-column gap-1">
 
-            <form action="{{ route('admin.sarpras.destroy', $s->id) }}"
-                method="POST"
-                style="display:inline"
-                onsubmit="return confirm('Yakin hapus sarpras ini?')">
+                            {{-- BARIS ATAS --}}
+                            <div class="d-flex gap-1">
+                                <a href="{{ route('admin.sarpras.show', $s->id) }}"
+                                    class="btn btn-info btn-sm w-50">
+                                    Detail
+                                </a>
 
-                @csrf
-                @method('DELETE')
-                <button type="submit">Hapus</button>
-            </form>
-        </td>
+                                <a href="{{ route('admin.sarpras.item.create', $s->id) }}"
+                                    class="btn btn-success btn-sm w-50">
+                                    Tambah Unit
+                                </a>
+                            </div>
 
-    </tr>
-    @endforeach
-</table>
+                            {{-- BARIS BAWAH --}}
+                            <div class="d-flex gap-1">
+                                <a href="{{ route('admin.sarpras.edit', $s->id) }}"
+                                    class="btn btn-warning btn-sm w-50">
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('admin.sarpras.destroy', $s->id) }}"
+                                    method="POST"
+                                    class="w-50"
+                                    onsubmit="return confirm('Yakin hapus sarpras ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm w-100">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center text-muted">
+                        Data sarpras kosong
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@endsection

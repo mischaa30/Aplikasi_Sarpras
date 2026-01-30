@@ -1,33 +1,63 @@
-<h2>Dashboard Admin</h2>
+@extends('layouts.admin')
 
-<p>Selamat datang {{ Auth::user()->username }}</p>
+@section('title','Data User')
 
-<h3>Data User</h3>
+@section('content')
 
-<a href="{{ route('admin.user.create') }}">Tambah User</a>
+<h3 class="mb-4 text-primary fw-semibold">Data User</h3>
 
-<table border="1" cellpadding="5">
-    <tr>
-        <th>Username</th>
-        <th>Role</th>
-        <th>Aksi</th>
-    </tr>
+<div class="card shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <span class="fw-semibold text-primary">Daftar User</span>
 
-    @foreach($user as $u)
-    <tr>
-        <td>{{ $u->username }}</td>
-        <td>{{ $u->role->nama_role }}</td>
-        <td>
-            <a href="{{ route('admin.user.edit', $u->id) }}">Edit</a>
+        <a href="{{ route('admin.user.create') }}" class="btn btn-primary btn-sm">
+            + Tambah User
+        </a>
+    </div>
 
-            <form action="{{ route('admin.user.destroy', $u->id) }}" method="POST" style="display:inline">
-                @csrf
-                @method('DELETE')
-                <button onclick="return confirm('Yakin hapus user?')">
-                    Hapus
-                </button>
-            </form>
-        </td>
-    </tr>
-    @endforeach
-</table>
+    <div class="card-body p-0">
+        <table class="table table-bordered table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th style="width: 160px">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($user as $u)
+                    <tr>
+                        <td>{{ $u->username }}</td>
+                        <td>{{ $u->role->nama_role }}</td>
+                        <td>
+                            <a href="{{ route('admin.user.edit', $u->id) }}"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                            <form action="{{ route('admin.user.destroy', $u->id) }}"
+                                  method="POST"
+                                  class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button
+                                    class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Yakin hapus user?')">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            Data user kosong
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@endsection

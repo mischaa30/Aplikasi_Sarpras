@@ -1,19 +1,45 @@
-<h3>Tambah Unit Barang</h3>
+@extends('layouts.admin')
 
-<form method="POST" action="{{ route('admin.sarpras.item.store', $sarpras->id) }}">
-@csrf
+@section('title','Tambah Unit Barang')
 
-Nama Unit:
-<input name="nama_item" placeholder="" required>
+@section('content')
 
-Kondisi:
-<select name="kondisi_sarpras_id">
-@foreach($listKondisi as $k)
-    <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
-@endforeach
+<h3 class="mb-4 text-primary fw-semibold">Tambah Unit Barang</h3>
 
-</select>
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold text-primary">
+        Form Tambah Unit Barang
+    </div>
 
-<button>Tambah</button>
-</form>
+    <div class="card-body">
+        <form method="POST" action="{{ route('admin.sarpras.item.store', $sarpras->id) }}">
+            @csrf
 
+            <div class="mb-3">
+                <label class="form-label">Nama Unit</label>
+                <input name="nama_item" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Kondisi</label>
+                <select name="kondisi_sarpras_id" class="form-select">
+                    @foreach($listKondisi as $k)
+                        <option value="{{ $k->id }}">{{ $k->nama_kondisi }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ route('admin.sarpras.index', $sarpras->id) }}"
+                   class="btn btn-outline-secondary">
+                    Batal
+                </a>
+                <button class="btn btn-primary">
+                    Tambah
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@endsection

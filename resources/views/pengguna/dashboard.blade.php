@@ -26,7 +26,7 @@
                     </p>
 
                     <a href="{{ route('pengguna.peminjaman.index') }}"
-                       class="btn btn-primary btn-sm">
+                        class="btn btn-primary btn-sm">
                         Lihat Data
                     </a>
 
@@ -51,7 +51,7 @@
                     </p>
 
                     <a href="{{ route('pengguna.pengaduan.index') }}"
-                       class="btn btn-primary btn-sm">
+                        class="btn btn-primary btn-sm">
                         Lihat Data
                     </a>
 

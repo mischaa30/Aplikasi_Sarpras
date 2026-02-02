@@ -1,49 +1,109 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard')
+@section('title','Dashboard Admin')
 
 @section('content')
-<div class="container">
 
-    {{-- Welcome --}}
-    <div class="mb-4">
-        <h3 class="fw-semibold text-primary">
-            Selamat Datang di Aplikasi Sarpras SMKN 1 BOYOLANGU
-        </h3>
-        <p class="text-muted mb-0">
-            Halo, {{ auth()->user()->username ?? 'Admin' }} 👋
-        </p>
-    </div>
+<div class="container-fluid mt-3">
 
-    {{-- Cards --}}
+    <h3 class="mb-4 text-primary fw-semibold">
+        📊 Dashboard Admin
+    </h3>
+
     <div class="row g-4">
+
+        {{-- User --}}
         <div class="col-md-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-muted">Total User</h6>
-                    <h2 class="fw-bold text-primary">{{ $totalUser ?? 0 }}</h2>
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">
+                        👥 Data User
+                    </h5>
+                    <p class="text-muted">
+                        Kelola data pengguna sistem
+                    </p>
+                    <a href="{{ route('admin.user.index') }}"
+                       class="btn btn-primary btn-sm">
+                        Buka Menu
+                    </a>
                 </div>
             </div>
         </div>
 
+        {{-- Sarpras --}}
         <div class="col-md-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Sarpras</h6>
-                    <h2 class="fw-bold text-success">{{ $totalSarpras ?? 0 }}</h2>
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">
+                        🏫 Data Sarpras
+                    </h5>
+                    <p class="text-muted">
+                        Kelola sarana & prasarana
+                    </p>
+                    <a href="{{ route('admin.sarpras.index') }}"
+                       class="btn btn-success btn-sm">
+                        Buka Menu
+                    </a>
                 </div>
             </div>
         </div>
 
+        {{-- Peminjaman --}}
         <div class="col-md-4">
-            <div class="card text-center shadow-sm">
-                <div class="card-body">
-                    <h6 class="text-muted">Laporan Peminjaman</h6>
-                    <h2 class="fw-bold text-warning">{{ $totalPeminjaman ?? 0 }}</h2>
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">
+                        📦 Peminjaman
+                    </h5>
+                    <p class="text-muted">
+                        Kelola data peminjaman
+                    </p>
+                    <a href="{{ route('admin.peminjaman.index') }}"
+                       class="btn btn-warning btn-sm">
+                        Buka Menu
+                    </a>
                 </div>
             </div>
         </div>
+
+        {{-- Pengaduan --}}
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-danger">
+                        📝 Pengaduan
+                    </h5>
+                    <p class="text-muted">
+                        Kelola laporan pengaduan
+                    </p>
+                    <a href="{{ route('admin.pengaduan.index') }}"
+                       class="btn btn-danger btn-sm">
+                        Buka Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {{-- Laporan --}}
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">
+                        📊 Laporan
+                    </h5>
+                    <p class="text-muted">
+                        Cetak laporan data
+                    </p>
+                    <a href="{{ route('admin.laporan.asset_health') }}"
+                       class="btn btn-info btn-sm">
+                        Buka Menu
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </div>
+
 @endsection

@@ -68,7 +68,8 @@ Route::middleware(['auth','admin'])
     /* Master Data */
     Route::resource('user', UserController::class);
     Route::resource('kategori', KategoriSarprasController::class);
-    Route::resource('sarpras', SarprasController::class);
+    Route::resource('sarpras', SarprasController::class)
+    ->parameters(['sarpras' => 'sarpras']);
     Route::resource('role', RoleController::class);
     Route::resource('lokasi', LokasiController::class);
 

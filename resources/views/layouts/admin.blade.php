@@ -131,8 +131,8 @@
 
         <span class="text-white fw-bold mt-3 mb-2">Activity Log</span>
 
-        <a href="{{ route('activity.login') }}"
-            class="{{ request()->routeIs('activity.login') ? 'active bg-primary text-white' : '' }}">
+        <a href="{{ route('admin.activity.login') }}"
+            class="{{ request()->routeIs('admin.activity.login') ? 'active bg-primary text-white' : '' }}">
             Login
         </a>
 

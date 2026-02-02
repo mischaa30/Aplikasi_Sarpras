@@ -1,24 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Dashboard Pengguna</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengguna Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f0f4ff;
+            margin: 0;
+        }
+
+        /* Topbar */
+        .topbar {
+            height: 60px;
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            background-color: #1e3a8a;
+            color: #ffffff;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: #cfd6fc;
+            text-decoration: none;
+            display: block;
+            padding: 12px 20px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .sidebar a.active,
+        .sidebar a:hover {
+            background-color: #3b82f6;
+            color: #fff;
+        }
+
+        /* Main content */
+        main {
+            margin-left: 220px;
+            padding: 20px;
+        }
+
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h5 {
+            color: #1e3a8a;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Pengguna</h1>
-    <nav>
-        <a href="/pengguna/dashboard">Dashboard</a> |
-        <a href="{{ route('pengguna.kategori.index') }}">Peminjaman</a> |
-        <a href="{{ route('pengguna.peminjaman.index') }}">Peminjaman Saya</a> |
-        <a href="{{ route('pengguna.pengaduan.index') }}">Pengaduan</a> |
-        <a href="{{ route('profil.edit') }}">Profil</a> |
-        <a href="/logout">Logout</a>
-    </nav>
 
-    <hr>
+    <!-- Topbar -->
+    <div class="topbar">
+        <span class="me-3">Halo, {{ auth()->user()->username ?? 'User' }}</span>
+        <a href="/logout" class="btn btn-outline-primary btn-sm">Logout</a>
+    </div>
 
-    @yield('content')
+
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column p-3">
+
+        <!-- Dashboard -->
+        <a href="{{ route('pengguna.dashboard') }}"
+            class="{{ request()->routeIs('pengguna.dashboard') ? 'active' : '' }}">
+            Dashboard
+        </a>
+
+
+        <!-- MENU -->
+        <span class="text-white fw-bold mt-3 mb-2">Menu</span>
+
+        <a href="{{ route('pengguna.kategori.index') }}"
+            class="{{ request()->routeIs('pengguna.kategori.*') ? 'active' : '' }}">
+            Peminjaman
+        </a>
+
+        <a href="{{ route('pengguna.peminjaman.index') }}"
+            class="{{ request()->routeIs('pengguna.peminjaman.*') ? 'active' : '' }}">
+            Peminjaman Saya
+        </a>
+
+        <a href="{{ route('pengguna.pengaduan.index') }}"
+            class="{{ request()->routeIs('pengguna.pengaduan.*') ? 'active' : '' }}">
+            Pengaduan
+        </a>
+
+
+        <hr class="text-gray-400">
+
+
+        <!-- AKUN -->
+        <a href="{{ route('profil.edit') }}"
+            class="{{ request()->routeIs('profil.*') ? 'active' : '' }}">
+            Profil
+        </a>
+
+    </div>
+
+
+    <!-- Main Content -->
+    <main>
+        @yield('content')
+    </main>
+
 </body>
 
 </html>

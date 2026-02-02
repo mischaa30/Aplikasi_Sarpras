@@ -99,7 +99,6 @@
 
         <!-- MENU -->
         <span class="text-white fw-bold mt-3 mb-2">Menu</span>
-
         <a href="{{ route('pengguna.kategori.index') }}"
             class="{{ request()->routeIs('pengguna.kategori.*') ? 'active' : '' }}">
             Peminjaman

@@ -1,4 +1,11 @@
-@extends('layouts.admin')
+@php
+$role = strtolower(auth()->user()->role->nama_role ?? '');
+@endphp
+
+@extends(
+    $role === 'admin' ? 'layouts.admin' :
+    ($role === 'petugas' ? 'layouts.petugas' : 'layouts.pengguna')
+)
 
 @section('title', 'Edit Profil')
 
@@ -9,8 +16,7 @@
 <div class="row justify-content-center">
 
     <div class="col-md-6">
-
-        <div class="card">
+        <div class="card shadow-sm">
             <div class="card-body">
 
                 <form method="POST" action="{{ route('profil.update') }}">
@@ -25,7 +31,7 @@
                         <input type="text"
                                name="username"
                                class="form-control"
-                               value="{{ $user->username ?? '' }}"
+                               value="{{ $user->username }}"
                                required>
                     </div>
 
@@ -44,9 +50,8 @@
                         </small>
                     </div>
 
-                    {{-- BUTTON --}}
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary px-4">
+                    <div class="text-end">
+                        <button class="btn btn-primary px-4">
                             Simpan
                         </button>
                     </div>
@@ -55,7 +60,6 @@
 
             </div>
         </div>
-
     </div>
 
 </div>

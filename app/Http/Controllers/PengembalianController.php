@@ -12,12 +12,41 @@ use Illuminate\Support\Facades\DB;
 
 class PengembalianController extends Controller
 {
+    private function roleView($view, $data = [])
+    {
+        if (request()->is('admin/*')) {
+            return view('admin.' . $view, $data);
+        }
+
+        if (request()->is('petugas/*')) {
+            return view('petugas.' . $view, $data);
+        }
+
+        abort(403);
+    }
+
+    private function roleRedirect()
+    {
+        if (request()->is('admin/*')) {
+            return redirect()->route('admin.peminjaman.index');
+        }
+
+        if (request()->is('petugas/*')) {
+            return redirect()->route('petugas.peminjaman.index');
+        }
+
+        abort(403);
+    }
+
     public function create($id)
     {
         $peminjaman = Peminjaman::with(['detail.sarpras'])->findOrFail($id);
         $listKondisi = KondisiSarpras::all();
 
-        return view('admin.pengembalian.create', compact('peminjaman', 'listKondisi'));
+        return $this->roleView(
+            'pengembalian.create',
+            compact('peminjaman', 'listKondisi')
+        );
     }
 
     public function store(Request $request)
@@ -46,14 +75,12 @@ class PengembalianController extends Controller
                 $kondisiId = $request->kondisi_sarpras_id[$index];
                 $deskripsi = $request->deskripsi[$index] ?? null;
 
-                // upload foto
                 $foto = null;
                 if ($request->hasFile("foto.$index")) {
                     $foto = $request->file("foto.$index")
                         ->store('pengembalian', 'public');
                 }
 
-                // update kondisi item
                 $item = SarprasItem::find($detail->sarpras_item_id);
                 if ($item) {
                     $item->update([
@@ -61,7 +88,6 @@ class PengembalianController extends Controller
                     ]);
                 }
 
-                // simpan riwayat
                 RiwayatKondisiAlat::create([
                     'peminjaman_id' => $peminjaman->id,
                     'peminjaman_detail_id' => $detail->id,
@@ -72,7 +98,6 @@ class PengembalianController extends Controller
                     'foto' => $foto
                 ]);
 
-                // flag hilang
                 $kondisi = KondisiSarpras::find($kondisiId);
                 if ($kondisi && $kondisi->nama_kondisi === 'Hilang') {
                     $peminjaman->update(['flag_hilang' => 1]);
@@ -80,8 +105,7 @@ class PengembalianController extends Controller
             }
         });
 
-        return redirect()
-            ->route('admin.peminjaman.index')
+        return $this->roleRedirect()
             ->with('success', 'Pengembalian berhasil dicatat');
     }
 }

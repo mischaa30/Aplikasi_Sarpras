@@ -10,6 +10,24 @@
 
     <div class="row g-4">
 
+        <!-- Data Sarpras -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">
+                        🏫 Data Sarpras
+                    </h5>
+                    <p class="text-muted">
+                        sarana & prasarana
+                    </p>
+                    <a href="{{ route('petugas.sarpras.index') }}"
+                       class="btn btn-primary btn-sm">
+                        Lihat Data
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <!-- Data Peminjaman -->
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
@@ -28,24 +46,6 @@
             </div>
         </div>
 
-        <!-- Pengembalian -->
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h5 class="card-title text-primary">
-                        🔄 Pengembalian
-                    </h5>
-                    <p class="text-muted">
-                        Input pengembalian barang
-                    </p>
-                    <a href="#"
-                       class="btn btn-primary btn-sm">
-                        Input Data
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <!-- Pengaduan -->
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
@@ -56,7 +56,7 @@
                     <p class="text-muted">
                         Kelola laporan kerusakan
                     </p>
-                    <a href="{{ route('admin.pengaduan.index') }}"
+                    <a href="{{ route('petugas.pengaduan.index') }}"
                        class="btn btn-primary btn-sm">
                         Kelola
                     </a>

@@ -12,10 +12,37 @@ use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
-    // USER
+    /*
+    |--------------------------------------------------------------------------
+    | Helper pilih view berdasarkan prefix route
+    |--------------------------------------------------------------------------
+    */
+    private function roleView($view, $data = [])
+    {
+        if (request()->is('admin/*')) {
+            return view('admin.' . $view, $data);
+        }
+
+        if (request()->is('petugas/*')) {
+            return view('petugas.' . $view, $data);
+        }
+
+        if (request()->is('pengguna/*')) {
+            return view('pengguna.' . $view, $data);
+        }
+
+        abort(403);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ================= USER =================
+    |--------------------------------------------------------------------------
+    */
+
     public function myPengaduan()
     {
-        $data = Pengaduan::with('status', 'kategori', 'lokasi')
+        $data = Pengaduan::with('status','kategori','lokasi')
             ->where('user_id', Auth::id())
             ->latest()
             ->get();
@@ -42,8 +69,10 @@ class PengaduanController extends Controller
         ]);
 
         $foto = null;
+
         if ($request->hasFile('foto')) {
-            $foto = $request->file('foto')->store('pengaduan', 'public');
+            $foto = $request->file('foto')
+                ->store('pengaduan', 'public');
         }
 
         Pengaduan::create([
@@ -56,42 +85,62 @@ class PengaduanController extends Controller
             'foto' => $foto
         ]);
 
-        return redirect()->route('pengguna.pengaduan.index')
-            ->with('success', 'Pengaduan berhasil dibuat');
+        return redirect()
+            ->route('pengguna.pengaduan.index')
+            ->with('success','Pengaduan berhasil dibuat');
     }
 
-    // ADMIN / PETUGAS
+    /*
+    |--------------------------------------------------------------------------
+    | ============= ADMIN + PETUGAS =============
+    |--------------------------------------------------------------------------
+    */
+
     public function index()
     {
-        $data = Pengaduan::with('user', 'status', 'kategori')
+        $data = Pengaduan::with('user','status','kategori')
             ->whereHas('status', function ($q) {
-                $q->whereNotIn('nama_status_pengaduan', ['Selesai', 'Ditutup']);
+                $q->whereNotIn(
+                    'nama_status_pengaduan',
+                    ['Selesai','Ditutup']
+                );
             })
             ->latest()
             ->get();
 
-        return view('admin.pengaduan.index', compact('data'));
+        return $this->roleView('pengaduan.index', compact('data'));
     }
 
     public function show($id)
     {
-        return view('admin.pengaduan.show', [
-            'pengaduan' => Pengaduan::with('user', 'status', 'kategori', 'catatan.user')->findOrFail($id),
-            'status' => Status_Pengaduan::all()
-        ]);
+        $pengaduan = Pengaduan::with(
+            'user',
+            'status',
+            'kategori',
+            'catatan.user'
+        )->findOrFail($id);
+
+        $status = Status_Pengaduan::all();
+
+        return $this->roleView(
+            'pengaduan.show',
+            compact('pengaduan','status')
+        );
     }
 
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status_pengaduan_id' => 'required|exists:status_pengaduans,id'
+            'status_pengaduan_id' =>
+                'required|exists:status_pengaduans,id'
         ]);
 
         Pengaduan::findOrFail($id)->update([
-            'status_pengaduan_id' => $request->status_pengaduan_id
+            'status_pengaduan_id' =>
+                $request->status_pengaduan_id
         ]);
 
-        return back()->with('success', 'Status berhasil diubah');
+        return back()->with('success','Status diubah');
     }
 
     public function addCatatan(Request $request, $id)
@@ -106,6 +155,6 @@ class PengaduanController extends Controller
             'catatan' => $request->catatan
         ]);
 
-        return back()->with('success', 'Catatan berhasil ditambahkan');
+        return back()->with('success','Catatan ditambahkan');
     }
 }

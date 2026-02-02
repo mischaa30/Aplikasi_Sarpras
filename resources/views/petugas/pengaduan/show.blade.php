@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.petugas')
 
 @section('title', 'Detail Pengaduan')
 
@@ -48,7 +48,7 @@
 
                 <h6 class="fw-bold mb-3">Update Status</h6>
 
-                <form action="{{ route('admin.pengaduan.status', $pengaduan->id) }}" method="POST">
+                <form action="{{ route('petugas.pengaduan.status', $pengaduan->id) }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
@@ -77,7 +77,7 @@
 
                 <h6 class="fw-bold mb-3">Tambah Catatan</h6>
 
-                <form action="{{ route('admin.pengaduan.catatan', $pengaduan->id) }}" method="POST">
+                <form action="{{ route('petugas.pengaduan.catatan', $pengaduan->id) }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
@@ -134,7 +134,7 @@
 </div>
 <br>
 <div class="d-flex justify-content-end gap-2">
-    <a href="{{ route('admin.pengaduan.index') }}" class="btn btn-outline-secondary">
+    <a href="{{ route('petugas.pengaduan.index') }}" class="btn btn-outline-secondary">
         Kembali
     </a>
 </div>

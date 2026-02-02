@@ -95,37 +95,25 @@
             Dashboard
         </a>
 
-
+        <hr class="text-gray-400">
         <!-- PEMINJAMAN -->
-        <div class="menu-title">Peminjaman</div>
+        <span class="text-white fw-bold mt-3 mb-2">Peminjaman</span>
 
-        <a href="{{ route('admin.peminjaman.index') }}">
+        <a href="{{ route('petugas.peminjaman.index') }}">
             Data Peminjaman
         </a>
 
-        <a href="{{ route('admin.pengembalian.create', 1) ?? '#' }}">
-            Pengembalian
-        </a>
-
-
+        <hr class="text-gray-400">
         <!-- PENGADUAN -->
-        <div class="menu-title">Pengaduan</div>
+        <span class="text-white fw-bold mt-3 mb-2">Pengaduan</span>
 
-        <a href="{{ route('admin.pengaduan.index') }}">
+        <a href="{{ route('petugas.pengaduan.index') }}">
             Data Pengaduan
         </a>
 
-
-        <!-- LAPORAN -->
-        <div class="menu-title">Laporan</div>
-
-        <a href="{{ route('admin.activity.peminjaman') }}">
-            Activity Peminjaman
-        </a>
-
-
+        <hr class="text-gray-400">
         <!-- PROFIL -->
-        <div class="menu-title">Akun</div>
+        <span class="text-white fw-bold mt-3 mb-2">Akun</span>
 
         <a href="{{ route('profil.edit') }}">
             Profil

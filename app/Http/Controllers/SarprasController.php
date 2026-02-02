@@ -131,4 +131,13 @@ class SarprasController extends Controller
         $sarpras->delete();
         return redirect()->route('admin.sarpras.index');
     }
+    public function indexPetugas()
+    {
+        $sarpras = Sarpras::with([
+            'lokasi',
+            'kategori.parent'
+        ])->get();
+
+        return view('petugas.sarpras.index', compact('sarpras'));
+    }
 }

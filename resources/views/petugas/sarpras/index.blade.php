@@ -8,8 +8,18 @@
 
 <div class="card shadow-sm">
 
-    <div class="card-header bg-white">
-        <span class="fw-semibold text-primary">Daftar Sarpras</span>
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center" style="gap:.5rem">
+            <span class="fw-semibold text-primary">Daftar Sarpras</span>
+            <form method="GET" class="d-flex" style="gap:.5rem; margin-left:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari kode, nama, lokasi, kategori...">
+                <button class="btn btn-primary btn-sm">Cari</button>
+            </form>
+        </div>
+
+        @if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <small class="text-muted">Menampilkan {{ $sarpras->firstItem() ?? 0 }} - {{ $sarpras->lastItem() ?? 0 }} dari {{ $sarpras->total() }}</small>
+        @endif
     </div>
 
     <div class="card-body p-0">
@@ -34,13 +44,13 @@
 
                     <td>
                         @if($s->kategori && $s->kategori->parent)
-                            {{ $s->kategori->parent->nama_kategori }}
-                            -
-                            {{ $s->kategori->nama_kategori }}
+                        {{ $s->kategori->parent->nama_kategori }}
+                        -
+                        {{ $s->kategori->nama_kategori }}
                         @elseif($s->kategori)
-                            {{ $s->kategori->nama_kategori }}
+                        {{ $s->kategori->nama_kategori }}
                         @else
-                            -
+                        -
                         @endif
                     </td>
                 </tr>
@@ -55,6 +65,12 @@
             </tbody>
 
         </table>
+
+        @if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="p-3">
+            {{ $sarpras->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+        </div>
+        @endif
     </div>
 
 </div>

@@ -12,6 +12,13 @@
 
         <div class="card-body">
 
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <form method="GET" class="d-flex" style="gap:.5rem">
+                    <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari nama item atau kondisi...">
+                    <button class="btn btn-light btn-sm">Cari</button>
+                </form>
+            </div>
+
             <table class="table table-bordered table-hover align-middle mb-0">
 
                 <thead class="table-light">

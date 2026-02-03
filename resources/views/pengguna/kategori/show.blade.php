@@ -27,7 +27,7 @@
                     {{ $s->nama_kategori }}
 
                     <a href="{{ route('pengguna.kategori.show', $s->id) }}"
-                       class="btn btn-sm btn-outline-primary">
+                        class="btn btn-sm btn-outline-primary">
                         Lihat
                     </a>
 
@@ -45,8 +45,13 @@
     @if($sarpras->count())
     <div class="card">
 
-        <div class="card-header bg-primary text-white">
-            Daftar Sarpras
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Daftar Sarpras</span>
+
+            <form method="GET" class="d-flex" style="gap:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari nama sarpras...">
+                <button class="btn btn-light btn-sm">Cari</button>
+            </form>
         </div>
 
         <div class="card-body">
@@ -64,11 +69,11 @@
                 <tbody>
                     @forelse($sarpras as $s)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>@if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator){{ $sarpras->firstItem() + $loop->index }}@else{{ $loop->iteration }}@endif</td>
                         <td>{{ $s->nama_sarpras }}</td>
                         <td>
                             <a href="{{ route('pengguna.sarpras.show', $s->id) }}"
-                               class="btn btn-sm btn-outline-primary">
+                                class="btn btn-sm btn-outline-primary">
                                 Lihat
                             </a>
                         </td>
@@ -84,9 +89,19 @@
 
             </table>
 
+            @if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="p-3">
+                {{ $sarpras->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
+
         </div>
     </div>
     @endif
+
+    <div class="mt-3">
+        <a href="{{ route('pengguna.kategori.index') }}" class="btn btn-outline-secondary btn-sm">Kembali</a>
+    </div>
 
 </div>
 @endsection

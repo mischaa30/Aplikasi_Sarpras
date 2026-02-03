@@ -19,10 +19,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //ambil semua data user dan role
-        $user = User::with('role')->paginate(10); //Menggunakan paginate
+        $q = $request->q ?? null;
+
+        $query = User::with('role');
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('username', 'like', "%{$q}%")
+                    ->orWhereHas('role', function ($qr) use ($q) {
+                        $qr->where('nama_role', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $user = $query->paginate(25);
         return view('admin.user.index', compact('user')); //kirim data ke view user.index
         //
     }

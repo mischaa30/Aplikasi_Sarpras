@@ -8,11 +8,23 @@
 
 <div class="card shadow-sm">
     <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <span class="fw-semibold text-primary">Daftar Sarpras</span>
+        <div class="d-flex align-items-center" style="gap:.5rem">
+            <span class="fw-semibold text-primary">Daftar Sarpras</span>
+            <form method="GET" class="d-flex" style="gap:.5rem; margin-left:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari kode, nama, lokasi, kategori...">
+                <button class="btn btn-primary btn-sm">Cari</button>
+            </form>
+        </div>
 
-        <a href="{{ route('admin.sarpras.create') }}" class="btn btn-primary btn-sm">
-            + Tambah Sarpras
-        </a>
+        <div class="d-flex align-items-center" style="gap:.75rem">
+            @if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <small class="text-muted">Menampilkan {{ $sarpras->firstItem() ?? 0 }} - {{ $sarpras->lastItem() ?? 0 }} dari {{ $sarpras->total() }}</small>
+            @endif
+
+            <a href="{{ route('admin.sarpras.create') }}" class="btn btn-primary btn-sm">
+                + Tambah Sarpras
+            </a>
+        </div>
     </div>
 
     <div class="card-body p-0">
@@ -90,6 +102,12 @@
                 @endforelse
             </tbody>
         </table>
+
+        @if($sarpras instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        <div class="p-3">
+            {{ $sarpras->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+        </div>
+        @endif
     </div>
 </div>
 

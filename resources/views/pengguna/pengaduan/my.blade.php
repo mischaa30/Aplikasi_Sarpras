@@ -10,7 +10,7 @@
         </h3>
 
         <a href="{{ route('pengguna.pengaduan.create') }}"
-           class="btn btn-primary">
+            class="btn btn-primary">
             + Buat Pengaduan
         </a>
 
@@ -19,8 +19,13 @@
 
     <div class="card">
 
-        <div class="card-header bg-primary text-white">
-            Data Pengaduan
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Data Pengaduan</span>
+
+            <form method="GET" class="d-flex" style="gap:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari judul, deskripsi, kategori, lokasi...">
+                <button class="btn btn-light btn-sm">Cari</button>
+            </form>
         </div>
 
         <div class="card-body">
@@ -62,11 +67,11 @@
 
                             <td class="text-center">
                                 @if($p->foto)
-                                    <img src="{{ asset('storage/' . $p->foto) }}"
-                                         width="80"
-                                         class="rounded">
+                                <img src="{{ asset('storage/' . $p->foto) }}"
+                                    width="80"
+                                    class="rounded">
                                 @else
-                                    -
+                                -
                                 @endif
                             </td>
                         </tr>
@@ -83,10 +88,17 @@
 
                 </table>
 
+                @if($data instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="p-3">
+                    {{ $data->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                </div>
+                @endif
+
             </div>
 
         </div>
     </div>
+
 
 </div>
 @endsection

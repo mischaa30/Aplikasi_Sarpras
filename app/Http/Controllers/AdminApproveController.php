@@ -23,18 +23,30 @@ class AdminApproveController extends Controller
     /* ===============================
        LIST
     =============================== */
-    public function index()
+    public function index(Request $request)
     {
-        $peminjaman = Peminjaman::with([
-                'user',
-                'sarpras',
-                'item',
-                'approver' // ← TAMBAH
-            ])
+        $q = $request->q ?? null;
+
+        $query = Peminjaman::with([
+            'user',
+            'sarpras',
+            'item',
+            'approver'
+        ])
             ->whereNull('tgl_kembali_actual')
-            ->whereIn('status',['Menunggu','Disetujui'])
-            ->latest()
-            ->get();
+            ->whereIn('status', ['Menunggu', 'Disetujui']);
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->whereHas('user', function ($qu) use ($q) {
+                    $qu->where('username', 'like', "%{$q}%");
+                })->orWhereHas('item', function ($qi) use ($q) {
+                    $qi->where('nama_item', 'like', "%{$q}%");
+                })->orWhere('status', 'like', "%{$q}%");
+            });
+        }
+
+        $peminjaman = $query->latest()->paginate(25);
 
         return $this->roleView('peminjaman.index', compact('peminjaman'));
     }
@@ -51,7 +63,7 @@ class AdminApproveController extends Controller
             'disetujui_oleh' => auth()->id(), // ← SIMPAN ACC
         ]);
 
-        return back()->with('success','Peminjaman disetujui');
+        return back()->with('success', 'Peminjaman disetujui');
     }
 
     /* ===============================
@@ -67,7 +79,7 @@ class AdminApproveController extends Controller
             'disetujui_oleh' => auth()->id(), // ← CATAT JUGA PENOLAK
         ]);
 
-        return back()->with('success','Peminjaman ditolak');
+        return back()->with('success', 'Peminjaman ditolak');
     }
 
     /* ===============================
@@ -89,6 +101,6 @@ class AdminApproveController extends Controller
             'acc' => $peminjaman->approver->username ?? '-',
         ];
 
-        return $this->roleView('peminjaman.bukti', compact('peminjaman','qrData'));
+        return $this->roleView('peminjaman.bukti', compact('peminjaman', 'qrData'));
     }
 }

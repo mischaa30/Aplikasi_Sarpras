@@ -10,11 +10,24 @@ use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Peminjaman::with('item.sarpras')
-            ->where('user_id', Auth::id())
-            ->get();
+        $q = $request->q ?? null;
+
+        $query = Peminjaman::with('item.sarpras')
+            ->where('user_id', Auth::id());
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->whereHas('item.sarpras', function ($qs) use ($q) {
+                    $qs->where('nama_sarpras', 'like', "%{$q}%");
+                })->orWhereHas('item', function ($qi) use ($q) {
+                    $qi->where('nama_item', 'like', "%{$q}%");
+                })->orWhere('status', 'like', "%{$q}%");
+            });
+        }
+
+        $data = $query->latest()->paginate(25);
 
         return view('pengguna.peminjaman.index', compact('data'));
     }
@@ -60,5 +73,4 @@ class PeminjamanController extends Controller
 
         return redirect()->route('pengguna.peminjaman.index');
     }
-
 }

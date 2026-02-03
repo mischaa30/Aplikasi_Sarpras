@@ -9,8 +9,13 @@
 
     <div class="card">
 
-        <div class="card-header bg-primary text-white">
-            Riwayat Peminjaman
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Riwayat Peminjaman</span>
+
+            <form method="GET" class="d-flex" style="gap:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari barang, item, status...">
+                <button class="btn btn-light btn-sm">Cari</button>
+            </form>
         </div>
 
         <div class="card-body">
@@ -29,8 +34,7 @@
                 <tbody>
                     @forelse($data as $p)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-
+                        <td>@if($data instanceof \Illuminate\Pagination\LengthAwarePaginator){{ $data->firstItem() + $loop->index }}@else{{ $loop->iteration }}@endif</td>
                         <td>
                             {{ $p->item?->sarpras?->nama_sarpras ?? '-' }}
                             -
@@ -57,6 +61,12 @@
                 </tbody>
 
             </table>
+
+            @if($data instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="p-3">
+                {{ $data->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
 
         </div>
     </div>

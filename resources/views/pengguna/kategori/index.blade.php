@@ -8,8 +8,13 @@
     </h3>
 
     <div class="card">
-        <div class="card-header bg-primary text-white">
-            Data Kategori
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <span>Data Kategori</span>
+
+            <form method="GET" class="d-flex" style="gap:.5rem">
+                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari nama kategori...">
+                <button class="btn btn-light btn-sm">Cari</button>
+            </form>
         </div>
 
         <div class="card-body">
@@ -27,11 +32,11 @@
                 <tbody>
                     @forelse($kategori as $k)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>@if($kategori instanceof \Illuminate\Pagination\LengthAwarePaginator){{ $kategori->firstItem() + $loop->index }}@else{{ $loop->iteration }}@endif</td>
                         <td>{{ $k->nama_kategori }}</td>
                         <td>
                             <a href="{{ route('pengguna.kategori.show', $k->id) }}"
-                               class="btn btn-sm btn-outline-primary">
+                                class="btn btn-sm btn-outline-primary">
                                 Lihat
                             </a>
                         </td>
@@ -46,6 +51,12 @@
                 </tbody>
 
             </table>
+
+            @if($kategori instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div class="p-3">
+                {{ $kategori->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+            </div>
+            @endif
 
         </div>
     </div>

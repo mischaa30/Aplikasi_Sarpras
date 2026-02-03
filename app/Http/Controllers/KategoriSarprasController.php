@@ -8,11 +8,34 @@ use Illuminate\Http\Request;
 
 class KategoriSarprasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = KategoriSarpras::with('children')
-            ->whereNull('parent_id')
-            ->get();
+        $q = $request->q ?? null;
+
+        $query = KategoriSarpras::with('children')
+            ->whereNull('parent_id');
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('nama_kategori', 'like', "%{$q}%")
+                    ->orWhereHas('children', function ($qc) use ($q) {
+                        $qc->where('nama_kategori', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $kategori = $query->paginate(25);
+
+        // Jika ada query pencarian, filter child supaya hanya menampilkan sub-kategori yang cocok
+        if ($q) {
+            foreach ($kategori as $parent) {
+                $filteredChildren = $parent->children->filter(function ($c) use ($q) {
+                    return stripos($c->nama_kategori ?? '', $q) !== false;
+                })->values();
+
+                $parent->setRelation('children', $filteredChildren);
+            }
+        }
 
         return view('admin.kategori.index', compact('kategori'));
     }
@@ -61,15 +84,24 @@ class KategoriSarprasController extends Controller
         KategoriSarpras::findOrFail($id)->delete();
         return redirect()->route('admin.kategori.index');
     }
-    public function userIndex()
+    public function userIndex(Request $request)
     {
-        // kategori utama
-        $kategori = KategoriSarpras::whereNull('parent_id')->get();
+        $q = $request->q ?? null;
+
+        $query = KategoriSarpras::whereNull('parent_id');
+
+        if ($q) {
+            $query->where('nama_kategori', 'like', "%{$q}%");
+        }
+
+        $kategori = $query->paginate(25);
         return view('pengguna.kategori.index', compact('kategori'));
     }
 
-    public function userShow(KategoriSarpras $kategori)
+    public function userShow(Request $request, KategoriSarpras $kategori)
     {
+        $q = $request->q ?? null;
+
         $subKategori = KategoriSarpras::where('parent_id', $kategori->id)->get();
 
         // default kosong biar GA ERROR
@@ -77,7 +109,13 @@ class KategoriSarprasController extends Controller
 
         // kalau TIDAK ADA sub kategori → ambil sarpras
         if ($subKategori->count() == 0) {
-            $sarpras = Sarpras::where('kategori_id', $kategori->id)->get();
+            $query = Sarpras::where('kategori_id', $kategori->id);
+
+            if ($q) {
+                $query->where('nama_sarpras', 'like', "%{$q}%");
+            }
+
+            $sarpras = $query->paginate(25);
         }
 
         return view(

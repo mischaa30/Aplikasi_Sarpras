@@ -10,9 +10,17 @@ class LokasiController extends Controller
     /* =========================
        LIST DATA
     ========================== */
-    public function index()
+    public function index(Request $request)
     {
-        $lokasi = Lokasi::latest()->get();
+        $q = $request->q ?? null;
+
+        $query = Lokasi::latest();
+
+        if ($q) {
+            $query->where('nama_lokasi', 'like', "%{$q}%");
+        }
+
+        $lokasi = $query->paginate(25);
 
         return view('admin.lokasi.index', compact('lokasi'));
     }
@@ -42,7 +50,7 @@ class LokasiController extends Controller
 
         return redirect()
             ->route('admin.lokasi.index')
-            ->with('success','Lokasi berhasil ditambahkan');
+            ->with('success', 'Lokasi berhasil ditambahkan');
     }
 
 
@@ -64,7 +72,7 @@ class LokasiController extends Controller
     {
         $r->validate([
             'nama_lokasi' =>
-                'required|unique:lokasis,nama_lokasi,' . $id
+            'required|unique:lokasis,nama_lokasi,' . $id
         ]);
 
         $lokasi = Lokasi::findOrFail($id);
@@ -75,7 +83,7 @@ class LokasiController extends Controller
 
         return redirect()
             ->route('admin.lokasi.index')
-            ->with('success','Lokasi berhasil diupdate');
+            ->with('success', 'Lokasi berhasil diupdate');
     }
 
 
@@ -88,6 +96,6 @@ class LokasiController extends Controller
 
         return redirect()
             ->route('admin.lokasi.index')
-            ->with('success','Lokasi berhasil dihapus');
+            ->with('success', 'Lokasi berhasil dihapus');
     }
 }

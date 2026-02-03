@@ -10,13 +10,30 @@ use Illuminate\Http\Request;
 
 class SarprasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $sarpras = Sarpras::with([
+        $q = $request->q ?? null;
+
+        $query = Sarpras::with([
             'lokasi',
             'kategori',
             'items.kondisi'
-        ])->paginate(10);
+        ]);
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('kode_sarpras', 'like', "%{$q}%")
+                    ->orWhere('nama_sarpras', 'like', "%{$q}%")
+                    ->orWhereHas('lokasi', function ($ql) use ($q) {
+                        $ql->where('nama_lokasi', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('kategori', function ($kc) use ($q) {
+                        $kc->where('nama_kategori', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $sarpras = $query->paginate(25);
 
         return view('admin.sarpras.index', compact('sarpras'));
     }
@@ -101,12 +118,24 @@ class SarprasController extends Controller
         ]);
     }
 
-    public function showUser($id)
+    public function showUser(Request $request, $id)
     {
-        $sarpras = Sarpras::with([
-            'items.kondisi',
-            'items.peminjamanAktif'
-        ])->findOrFail($id);
+        $q = $request->q ?? null;
+
+        $sarpras = Sarpras::with(['items.kondisi', 'items.peminjamanAktif'])->findOrFail($id);
+
+        // filter items if query provided
+        if ($q) {
+            $filtered = collect($sarpras->items)->filter(function ($item) use ($q) {
+                return stripos($item->nama_item ?? '', $q) !== false
+                    || stripos($item->kondisi->nama_kondisi ?? '', $q) !== false;
+            })->values();
+
+            $sarpras->setRelation('items', $filtered);
+        }
+
+        // convert to paginator if not filtered? for simplicity we will not paginate server-side here because items are loaded via relation
+        // but if large data, consider eager-loading paginated items via relationship query
 
         return view('pengguna.sarpras.show', compact('sarpras'));
     }
@@ -131,12 +160,26 @@ class SarprasController extends Controller
         $sarpras->delete();
         return redirect()->route('admin.sarpras.index');
     }
-    public function indexPetugas()
+    public function indexPetugas(Request $request)
     {
-        $sarpras = Sarpras::with([
-            'lokasi',
-            'kategori.parent'
-        ])->get();
+        $q = $request->q ?? null;
+
+        $query = Sarpras::with(['lokasi', 'kategori.parent']);
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('kode_sarpras', 'like', "%{$q}%")
+                    ->orWhere('nama_sarpras', 'like', "%{$q}%")
+                    ->orWhereHas('lokasi', function ($ql) use ($q) {
+                        $ql->where('nama_lokasi', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('kategori', function ($kc) use ($q) {
+                        $kc->where('nama_kategori', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $sarpras = $query->paginate(25);
 
         return view('petugas.sarpras.index', compact('sarpras'));
     }

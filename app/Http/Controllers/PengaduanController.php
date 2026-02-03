@@ -33,14 +33,26 @@ class PengaduanController extends Controller
     ================= USER =================
     */
 
-    public function myPengaduan()
+    public function myPengaduan(Request $request)
     {
-        $data = Pengaduan::with(
-            'status','kategori','lokasi','diprosesOleh'
-        )
-        ->where('user_id', Auth::id())
-        ->latest()
-        ->get();
+        $q = $request->q ?? null;
+
+        $query = Pengaduan::with('status', 'kategori', 'lokasi', 'diprosesOleh')
+            ->where('user_id', Auth::id());
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('judul', 'like', "%{$q}%")
+                    ->orWhere('deskripsi', 'like', "%{$q}%")
+                    ->orWhereHas('kategori', function ($kc) use ($q) {
+                        $kc->where('nama_kategori', 'like', "%{$q}%");
+                    })->orWhereHas('lokasi', function ($kl) use ($q) {
+                        $kl->where('nama_lokasi', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $data = $query->latest()->paginate(25);
 
         return view('pengguna.pengaduan.my', compact('data'));
     }
@@ -83,26 +95,36 @@ class PengaduanController extends Controller
 
         return redirect()
             ->route('pengguna.pengaduan.index')
-            ->with('success','Pengaduan berhasil dibuat');
+            ->with('success', 'Pengaduan berhasil dibuat');
     }
 
     /*
     ================= ADMIN + PETUGAS =================
     */
 
-    public function index()
+    public function index(Request $request)
     {
-        $data = Pengaduan::with(
-            'user','status','kategori','diprosesOleh'
-        )
-        ->whereHas('status', function ($q) {
-            $q->whereNotIn(
-                'nama_status_pengaduan',
-                ['Selesai','Ditutup']
-            );
-        })
-        ->latest()
-        ->get();
+        $q = $request->q ?? null;
+
+        $query = Pengaduan::with('user', 'status', 'kategori', 'diprosesOleh')
+            ->whereHas('status', function ($q2) {
+                $q2->whereNotIn('nama_status_pengaduan', ['Selesai', 'Ditutup']);
+            });
+
+        if ($q) {
+            $query->where(function ($qq) use ($q) {
+                $qq->where('judul', 'like', "%{$q}%")
+                    ->orWhereHas('user', function ($qu) use ($q) {
+                        $qu->where('username', 'like', "%{$q}%");
+                    })->orWhereHas('kategori', function ($kc) use ($q) {
+                        $kc->where('nama_kategori', 'like', "%{$q}%");
+                    })->orWhereHas('lokasi', function ($kl) use ($q) {
+                        $kl->where('nama_lokasi', 'like', "%{$q}%");
+                    });
+            });
+        }
+
+        $data = $query->latest()->paginate(25);
 
         return $this->roleView('pengaduan.index', compact('data'));
     }
@@ -122,7 +144,7 @@ class PengaduanController extends Controller
 
         return $this->roleView(
             'pengaduan.show',
-            compact('pengaduan','status')
+            compact('pengaduan', 'status')
         );
     }
 
@@ -130,7 +152,7 @@ class PengaduanController extends Controller
     {
         $request->validate([
             'status_pengaduan_id' =>
-                'required|exists:status_pengaduans,id'
+            'required|exists:status_pengaduans,id'
         ]);
 
         $pengaduan = Pengaduan::findOrFail($id);
@@ -143,7 +165,7 @@ class PengaduanController extends Controller
 
         $pengaduan->save();
 
-        return back()->with('success','Status diubah');
+        return back()->with('success', 'Status diubah');
     }
 
     public function addCatatan(Request $request, $id)
@@ -158,6 +180,6 @@ class PengaduanController extends Controller
             'catatan' => $request->catatan
         ]);
 
-        return back()->with('success','Catatan ditambahkan');
+        return back()->with('success', 'Catatan ditambahkan');
     }
 }

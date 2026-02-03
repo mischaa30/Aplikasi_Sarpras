@@ -28,7 +28,9 @@ class SarprasItem extends Model
     //FIX STATUS (AMBIL DARI PEMINJAMAN)
     public function peminjamanAktif()
     {
-        return $this->hasOne(Peminjaman::class, 'sarpras_item_id')
-            ->whereIn('status', ['Menunggu', 'Disetujui']);
+        return $this->hasOne(PeminjamanDetail::class, 'sarpras_item_id')
+            ->whereHas('peminjaman', function ($q) {
+                $q->whereIn('status', ['Menunggu', 'Disetujui']);
+            });
     }
 }

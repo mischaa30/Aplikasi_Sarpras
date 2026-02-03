@@ -22,13 +22,15 @@
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
+            /* penting */
             padding: 0 20px;
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
+
 
         /* Sidebar kiri */
         .sidebar {
@@ -82,8 +84,23 @@
 
     <!-- Topbar -->
     <div class="topbar">
-        <span class="me-3">Halo, {{ auth()->user()->username ?? 'Admin' }}</span>
-        <a href="/logout" class="btn btn-outline-primary btn-sm">Logout</a>
+
+        <!-- KIRI -->
+        <div class="fw-bold text-primary fs-5">
+            APLIKASI SARPRAS
+        </div>
+
+        <!-- KANAN -->
+        <div>
+            <span class="me-3">
+                Halo, {{ auth()->user()->username ?? 'Admin' }}
+            </span>
+
+            <a href="/logout" class="btn btn-outline-primary btn-sm">
+                Logout
+            </a>
+        </div>
+
     </div>
 
     <!-- Sidebar -->
@@ -93,7 +110,7 @@
             Dashboard
         </a>
 
-              <span class="text-white fw-bold mt-3 mb-2">Master Data</span>
+        <span class="text-white fw-bold mt-3 mb-2">Master Data</span>
 
         <a href="{{ route('admin.user.index') }}"
             class="{{ request()->routeIs('admin.user.*') ? 'active bg-primary text-white' : '' }}">
@@ -103,6 +120,11 @@
         <a href="{{ route('admin.kategori.index') }}"
             class="{{ request()->routeIs('admin.kategori.*') ? 'active bg-primary text-white' : '' }}">
             Kategori Sarpras
+        </a>
+
+        <a href="{{ route('admin.lokasi.index') }}"
+            class="{{ request()->routeIs('admin.lokasi.*') ? 'active bg-primary text-white' : '' }}">
+            Lokasi
         </a>
 
         <a href="{{ route('admin.sarpras.index') }}"

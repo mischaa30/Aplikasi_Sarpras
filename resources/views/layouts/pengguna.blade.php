@@ -24,7 +24,8 @@
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: space-between;
+            /* penting */
             padding: 0 20px;
             position: sticky;
             top: 0;
@@ -82,10 +83,24 @@
 
     <!-- Topbar -->
     <div class="topbar">
-        <span class="me-3">Halo, {{ auth()->user()->username ?? 'User' }}</span>
-        <a href="/logout" class="btn btn-outline-primary btn-sm">Logout</a>
-    </div>
 
+        <!-- KIRI -->
+        <div class="fw-bold text-primary fs-5">
+            APLIKASI SARPRAS
+        </div>
+
+        <!-- KANAN -->
+        <div>
+            <span class="me-3">
+                Halo, {{ auth()->user()->username ?? 'Admin' }}
+            </span>
+
+            <a href="/logout" class="btn btn-outline-primary btn-sm">
+                Logout
+            </a>
+        </div>
+
+    </div>
 
     <!-- Sidebar -->
     <div class="sidebar d-flex flex-column p-3">

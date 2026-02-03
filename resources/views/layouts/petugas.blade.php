@@ -18,15 +18,18 @@
         /* Topbar */
         .topbar {
             height: 60px;
-            background: #fff;
+            width: 100%;
+            background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
-            justify-content: flex-end;
             align-items: center;
+            justify-content: space-between;
+            /* penting */
             padding: 0 20px;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         /* Sidebar */
@@ -76,13 +79,23 @@
 
     <!-- Topbar -->
     <div class="topbar">
-        <span class="me-3">
-            Halo, {{ auth()->user()->username ?? 'Petugas' }}
-        </span>
 
-        <a href="/logout" class="btn btn-outline-primary btn-sm">
-            Logout
-        </a>
+        <!-- KIRI -->
+        <div class="fw-bold text-primary fs-5">
+            APLIKASI SARPRAS
+        </div>
+
+        <!-- KANAN -->
+        <div>
+            <span class="me-3">
+                Halo, {{ auth()->user()->username ?? 'Admin' }}
+            </span>
+
+            <a href="/logout" class="btn btn-outline-primary btn-sm">
+                Logout
+            </a>
+        </div>
+
     </div>
 
 
@@ -91,8 +104,16 @@
 
         <!-- Dashboard -->
         <a href="{{ route('petugas.dashboard') }}"
-           class="{{ request()->routeIs('petugas.dashboard') ? 'active' : '' }}">
+            class="{{ request()->routeIs('petugas.dashboard') ? 'active' : '' }}">
             Dashboard
+        </a>
+
+        <hr class="text-gray-400">
+        <!-- Sarpras -->
+        <span class="text-white fw-bold mt-3 mb-2">Sarpras</span>
+
+        <a href="{{ route('petugas.sarpras.index') }}">
+            Data Sarpras
         </a>
 
         <hr class="text-gray-400">

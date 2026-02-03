@@ -39,30 +39,31 @@
 
                         <td>
                             @if($item->peminjamanAktif)
-                                <span class="badge bg-warning">
-                                    {{ $item->peminjamanAktif->status }}
-                                </span>
+                            <span class="badge bg-warning">
+                                Dipinjam
+                            </span>
                             @else
-                                <span class="badge bg-success">
-                                    Tersedia
-                                </span>
+                            <span class="badge bg-success">
+                                Tersedia
+                            </span>
                             @endif
                         </td>
+
 
                         <td>
 
                             @if(
-                                $item->kondisi->nama_kondisi == 'Baik'
-                                && !$item->peminjamanAktif
+                            in_array($item->kondisi->nama_kondisi, ['Baik','Rusak Ringan'])
+                            && !$item->peminjamanAktif
                             )
 
-                                <a href="{{ route('pengguna.peminjaman.create', $item->id) }}"
-                                   class="btn btn-sm btn-success">
-                                    Pinjam
-                                </a>
+                            <a href="{{ route('pengguna.peminjaman.create', $item->id) }}"
+                                class="btn btn-sm btn-success">
+                                Pinjam
+                            </a>
 
                             @else
-                                <span class="text-muted">-</span>
+                            <span class="text-muted">-</span>
                             @endif
 
                         </td>

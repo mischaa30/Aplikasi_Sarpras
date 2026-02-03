@@ -22,4 +22,8 @@ class PeminjamanDetail extends Model
         return $this->belongsTo(SarprasItem::class, 'sarpras_item_id');
     }
 
+    public function peminjaman()
+    {
+        return $this->belongsTo(Peminjaman::class);
+    }
 }

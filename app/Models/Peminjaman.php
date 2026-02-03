@@ -18,7 +18,8 @@ class Peminjaman extends Model
         'tgl_pinjam',
         'tgl_kembali_actual',
         'tujuan',
-        'status'
+        'status',
+        'disetujui_oleh'
     ];
 
     public function item()
@@ -37,5 +38,9 @@ class Peminjaman extends Model
     public function detail()
     {
         return $this->hasMany(PeminjamanDetail::class, 'peminjaman_id');
+    }
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'disetujui_oleh');
     }
 }

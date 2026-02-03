@@ -12,11 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class PengaduanController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Helper pilih view berdasarkan prefix route
-    |--------------------------------------------------------------------------
-    */
     private function roleView($view, $data = [])
     {
         if (request()->is('admin/*')) {
@@ -35,17 +30,17 @@ class PengaduanController extends Controller
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | ================= USER =================
-    |--------------------------------------------------------------------------
+    ================= USER =================
     */
 
     public function myPengaduan()
     {
-        $data = Pengaduan::with('status','kategori','lokasi')
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->get();
+        $data = Pengaduan::with(
+            'status','kategori','lokasi','diprosesOleh'
+        )
+        ->where('user_id', Auth::id())
+        ->latest()
+        ->get();
 
         return view('pengguna.pengaduan.my', compact('data'));
     }
@@ -82,7 +77,8 @@ class PengaduanController extends Controller
             'lokasi_id' => $request->lokasi_id,
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
-            'foto' => $foto
+            'foto' => $foto,
+            'diproses_oleh' => null
         ]);
 
         return redirect()
@@ -91,22 +87,22 @@ class PengaduanController extends Controller
     }
 
     /*
-    |--------------------------------------------------------------------------
-    | ============= ADMIN + PETUGAS =============
-    |--------------------------------------------------------------------------
+    ================= ADMIN + PETUGAS =================
     */
 
     public function index()
     {
-        $data = Pengaduan::with('user','status','kategori')
-            ->whereHas('status', function ($q) {
-                $q->whereNotIn(
-                    'nama_status_pengaduan',
-                    ['Selesai','Ditutup']
-                );
-            })
-            ->latest()
-            ->get();
+        $data = Pengaduan::with(
+            'user','status','kategori','diprosesOleh'
+        )
+        ->whereHas('status', function ($q) {
+            $q->whereNotIn(
+                'nama_status_pengaduan',
+                ['Selesai','Ditutup']
+            );
+        })
+        ->latest()
+        ->get();
 
         return $this->roleView('pengaduan.index', compact('data'));
     }
@@ -117,7 +113,9 @@ class PengaduanController extends Controller
             'user',
             'status',
             'kategori',
-            'catatan.user'
+            'lokasi',
+            'catatan.user',
+            'diprosesOleh'
         )->findOrFail($id);
 
         $status = Status_Pengaduan::all();
@@ -135,10 +133,15 @@ class PengaduanController extends Controller
                 'required|exists:status_pengaduans,id'
         ]);
 
-        Pengaduan::findOrFail($id)->update([
-            'status_pengaduan_id' =>
-                $request->status_pengaduan_id
-        ]);
+        $pengaduan = Pengaduan::findOrFail($id);
+
+        $pengaduan->status_pengaduan_id =
+            $request->status_pengaduan_id;
+
+        // ✅ simpan siapa yg memproses
+        $pengaduan->diproses_oleh = Auth::id();
+
+        $pengaduan->save();
 
         return back()->with('success','Status diubah');
     }

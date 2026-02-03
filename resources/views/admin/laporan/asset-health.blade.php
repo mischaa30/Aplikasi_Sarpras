@@ -23,7 +23,7 @@
             <tbody>
                 @forelse($alatRusak as $item)
                 <tr>
-                    <td>{{ $item->sarpras->nama_sarpras }}</td>
+                    <td>{{ $item->item->nama_item ?? '-' }}</td>
                     <td>
                         <span class="badge bg-primary-subtle text-primary">
                             {{ $item->kondisi->nama_kondisi }}
@@ -57,7 +57,7 @@
             <tbody>
                 @foreach($alatSeringRusak as $row)
                 <tr>
-                    <td>{{ $row->sarpras->nama_sarpras }}</td>
+                    <td>{{ $item->item->nama_item ?? '-' }}</td>
                     <td>{{ $row->total }}</td>
                 </tr>
                 @endforeach
@@ -83,7 +83,7 @@
             <tbody>
                 @foreach($alatHilang as $item)
                 <tr>
-                    <td>{{ $item->sarpras->nama_sarpras }}</td>
+                    <td>{{ $item->item->nama_item ?? '-' }}</td>
                     <td>{{ $item->peminjaman->user->username ?? '-' }}</td>
                     <td>{{ $item->created_at->format('d-m-Y') }}</td>
                 </tr>

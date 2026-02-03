@@ -17,7 +17,8 @@ class Pengaduan extends Model
         'lokasi_id',
         'judul',
         'deskripsi',
-        'foto'
+        'foto',
+        'diproses_oleh'
     ];
 
     public function user()
@@ -42,5 +43,9 @@ class Pengaduan extends Model
     public function lokasi()
     {
         return $this->belongsTo(Lokasi::class);
+    }
+    public function diprosesOleh()
+    {
+        return $this->belongsTo(User::class, 'diproses_oleh');
     }
 }

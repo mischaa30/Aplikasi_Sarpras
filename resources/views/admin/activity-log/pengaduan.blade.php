@@ -33,6 +33,7 @@
         <div class="card-header bg-primary text-white">
             Data Pengaduan
         </div>
+
         <div class="card-body">
             <table class="table table-bordered table-striped align-middle">
                 <thead class="table-light">
@@ -42,47 +43,71 @@
                         <th>Judul</th>
                         <th>Status</th>
                         <th>Tanggal</th>
+                        <th>Diproses Oleh</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse($data as $d)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $d->user->username ?? '-' }}</td>
                         <td>{{ $d->judul }}</td>
+
+                        {{-- STATUS --}}
                         <td>
                             @switch($d->status->nama_status_pengaduan ?? '')
-                            @case('Belum Di tindak lanjuti')
-                            <span class="badge bg-secondary">Belum Di tindak lanjuti</span>
-                            @break
 
-                            @case('Sedang Diproses')
-                            <span class="badge bg-warning text-dark">Sedang Diproses</span>
-                            @break
+                                @case('Belum Di tindak lanjuti')
+                                    <span class="badge bg-secondary">
+                                        Belum Ditindaklanjuti
+                                    </span>
+                                @break
 
-                            @case('Selesai')
-                            <span class="badge bg-success">Selesai</span>
-                            @break
+                                @case('Sedang Diproses')
+                                    <span class="badge bg-warning text-dark">
+                                        Sedang Diproses
+                                    </span>
+                                @break
 
-                            @case('Ditutup')
-                            <span class="badge bg-success">Ditutup</span>
-                            @break
+                                @case('Selesai')
+                                    <span class="badge bg-success">
+                                        Selesai
+                                    </span>
+                                @break
 
-                            @default
-                            <span class="badge bg-info">
-                                {{ $d->status->nama_status_pengaduan ?? '-' }}
-                            </span>
+                                @case('Ditutup')
+                                    <span class="badge bg-dark">
+                                        Ditutup
+                                    </span>
+                                @break
+
+                                @default
+                                    <span class="badge bg-info">
+                                        {{ $d->status->nama_status_pengaduan ?? '-' }}
+                                    </span>
+
                             @endswitch
                         </td>
+
+                        {{-- TANGGAL --}}
                         <td>{{ $d->created_at->format('d-m-Y') }}</td>
+
+                        {{-- DIPROSES --}}
+                        <td>
+                            {{ $d->diprosesOleh->username ?? '-' }}
+                        </td>
+
                     </tr>
+
                     @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted">
+                        <td colspan="6" class="text-center text-muted">
                             Tidak ada data
                         </td>
                     </tr>
                     @endforelse
+
                 </tbody>
             </table>
         </div>

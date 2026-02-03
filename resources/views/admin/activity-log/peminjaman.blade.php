@@ -39,6 +39,7 @@
                         <th>Tgl Pinjam</th>
                         <th>Tgl Kembali</th>
                         <th>Tujuan</th>
+                        <th>Disetujui Oleh</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,6 +51,7 @@
                         <td>{{ $p->tgl_pinjam }}</td>
                         <td>{{ $p->tgl_kembali_actual ?? '-' }}</td>
                         <td>{{ $p->tujuan }}</td>
+                        <td>{{ $p->approver->username ?? '-' }}</td>
                     </tr>
                     @empty
                     <tr>

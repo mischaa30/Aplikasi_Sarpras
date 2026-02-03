@@ -22,9 +22,10 @@ class PeminjamanController extends Controller
 
     public function create(SarprasItem $item)
     {
-        // hanya boleh pinjam jika kondisi Baik
-        if ($item->kondisi->nama_kondisi !== 'Baik') {
-            abort(403);
+        $kondisi = $item->kondisi->nama_kondisi ?? '';
+
+        if (!in_array($kondisi, ['Baik', 'Rusak Ringan'])) {
+            abort(403, 'Item tidak bisa dipinjam karena kondisi tidak layak');
         }
 
         return view('pengguna.peminjaman.create', compact('item'));
@@ -32,10 +33,10 @@ class PeminjamanController extends Controller
 
     public function store(Request $r, SarprasItem $item)
     {
+        $kondisi = $item->kondisi->nama_kondisi ?? '';
 
-        // hanya boleh pinjam jika kondisi Baik
-        if ($item->kondisi->nama_kondisi !== 'Baik') {
-            abort(403);
+        if (!in_array($kondisi, ['Baik', 'Rusak Ringan'])) {
+            abort(403, 'Item tidak bisa dipinjam karena kondisi tidak layak');
         }
 
         $r->validate([

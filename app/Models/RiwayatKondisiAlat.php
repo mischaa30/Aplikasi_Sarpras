@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SarprasItem;
 
 class RiwayatKondisiAlat extends Model
 {
@@ -17,7 +18,8 @@ class RiwayatKondisiAlat extends Model
         'sarpras_id',
         'kondisi_sarpras_id',
         'deskripsi',
-        'foto'
+        'foto',
+        'sarpras_item_id'
     ];
 
     public function peminjaman()
@@ -33,5 +35,10 @@ class RiwayatKondisiAlat extends Model
     public function kondisi()
     {
         return $this->belongsTo(KondisiSarpras::class, 'kondisi_sarpras_id');
+    }
+
+    public function item()
+    {
+        return $this->belongsTo(SarprasItem::class, 'sarpras_item_id');
     }
 }

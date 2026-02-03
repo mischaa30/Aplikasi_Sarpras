@@ -8,51 +8,78 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanAssetHealthController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $start = $request->start ?? now()->subMonths(6);
-        $end = $request->end ?? now();
+        $end   = $request->end ?? now();
 
-        //Daftar alat rusak atau butuh maintenance
-        $alatRusak = RiwayatKondisiAlat::with(['sarpras','kondisi'])
-        ->whereHas('kondisi',function($q) {
-            $q->whereIn('nama_kondisi',['Rusak Berat','Butuh Maintenance']);
-        })
-        ->whereBetween('created_at',[$start,$end])
-        ->get();
+        /* ============================
+           ALAT RUSAK / MAINTENANCE
+        ============================ */
+        $alatRusak = RiwayatKondisiAlat::with(['item','kondisi'])
+            ->whereNotNull('sarpras_item_id') 
+            ->whereHas('kondisi', function ($q) {
+                $q->whereIn('nama_kondisi', [
+                    'Rusak Berat',
+                    'Butuh Maintenance'
+                ]);
+            })
+            ->whereBetween('created_at', [$start, $end])
+            ->latest()
+            ->get();
 
-        //Alat Hilang
 
-        $alatHilang = RiwayatKondisiAlat::with(['sarpras', 'peminjaman.user'])
+        /* ============================
+           ALAT HILANG
+        ============================ */
+        $alatHilang = RiwayatKondisiAlat::with(['item','peminjaman.user'])
+            ->whereNotNull('sarpras_item_id') 
             ->whereHas('kondisi', function ($q) {
                 $q->where('nama_kondisi', 'Hilang');
             })
+            ->latest()
             ->get();
 
-        //Top 10 alat paling sering rusak
+
+        /* ============================
+           TOP 10 PALING SERING RUSAK (BERDASARKAN ITEM)
+        ============================ */
         $alatSeringRusak = RiwayatKondisiAlat::select(
-            'sarpras_id',
-            DB::raw('COUNT(*) as total')
-        )
-        ->whereHas('kondisi',function ($q){
-            $q->whereIn('nama_kondisi',['Rusak Ringan','Rusak Berat','Butuh Maintenance']);
-        })
-        ->whereBetween('created_at',[$start,$end])
-        ->groupBy('sarpras_id')
-        ->orderByDesc('total')
-        ->with('sarpras')
-        ->limit(10)
-        ->get();
-
-        //Maintenance history (timeline)
-        $maintenanceHistory = RiwayatKondisiAlat::with(['sarpras', 'kondisi'])
-            ->orderBy('created_at', 'desc')
+                'sarpras_item_id',
+                DB::raw('COUNT(*) as total')
+            )
+            ->whereNotNull('sarpras_item_id')
+            ->whereHas('kondisi', function ($q) {
+                $q->whereIn('nama_kondisi', [
+                    'Rusak Ringan',
+                    'Rusak Berat',
+                    'Butuh Maintenance'
+                ]);
+            })
+            ->whereBetween('created_at', [$start, $end])
+            ->groupBy('sarpras_item_id')
+            ->orderByDesc('total')
+            ->with('item')
+            ->limit(10)
             ->get();
 
-        //Chart: trend kerusakan per bulan
+
+        /* ============================
+           TIMELINE MAINTENANCE
+        ============================ */
+        $maintenanceHistory = RiwayatKondisiAlat::with(['item','kondisi'])
+            ->whereNotNull('sarpras_item_id')
+            ->latest()
+            ->get();
+
+
+        /* ============================
+           CHART TREND KERUSAKAN
+        ============================ */
         $trendKerusakan = RiwayatKondisiAlat::select(
-            DB::raw("DATE_FORMAT(created_at,'%Y-%m') as bulan"),
-            DB::raw('COUNT(*) as total')
-        )
+                DB::raw("DATE_FORMAT(created_at,'%Y-%m') as bulan"),
+                DB::raw('COUNT(*) as total')
+            )
             ->whereHas('kondisi', function ($q) {
                 $q->whereIn('nama_kondisi', [
                     'Rusak Ringan',
@@ -63,6 +90,7 @@ class LaporanAssetHealthController extends Controller
             ->groupBy('bulan')
             ->orderBy('bulan')
             ->get();
+
 
         return view('admin.laporan.asset-health', compact(
             'alatRusak',

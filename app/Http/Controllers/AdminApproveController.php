@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class AdminApproveController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Tentukan folder view berdasarkan prefix URL
-    |--------------------------------------------------------------------------
-    */
     private function roleView($view, $data = [])
     {
         if (request()->is('admin/*')) {
@@ -25,14 +20,17 @@ class AdminApproveController extends Controller
         abort(403);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | List peminjaman
-    |--------------------------------------------------------------------------
-    */
+    /* ===============================
+       LIST
+    =============================== */
     public function index()
     {
-        $peminjaman = Peminjaman::with(['user','sarpras','item'])
+        $peminjaman = Peminjaman::with([
+                'user',
+                'sarpras',
+                'item',
+                'approver' // ← TAMBAH
+            ])
             ->whereNull('tgl_kembali_actual')
             ->whereIn('status',['Menunggu','Disetujui'])
             ->latest()
@@ -41,50 +39,54 @@ class AdminApproveController extends Controller
         return $this->roleView('peminjaman.index', compact('peminjaman'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Setujui
-    |--------------------------------------------------------------------------
-    */
+    /* ===============================
+       SETUJUI
+    =============================== */
     public function setujui($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->status = 'Disetujui';
-        $peminjaman->save();
+
+        $peminjaman->update([
+            'status' => 'Disetujui',
+            'disetujui_oleh' => auth()->id(), // ← SIMPAN ACC
+        ]);
 
         return back()->with('success','Peminjaman disetujui');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Tolak
-    |--------------------------------------------------------------------------
-    */
+    /* ===============================
+       TOLAK
+    =============================== */
     public function tolak(Request $r, $id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
-        $peminjaman->status = 'Ditolak';
-        $peminjaman->alasan = $r->alasan;
-        $peminjaman->save();
+
+        $peminjaman->update([
+            'status' => 'Ditolak',
+            'alasan' => $r->alasan,
+            'disetujui_oleh' => auth()->id(), // ← CATAT JUGA PENOLAK
+        ]);
 
         return back()->with('success','Peminjaman ditolak');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Bukti
-    |--------------------------------------------------------------------------
-    */
+    /* ===============================
+       BUKTI
+    =============================== */
     public function bukti($id)
     {
-        $peminjaman = Peminjaman::with(['user','item.sarpras'])
-            ->findOrFail($id);
+        $peminjaman = Peminjaman::with([
+            'user',
+            'item.sarpras',
+            'approver' // ← TAMBAH
+        ])->findOrFail($id);
 
         $qrData = [
             'peminjam' => $peminjaman->user->username ?? '-',
             'item' => $peminjaman->item?->nama_item ?? '-',
             'tgl_pinjam' => $peminjaman->tgl_pinjam,
             'status' => $peminjaman->status,
+            'acc' => $peminjaman->approver->username ?? '-',
         ];
 
         return $this->roleView('peminjaman.bukti', compact('peminjaman','qrData'));

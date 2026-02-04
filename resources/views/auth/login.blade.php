@@ -68,6 +68,22 @@
 <div class="login-card">
     <h3>Login</h3>
 
+    @if (session('eror'))
+        <div class="alert alert-danger">
+            {{ session('eror') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <form method="POST" action="/login">
         @csrf
         <input type="text" name="username" placeholder="Username" required>

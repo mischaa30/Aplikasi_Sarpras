@@ -57,7 +57,7 @@
             <tbody>
                 @foreach($alatSeringRusak as $row)
                 <tr>
-                    <td>{{ $item->item->nama_item ?? '-' }}</td>
+                    <td>{{ $row->item->nama_item ?? '-' }}</td>
                     <td>{{ $row->total }}</td>
                 </tr>
                 @endforeach

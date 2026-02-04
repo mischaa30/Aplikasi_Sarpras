@@ -72,6 +72,14 @@
             color: #fff;
             opacity: .8;
         }
+
+        /* Print styles */
+        @media print {
+            .topbar, .sidebar, .no-print { display: none !important; }
+            body { background: #fff !important; }
+            main { margin-left: 0 !important; padding: 10px !important; }
+            .card { box-shadow: none !important; border: none !important; }
+        }
     </style>
 </head>
 

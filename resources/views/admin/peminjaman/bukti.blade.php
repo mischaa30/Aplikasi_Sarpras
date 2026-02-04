@@ -53,7 +53,8 @@
     </div>
 </div>
 
-<div class="d-flex justify-content-end gap-2">
+<div class="d-flex justify-content-end gap-2 no-print">
+    <button type="button" class="btn btn-primary" onclick="window.print()">Cetak</button>
     <a href="{{ route('admin.peminjaman.index') }}"
         class="btn btn-outline-secondary">
         Kembali

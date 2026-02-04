@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Peminjaman;
 use App\Models\PeminjamanDetail;
 use App\Models\SarprasItem;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,5 +73,22 @@ class PeminjamanController extends Controller
         ]);
 
         return redirect()->route('pengguna.peminjaman.index');
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $query = Peminjaman::with(['user', 'item', 'approver']);
+
+        // Kalau mau filter tanggal (opsional)
+        if ($request->filled('tanggal')) {
+            $query->whereDate('tgl_pinjam', $request->tanggal);
+        }
+
+        $data = $query->latest()->get();
+
+        $pdf = Pdf::loadView('admin.activity-log.pdf', compact('data'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('activity-log.pdf');
     }
 }

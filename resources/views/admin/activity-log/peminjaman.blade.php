@@ -7,6 +7,13 @@
 
     <h3 class="mb-4">📋 Activity Log Peminjaman</h3>
 
+    <a href="{{ route('admin.activity.export.pdf', request()->query())}}"
+        class="btn btn-danger mb-3">
+
+        📄 Export PDF
+    </a>
+
+
     <!-- FILTER -->
     <div class="card mb-4">
         <div class="card-body">

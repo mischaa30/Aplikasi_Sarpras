@@ -145,6 +145,7 @@
 
     <!-- Content -->
     <main>
+        @include('partials.alerts')
         @yield('content')
     </main>
 

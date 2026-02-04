@@ -173,22 +173,21 @@ Route::middleware(['auth', 'admin'])
         /* Activity Log */
         Route::prefix('activity-log')->name('activity.')->group(function () {
 
-            Route::get(
-                '/login',
-                [ActivityLogController::class, 'login']
-            )->name('login');
+            Route::get('/login', [ActivityLogController::class, 'login'])
+                ->name('login');
 
-            Route::get(
-                '/peminjaman',
-                [ActivityLogController::class, 'peminjaman']
-            )->name('peminjaman');
+            Route::get('/peminjaman', [ActivityLogController::class, 'peminjaman'])
+                ->name('peminjaman');
 
+            Route::get('/pengaduan', [ActivityLogController::class, 'pengaduan'])
+                ->name('pengaduan');
+
+            // PDF EXPORT
             Route::get(
-                '/pengaduan',
-                [ActivityLogController::class, 'pengaduan']
-            )->name('pengaduan');
+                '/export-pdf',
+                [PeminjamanController::class, 'exportPdf']
+            )->name('export.pdf');
         });
-
 
         /* Laporan */
         Route::prefix('laporan')->name('laporan.')->group(function () {
@@ -215,11 +214,11 @@ Route::middleware(['auth', 'petugas'])
         Route::get('/dashboard', fn() => view('petugas.dashboard'))
             ->name('dashboard');
 
-    // sarpras (DATA SAJA)
-    Route::get(
-        '/sarpras',
-        [SarprasController::class, 'indexPetugas']
-    )->name('sarpras.index');
+        // sarpras (DATA SAJA)
+        Route::get(
+            '/sarpras',
+            [SarprasController::class, 'indexPetugas']
+        )->name('sarpras.index');
 
         /* =====================
            PEMINJAMAN (APPROVE)

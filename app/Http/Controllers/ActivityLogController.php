@@ -13,7 +13,12 @@ class ActivityLogController extends Controller
     // LOG PEMINJAMAN
     public function peminjaman(Request $request)
     {
-        $query = Peminjaman::with(['user', 'item.sarpras'])
+        $query = Peminjaman::with([
+            'user', 
+            'item.sarpras',
+            'riwayatKondisi.kondisi',
+            'riwayatKondisi.item'
+        ])
             ->whereNotIn('status', ['Menunggu', 'Dipinjam']);
 
         if ($request->filled('tanggal')) {

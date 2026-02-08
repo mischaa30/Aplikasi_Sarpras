@@ -45,4 +45,9 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(User::class, 'disetujui_oleh');
     }
+
+    public function riwayatKondisi()
+    {
+        return $this->hasMany(RiwayatKondisiAlat::class, 'peminjaman_id');
+    }
 }

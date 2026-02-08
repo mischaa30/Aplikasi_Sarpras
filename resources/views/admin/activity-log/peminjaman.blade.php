@@ -47,6 +47,7 @@
                         <th>Tgl Kembali</th>
                         <th>Tujuan</th>
                         <th>Disetujui Oleh</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,10 +60,79 @@
                         <td>{{ $p->tgl_kembali_actual ?? '-' }}</td>
                         <td>{{ $p->tujuan }}</td>
                         <td>{{ $p->approver->username ?? '-' }}</td>
+                        <td>
+                            @if($p->status === 'Dikembalikan' && $p->riwayatKondisi->count() > 0)
+                                <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ $p->id }}" aria-expanded="false">
+                                    Lihat Detail
+                                </button>
+                            @else
+                                <span class="text-muted">-</span>
+                            @endif
+                        </td>
                     </tr>
+
+                    {{-- DETAIL PENGEMBALIAN --}}
+                    @if($p->status === 'Dikembalikan' && $p->riwayatKondisi->count() > 0)
+                    <tr class="collapse" id="detail-{{ $p->id }}">
+                        <td colspan="8">
+                            <div class="p-3 bg-light">
+                                <h6 class="fw-bold mb-3">📦 Detail Pengembalian</h6>
+                                
+                                @foreach($p->riwayatKondisi as $riwayat)
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <small class="text-muted">Item:</small>
+                                                <br>
+                                                <strong>{{ $riwayat->item?->nama_item ?? '-' }}</strong>
+                                            </div>
+
+                                            <div class="col-md-2">
+                                                <small class="text-muted">Kondisi:</small>
+                                                <br>
+                                                <span class="badge bg-info">
+                                                    {{ $riwayat->kondisi?->nama_kondisi ?? '-' }}
+                                                </span>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <small class="text-muted">Keterangan:</small>
+                                                <br>
+                                                <small>
+                                                    @if($riwayat->deskripsi)
+                                                        {{ $riwayat->deskripsi }}
+                                                    @else
+                                                        <span class="text-muted italic">-</span>
+                                                    @endif
+                                                </small>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                @if($riwayat->foto)
+                                                <small class="text-muted">📸 Foto:</small>
+                                                <br>
+                                                <img src="{{ asset('storage/' . $riwayat->foto) }}" 
+                                                     alt="Foto Kondisi" 
+                                                     class="img-thumbnail" 
+                                                     style="max-width: 150px; max-height: 150px; cursor: pointer;"
+                                                     onclick="window.open('{{ asset('storage/' . $riwayat->foto) }}', '_blank')">
+                                                @else
+                                                <small class="text-muted">Tidak ada foto</small>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </td>
+                    </tr>
+                    @endif
+
                     @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted">
+                        <td colspan="8" class="text-center text-muted">
                             Tidak ada data
                         </td>
                     </tr>

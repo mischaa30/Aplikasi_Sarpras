@@ -37,7 +37,7 @@
                 <div class="border rounded p-3 mb-4">
 
                     <h6 class="fw-bold mb-3">
-                        {{ $d->sarprasItem->nama_item }}
+                        {{ $d->sarprasItem?->nama_item ?? '-' }}
                     </h6>
 
                     <input type="hidden"
@@ -46,7 +46,7 @@
 
                     {{-- KONDISI --}}
                     <div class="mb-3">
-                        <label class="form-label">Kondisi Barang</label>
+                        <label class="form-label">Kondisi Barang Saat Kembali</label>
 
                         <select name="kondisi_sarpras_id[]"
                                 class="form-select"
@@ -65,22 +65,23 @@
 
                     {{-- KETERANGAN --}}
                     <div class="mb-3">
-                        <label class="form-label">Keterangan</label>
+                        <label class="form-label">Keterangan Pengembalian</label>
 
                         <textarea name="deskripsi[]"
                                   class="form-control"
                                   rows="2"
-                                  placeholder="Keterangan (opsional)"></textarea>
+                                  placeholder="Keterangan kondisi alat saat pengembalian (opsional)"></textarea>
                     </div>
 
                     {{-- FOTO --}}
                     <div class="mb-3">
-                        <label class="form-label">Foto Kondisi</label>
+                        <label class="form-label">Foto Kondisi Alat</label>
 
                         <input type="file"
                                name="foto[]"
                                class="form-control"
                                accept="image/*">
+                        <small class="text-muted">Format: JPG, PNG. Ukuran maksimal: 5MB</small>
                     </div>
 
                 </div>

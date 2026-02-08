@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use App\Models\User;
 use App\Models\Sarpras;
 use App\Models\SarprasItem;
@@ -19,7 +20,8 @@ class Peminjaman extends Model
         'tgl_kembali_actual',
         'tujuan',
         'status',
-        'disetujui_oleh'
+        'disetujui_oleh',
+        'alasan'
     ];
 
     public function item()

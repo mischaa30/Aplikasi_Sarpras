@@ -28,6 +28,7 @@
                         <th>Barang</th>
                         <th>Tanggal</th>
                         <th>Status</th>
+                        <th>Keterangan</th>
                     </tr>
                 </thead>
 
@@ -44,15 +45,40 @@
                         <td>{{ $p->tgl_pinjam }}</td>
 
                         <td>
+                            @if($p->status === 'Ditolak')
+                            <span class="badge bg-danger">
+                                {{ $p->status }}
+                            </span>
+                            @elseif($p->status === 'Disetujui')
+                            <span class="badge bg-success">
+                                {{ $p->status }}
+                            </span>
+                            @elseif($p->status === 'Dikembalikan')
+                            <span class="badge bg-secondary">
+                                {{ $p->status }}
+                            </span>
+                            @else
                             <span class="badge bg-info">
                                 {{ $p->status }}
                             </span>
+                            @endif
+                        </td>
+
+                        <td>
+                            @if($p->status === 'Ditolak' && $p->alasan)
+                            <small class="text-danger fw-semibold">
+                                <strong>Alasan Penolakan:</strong><br>
+                                {{ $p->alasan }}
+                            </small>
+                            @else
+                            <span class="text-muted">-</span>
+                            @endif
                         </td>
                     </tr>
 
                     @empty
                     <tr>
-                        <td colspan="4"
+                        <td colspan="5"
                             class="text-center text-muted">
                             Belum ada data peminjaman
                         </td>

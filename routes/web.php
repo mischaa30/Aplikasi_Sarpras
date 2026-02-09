@@ -180,16 +180,7 @@ Route::middleware(['auth', 'admin', 'no-back'])
 
         /* Pengembalian */
         Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-
-            Route::get(
-                'scanner',
-                [PengembalianController::class, 'scanner']
-            )->name('scanner');
-
-            Route::post(
-                'scan',
-                [PengembalianController::class, 'scan']
-            )->name('scan');
+            
 
             Route::get(
                 '{peminjaman}',
@@ -318,16 +309,7 @@ Route::middleware(['auth', 'petugas', 'no-back'])
            PENGEMBALIAN
         ====================== */
         Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-
-            Route::get(
-                'scanner',
-                [PengembalianController::class, 'scanner']
-            )->name('scanner');
-
-            Route::post(
-                'scan',
-                [PengembalianController::class, 'scan']
-            )->name('scan');
+            
 
             Route::get(
                 '{peminjaman}',

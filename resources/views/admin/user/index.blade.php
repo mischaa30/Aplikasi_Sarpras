@@ -49,13 +49,12 @@
 
                         <form action="{{ route('admin.user.destroy', $u->id) }}"
                             method="POST"
-                            class="d-inline confirm-delete"
-                            data-confirm-message="Yakin hapus user?">
+                            class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button
                                 class="btn btn-danger btn-sm"
-                                type="submit">
+                                onclick="return confirm('Yakin hapus user?')">
                                 Hapus
                             </button>
                         </form>

@@ -69,5 +69,8 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'petugas' => \App\Http\Middleware\PetugasMiddleware::class,
         'pengguna' => \App\Http\Middleware\PenggunaMiddleware::class,
+
+        'no-back' => \App\Http\Middleware\NoBackHistory::class,
+
     ];
 }

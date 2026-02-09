@@ -56,14 +56,16 @@
                         <td>
                             @if($p->status === 'Menunggu')
                             <div class="d-flex flex-column gap-1">
-                                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/setujui">
+                                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/setujui" class="confirm-approve"
+                                    data-confirm-message="Setujui peminjaman ini?">
                                     @csrf
                                     <button class="btn btn-success btn-sm w-100">
                                         Setujui
                                     </button>
                                 </form>
 
-                                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/tolak">
+                                <form method="POST" action="/admin/peminjaman/{{ $p->id }}/tolak" class="confirm-reject"
+                                    data-confirm-message="Tolak peminjaman ini?">
                                     @csrf
                                     <input type="text"
                                         name="alasan"

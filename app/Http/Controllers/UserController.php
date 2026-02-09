@@ -101,15 +101,17 @@ class UserController extends Controller
     {
         $r->validate([
             'username' => 'required',
-            'id_role'  => 'required'
+            'id_role'  => 'required',
+            'password' => 'nullable|min:4' // password boleh kosong
         ]);
 
         $data = [
             'username' => $r->username,
-            'id_role' => $r->id_role
+            'id_role'  => $r->id_role
         ];
 
-        if ($r->password) {
+        // Kalau password diisi → update
+        if (!empty($r->password)) {
             $data['password'] = Hash::make($r->password);
         }
 

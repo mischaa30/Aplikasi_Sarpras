@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 | ADMIN
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth', 'admin','no-back'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -205,7 +205,7 @@ Route::middleware(['auth', 'admin'])
 | PETUGAS
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'petugas'])
+Route::middleware(['auth', 'petugas','no-back'])
     ->prefix('petugas')
     ->name('petugas.')
     ->group(function () {
@@ -301,7 +301,7 @@ Route::middleware(['auth', 'petugas'])
 | PENGGUNA
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'pengguna'])
+Route::middleware(['auth', 'pengguna','no-back'])
     ->prefix('pengguna')
     ->name('pengguna.')
     ->group(function () {

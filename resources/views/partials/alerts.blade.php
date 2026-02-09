@@ -62,7 +62,61 @@
         });
 
 
-        // SUBMIT CONFIRM (CREATE & UPDATE)
+        // APPROVE CONFIRM
+        document.querySelectorAll('form.confirm-approve').forEach(function(form){
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+
+                let msg = form.dataset.confirmMessage || 'Yakin ingin menyetujui peminjaman ini?';
+
+                Swal.fire({
+                    title: msg,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Setujui',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then(function(res){
+
+                    if(res.isConfirmed){
+                        form.submit();
+                    }
+
+                });
+            });
+
+        });
+
+
+        // REJECT CONFIRM
+        document.querySelectorAll('form.confirm-reject').forEach(function(form){
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+
+                let msg = form.dataset.confirmMessage || 'Yakin ingin menolak peminjaman ini?';
+
+                Swal.fire({
+                    title: msg,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Tolak',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then(function(res){
+
+                    if(res.isConfirmed){
+                        form.submit();
+                    }
+
+                });
+            });
+
+        });
+
+
+        // SUBMIT CONFIRM
         document.querySelectorAll('form.confirm-submit').forEach(function(form){
 
             form.addEventListener('submit', function(e){
@@ -74,7 +128,7 @@
                     title: msg,
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonText: 'Ya, simpan',
+                    confirmButtonText: 'Ya, Simpan',
                     cancelButtonText: 'Batal',
                     reverseButtons: true
                 }).then(function(res){

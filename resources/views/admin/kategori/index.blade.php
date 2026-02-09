@@ -55,13 +55,12 @@
 
                         <form method="POST"
                             action="{{ route('admin.kategori.destroy', $parent->id) }}"
-                            class="d-inline confirm-delete"
-                            data-confirm-message="Yakin ingin menghapus kategori ini?">
+                            class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button
                                 class="btn btn-danger btn-sm"
-                                type="submit">
+                                onclick="return confirm('Yakin ingin menghapus kategori ini?')">
                                 Hapus
                             </button>
                         </form>
@@ -85,13 +84,12 @@
 
                         <form method="POST"
                             action="{{ route('admin.kategori.destroy', $child->id) }}"
-                            class="d-inline confirm-delete"
-                            data-confirm-message="Yakin ingin menghapus kategori ini?">
+                            class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button
                                 class="btn btn-danger btn-sm"
-                                type="submit">
+                                onclick="return confirm('Yakin ingin menghapus kategori ini?')">
                                 Hapus
                             </button>
                         </form>

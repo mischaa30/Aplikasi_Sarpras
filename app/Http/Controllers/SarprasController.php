@@ -167,7 +167,7 @@ class SarprasController extends Controller
     {
         $q = $request->q ?? null;
 
-        $sarpras = Sarpras::with(['items.kondisi', 'items.peminjamanAktif'])->findOrFail($id);
+        $sarpras = Sarpras::with(['items.kondisi', 'items.peminjamanAktif','lokasi'])->findOrFail($id);
 
         // filter items if query provided
         if ($q) {
@@ -209,7 +209,7 @@ class SarprasController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = Sarpras::with(['lokasi', 'kategori.parent']);
+        $query = Sarpras::with(['lokasi', 'kategori.parent','items.kondisi']);
 
         if ($q) {
             $query->where(function ($qq) use ($q) {
@@ -228,4 +228,15 @@ class SarprasController extends Controller
 
         return view('petugas.sarpras.index', compact('sarpras'));
     }
+
+    public function detailPetugas(Sarpras $sarpras)
+    {
+        $sarpras->load([
+            'lokasi',
+            'items.kondisi'
+        ]);
+
+        return view('petugas.sarpras.detail', compact('sarpras'));
+    }
+
 }

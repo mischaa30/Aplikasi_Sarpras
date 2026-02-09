@@ -123,12 +123,36 @@ class KategoriSarprasController extends Controller
 
         return redirect()->route('admin.kategori.index');
     }
-
     public function destroy($id)
-    {
-        KategoriSarpras::findOrFail($id)->delete();
-        return redirect()->route('admin.kategori.index');
+{
+    $kategori = KategoriSarpras::findOrFail($id);
+
+    // ❌ Cek apakah punya sub kategori
+    $punyaChild = KategoriSarpras::where('parent_id', $id)->exists();
+
+    if ($punyaChild) {
+        return redirect()->back()->with(
+            'error',
+            'Kategori tidak bisa dihapus karena masih memiliki sub-kategori.'
+        );
     }
+
+    // ❌ Cek apakah dipakai sarpras
+    $dipakai = Sarpras::where('kategori_id', $id)->exists();
+
+    if ($dipakai) {
+        return redirect()->back()->with(
+            'error',
+            'Kategori tidak bisa dihapus karena masih digunakan oleh data sarpras.'
+        );
+    }
+
+    $kategori->delete();
+
+    return redirect()->route('admin.kategori.index')
+        ->with('success', 'Kategori berhasil dihapus');
+}
+
     public function userIndex(Request $request)
     {
         $q = $request->q ?? null;

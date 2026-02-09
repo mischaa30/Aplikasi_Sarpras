@@ -30,6 +30,7 @@
                     <th>Nama</th>
                     <th>Lokasi</th>
                     <th>Kategori</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
 
@@ -44,16 +45,22 @@
 
                     <td>
                         @if($s->kategori && $s->kategori->parent)
-                        {{ $s->kategori->parent->nama_kategori }}
-                        -
-                        {{ $s->kategori->nama_kategori }}
+                        {{ $s->kategori->parent->nama_kategori }} - {{ $s->kategori->nama_kategori }}
                         @elseif($s->kategori)
                         {{ $s->kategori->nama_kategori }}
                         @else
                         -
                         @endif
                     </td>
+
+                    <td>
+                        <a href="{{ route('petugas.sarpras.detail', $s->id) }}"
+                            class="btn btn-sm btn-info">
+                            Detail Item
+                        </a>
+                    </td>
                 </tr>
+
 
                 @empty
                 <tr>

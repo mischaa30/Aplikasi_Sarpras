@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Lokasi;
 
 class SarprasItem extends Model
 {
@@ -24,7 +25,10 @@ class SarprasItem extends Model
     {
         return $this->belongsTo(Sarpras::class);
     }
-
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class, 'lokasi_id');
+    }
     //FIX STATUS (AMBIL DARI PEMINJAMAN)
     public function peminjamanAktif()
     {

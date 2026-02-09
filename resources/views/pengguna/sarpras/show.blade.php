@@ -25,6 +25,7 @@
                     <tr>
                         <th>No</th>
                         <th>Nama Item</th>
+                        <th>Lokasi</th>
                         <th>Kondisi</th>
                         <th>Status</th>
                         <th>Aksi</th>
@@ -39,6 +40,8 @@
                         <td>{{ $loop->iteration }}</td>
 
                         <td>{{ $item->nama_item }}</td>
+
+                        <td>{{ $sarpras->lokasi->nama_lokasi ?? '-' }}</td>
 
                         <td>
                             {{ $item->kondisi->nama_kondisi ?? '-' }}

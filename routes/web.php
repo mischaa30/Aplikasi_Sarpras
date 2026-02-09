@@ -267,6 +267,10 @@ Route::middleware(['auth', 'petugas', 'no-back'])
             '/sarpras',
             [SarprasController::class, 'indexPetugas']
         )->name('sarpras.index');
+    Route::get(
+        '/sarpras/{sarpras}/detail',
+        [SarprasController::class, 'detailPetugas']
+    )->name('sarpras.detail');
 
         /* =====================
            PEMINJAMAN (APPROVE)

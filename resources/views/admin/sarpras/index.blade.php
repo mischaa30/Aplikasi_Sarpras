@@ -21,6 +21,10 @@
             <small class="text-muted">Menampilkan {{ $sarpras->firstItem() ?? 0 }} - {{ $sarpras->lastItem() ?? 0 }} dari {{ $sarpras->total() }}</small>
             @endif
 
+            <a href="{{ route('admin.sarpras.trash') }}" class="btn btn-secondary btn-sm">
+                🗑️ Trash
+            </a>
+
             <a href="{{ route('admin.sarpras.create') }}" class="btn btn-primary btn-sm">
                 + Tambah Sarpras
             </a>

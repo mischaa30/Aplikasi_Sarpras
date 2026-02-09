@@ -21,6 +21,10 @@
             <small class="text-muted">Menampilkan {{ $kategori->firstItem() ?? 0 }} - {{ $kategori->lastItem() ?? 0 }} dari {{ $kategori->total() }}</small>
             @endif
 
+            <a href="{{ route('admin.kategori.trash') }}" class="btn btn-secondary btn-sm">
+                🗑️ Trash
+            </a>
+
             <a href="{{ route('admin.kategori.create') }}" class="btn btn-primary btn-sm">
                 + Tambah Kategori
             </a>

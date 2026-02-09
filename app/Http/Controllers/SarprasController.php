@@ -6,6 +6,7 @@ use App\Models\Sarpras;
 use App\Models\Lokasi;
 use App\Models\KategoriSarpras;
 use App\Models\KondisiSarpras;
+use App\Models\Activity_Log;
 use Illuminate\Http\Request;
 
 class SarprasController extends Controller
@@ -14,7 +15,7 @@ class SarprasController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = Sarpras::with([
+        $query = Sarpras::whereNull('deleted_at')->with([
             'lokasi',
             'kategori',
             'items.kondisi'
@@ -36,6 +37,50 @@ class SarprasController extends Controller
         $sarpras = $query->paginate(25);
 
         return view('admin.sarpras.index', compact('sarpras'));
+    }
+
+    public function restore($id)
+    {
+        $sarpras = Sarpras::onlyTrashed()->findOrFail($id);
+        $sarpras->restore();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'restore_sarpras',
+            'deskripsi' => 'Restore sarpras: ' . $sarpras->nama_sarpras,
+        ]);
+
+        return redirect()->back()->with('success', 'Sarpras berhasil direstore');
+    }
+
+    public function trash(Request $request)
+    {
+        $q = $request->q ?? null;
+
+        $query = Sarpras::onlyTrashed()->with(['lokasi', 'kategori']);
+
+        if ($q) {
+            $query->where('nama_sarpras', 'like', "%{$q}%");
+        }
+
+        $sarpras = $query->paginate(25);
+
+        return view('admin.sarpras.trash', compact('sarpras'));
+    }
+
+    public function forceDelete($id)
+    {
+        $s = Sarpras::onlyTrashed()->findOrFail($id);
+        $name = $s->nama_sarpras;
+        $s->forceDelete();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'force_delete_sarpras',
+            'deskripsi' => 'Permanently deleted sarpras: ' . $name,
+        ]);
+
+        return redirect()->back()->with('success', 'Sarpras dihapus permanen');
     }
 
     public function userIndex($kategoriId)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lokasi;
+use App\Models\Activity_Log;
 use Illuminate\Http\Request;
 
 class LokasiController extends Controller
@@ -14,7 +15,7 @@ class LokasiController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = Lokasi::latest();
+        $query = Lokasi::whereNull('deleted_at')->latest();
 
         if ($q) {
             $query->where('nama_lokasi', 'like', "%{$q}%");
@@ -97,5 +98,49 @@ class LokasiController extends Controller
         return redirect()
             ->route('admin.lokasi.index')
             ->with('success', 'Lokasi berhasil dihapus');
+    }
+
+    public function restore($id)
+    {
+        $lokasi = Lokasi::onlyTrashed()->findOrFail($id);
+        $lokasi->restore();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'restore_lokasi',
+            'deskripsi' => 'Restore lokasi: ' . $lokasi->nama_lokasi,
+        ]);
+
+        return redirect()->back()->with('success', 'Lokasi berhasil direstore');
+    }
+
+    public function trash(Request $request)
+    {
+        $q = $request->q ?? null;
+
+        $query = Lokasi::onlyTrashed();
+
+        if ($q) {
+            $query->where('nama_lokasi', 'like', "%{$q}%");
+        }
+
+        $lokasi = $query->paginate(25);
+
+        return view('admin.lokasi.trash', compact('lokasi'));
+    }
+
+    public function forceDelete($id)
+    {
+        $l = Lokasi::onlyTrashed()->findOrFail($id);
+        $name = $l->nama_lokasi;
+        $l->forceDelete();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'force_delete_lokasi',
+            'deskripsi' => 'Permanently deleted lokasi: ' . $name,
+        ]);
+
+        return redirect()->back()->with('success', 'Lokasi dihapus permanen');
     }
 }

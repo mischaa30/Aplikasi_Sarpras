@@ -23,7 +23,7 @@ class UserController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = User::with('role');
+        $query = User::whereNull('deleted_at')->with('role');
 
         if ($q) {
             $query->where(function ($qq) use ($q) {
@@ -70,7 +70,6 @@ class UserController extends Controller
         return redirect()
             ->route('admin.user.index')
             ->with('success', 'User berhasil ditambahkan');
-
     }
 
 
@@ -144,9 +143,39 @@ class UserController extends Controller
         Activity_Log::create([
             'user_id'   => auth()->id(), // admin yg restore
             'aksi'      => 'restore_user',
-            'deskripsi' => 'Restore user: ' . $user->name,
+            'deskripsi' => 'Restore user: ' . $user->username,
         ]);
 
         return redirect()->back()->with('success', 'User berhasil direstore');
+    }
+
+    public function trash(Request $request)
+    {
+        $q = $request->q ?? null;
+
+        $query = User::onlyTrashed()->with('role');
+
+        if ($q) {
+            $query->where('username', 'like', "%{$q}%");
+        }
+
+        $user = $query->paginate(25);
+
+        return view('admin.user.trash', compact('user'));
+    }
+
+    public function forceDelete($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $name = $user->username;
+        $user->forceDelete();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'force_delete_user',
+            'deskripsi' => 'Permanently deleted user: ' . $name,
+        ]);
+
+        return redirect()->back()->with('success', 'User dihapus permanen');
     }
 }

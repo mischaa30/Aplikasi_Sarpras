@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KategoriSarpras;
 use App\Models\Sarpras;
+use App\Models\Activity_Log;
 use Illuminate\Http\Request;
 
 class KategoriSarprasController extends Controller
@@ -12,7 +13,7 @@ class KategoriSarprasController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = KategoriSarpras::with('children')
+        $query = KategoriSarpras::whereNull('deleted_at')->with('children')
             ->whereNull('parent_id');
 
         if ($q) {
@@ -38,6 +39,50 @@ class KategoriSarprasController extends Controller
         }
 
         return view('admin.kategori.index', compact('kategori'));
+    }
+
+    public function restore($id)
+    {
+        $kategori = KategoriSarpras::onlyTrashed()->findOrFail($id);
+        $kategori->restore();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'restore_kategori',
+            'deskripsi' => 'Restore kategori: ' . $kategori->nama_kategori,
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori berhasil direstore');
+    }
+
+    public function trash(Request $request)
+    {
+        $q = $request->q ?? null;
+
+        $query = KategoriSarpras::onlyTrashed()->whereNull('parent_id');
+
+        if ($q) {
+            $query->where('nama_kategori', 'like', "%{$q}%");
+        }
+
+        $kategori = $query->paginate(25);
+
+        return view('admin.kategori.trash', compact('kategori'));
+    }
+
+    public function forceDelete($id)
+    {
+        $k = KategoriSarpras::onlyTrashed()->findOrFail($id);
+        $name = $k->nama_kategori;
+        $k->forceDelete();
+
+        Activity_Log::create([
+            'user_id' => auth()->id(),
+            'aksi' => 'force_delete_kategori',
+            'deskripsi' => 'Permanently deleted kategori: ' . $name,
+        ]);
+
+        return redirect()->back()->with('success', 'Kategori dihapus permanen');
     }
 
     public function create()

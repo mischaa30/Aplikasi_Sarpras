@@ -24,6 +24,10 @@
             <small class="text-muted">Menampilkan {{ $lokasi->firstItem() ?? 0 }} - {{ $lokasi->lastItem() ?? 0 }} dari {{ $lokasi->total() }}</small>
             @endif
 
+            <a href="{{ route('admin.lokasi.trash') }}" class="btn btn-secondary btn-sm">
+                🗑️ Trash
+            </a>
+
             <a href="{{ route('admin.lokasi.create') }}"
                 class="btn btn-primary btn-sm">
                 + Tambah Lokasi
@@ -48,7 +52,6 @@
                     <td>@if($lokasi instanceof \Illuminate\Pagination\LengthAwarePaginator){{ $lokasi->firstItem() + $loop->index }}@else{{ $loop->iteration }}@endif</td>
                     <td>{{ $l->nama_lokasi }}</td>
                     <td>
-
                         <a href="{{ route('admin.lokasi.edit',$l->id) }}"
                             class="btn btn-warning btn-sm">
                             Edit
@@ -65,7 +68,6 @@
                                 Hapus
                             </button>
                         </form>
-
                     </td>
                 </tr>
                 @empty

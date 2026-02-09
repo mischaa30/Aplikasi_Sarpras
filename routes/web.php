@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
 | ADMIN
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'admin','no-back'])
+Route::middleware(['auth', 'admin', 'no-back'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -66,14 +66,62 @@ Route::middleware(['auth', 'admin','no-back'])
             ->name('dashboard');
 
 
-        /* Master Data */
+        /* =====================
+   USER
+===================== */
+
+        // TRASH & RESTORE DULU
+        Route::get('user/trash', [UserController::class, 'trash'])->name('user.trash');
+        Route::post('user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
+        Route::delete('user/{id}/force-delete', [UserController::class, 'forceDelete'])->name('user.forceDelete');
+
+        // RESOURCE TERAKHIR
         Route::resource('user', UserController::class);
+
+
+        /* =====================
+   KATEGORI
+===================== */
+
+        Route::get('kategori/trash', [KategoriSarprasController::class, 'trash'])->name('kategori.trash');
+        Route::post('kategori/{id}/restore', [KategoriSarprasController::class, 'restore'])->name('kategori.restore');
+        Route::delete('kategori/{id}/force-delete', [KategoriSarprasController::class, 'forceDelete'])->name('kategori.forceDelete');
+
         Route::resource('kategori', KategoriSarprasController::class);
+
+
+        /* =====================
+   SARPRAS
+===================== */
+
+        Route::get('sarpras/trash', [SarprasController::class, 'trash'])->name('sarpras.trash');
+        Route::post('sarpras/{id}/restore', [SarprasController::class, 'restore'])->name('sarpras.restore');
+        Route::delete('sarpras/{id}/force-delete', [SarprasController::class, 'forceDelete'])->name('sarpras.forceDelete');
+
         Route::resource('sarpras', SarprasController::class)
             ->parameters(['sarpras' => 'sarpras']);
-        Route::resource('role', RoleController::class);
-        Route::resource('lokasi', LokasiController::class);
 
+
+        /* =====================
+   ROLE
+===================== */
+
+        Route::get('role/trash', [RoleController::class, 'trash'])->name('role.trash');
+        Route::post('role/{id}/restore', [RoleController::class, 'restore'])->name('role.restore');
+        Route::delete('role/{id}/force-delete', [RoleController::class, 'forceDelete'])->name('role.forceDelete');
+
+        Route::resource('role', RoleController::class);
+
+
+        /* =====================
+   LOKASI
+===================== */
+
+        Route::get('lokasi/trash', [LokasiController::class, 'trash'])->name('lokasi.trash');
+        Route::post('lokasi/{id}/restore', [LokasiController::class, 'restore'])->name('lokasi.restore');
+        Route::delete('lokasi/{id}/force-delete', [LokasiController::class, 'forceDelete'])->name('lokasi.forceDelete');
+
+        Route::resource('lokasi', LokasiController::class);
 
         /* Sarpras Item */
         Route::prefix('sarpras')->name('sarpras.')->group(function () {
@@ -205,7 +253,7 @@ Route::middleware(['auth', 'admin','no-back'])
 | PETUGAS
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'petugas','no-back'])
+Route::middleware(['auth', 'petugas', 'no-back'])
     ->prefix('petugas')
     ->name('petugas.')
     ->group(function () {
@@ -301,7 +349,7 @@ Route::middleware(['auth', 'petugas','no-back'])
 | PENGGUNA
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'pengguna','no-back'])
+Route::middleware(['auth', 'pengguna', 'no-back'])
     ->prefix('pengguna')
     ->name('pengguna.')
     ->group(function () {

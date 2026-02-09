@@ -58,6 +58,18 @@ class PengembalianController extends Controller
             'kondisi_sarpras_id' => 'required|array',
         ]);
 
+        $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
+
+        //Cegah tanggal kembali sebelum tanggal pinjam
+        if ($request->tgl_kembali_actual < $peminjaman->tgl_pinjam) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'tgl_kembali_actual' => 'Tanggal pengembalian tidak boleh sebelum tanggal peminjaman'
+                ]);
+        }
+
+
         DB::transaction(function () use ($request) {
 
             $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);

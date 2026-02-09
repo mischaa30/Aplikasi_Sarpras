@@ -164,26 +164,37 @@ class SarprasController extends Controller
     }
 
     public function showUser(Request $request, $id)
-    {
-        $q = $request->q ?? null;
+{
+    $q = $request->q ?? null;
 
-        $sarpras = Sarpras::with(['items.kondisi', 'items.peminjamanAktif','lokasi'])->findOrFail($id);
+    $sarpras = Sarpras::with([
+        'lokasi',
+        'items' => function ($query) use ($q) {
 
-        // filter items if query provided
-        if ($q) {
-            $filtered = collect($sarpras->items)->filter(function ($item) use ($q) {
-                return stripos($item->nama_item ?? '', $q) !== false
-                    || stripos($item->kondisi->nama_kondisi ?? '', $q) !== false;
-            })->values();
+            // hanya kondisi layak
+            $query->whereHas('kondisi', function ($k) {
+                $k->whereIn('nama_kondisi', ['Baik','Rusak Ringan']);
+            });
 
-            $sarpras->setRelation('items', $filtered);
+            // tidak sedang dipinjam
+            $query->whereDoesntHave('peminjamanAktif');
+
+            // search tetap jalan
+            if ($q) {
+                $query->where(function ($qq) use ($q) {
+                    $qq->where('nama_item', 'like', "%$q%")
+                       ->orWhereHas('kondisi', function ($k) use ($q) {
+                           $k->where('nama_kondisi', 'like', "%$q%");
+                       });
+                });
+            }
+
+            $query->with(['kondisi','peminjamanAktif']);
         }
+    ])->findOrFail($id);
 
-        // convert to paginator if not filtered? for simplicity we will not paginate server-side here because items are loaded via relation
-        // but if large data, consider eager-loading paginated items via relationship query
-
-        return view('pengguna.sarpras.show', compact('sarpras'));
-    }
+    return view('pengguna.sarpras.show', compact('sarpras'));
+}
 
     public function edit(Sarpras $sarpras)
     {

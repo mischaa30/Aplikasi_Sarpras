@@ -31,7 +31,6 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-
                 <tbody>
 
                     @forelse($sarpras->items as $item)
@@ -43,48 +42,27 @@
 
                         <td>{{ $sarpras->lokasi->nama_lokasi ?? '-' }}</td>
 
-                        <td>
-                            {{ $item->kondisi->nama_kondisi ?? '-' }}
-                        </td>
+                        <td>{{ $item->kondisi->nama_kondisi ?? '-' }}</td>
 
                         <td>
-                            @if($item->peminjamanAktif)
-                            <span class="badge bg-warning">
-                                Dipinjam
-                            </span>
-                            @else
                             <span class="badge bg-success">
                                 Tersedia
                             </span>
-                            @endif
                         </td>
 
-
                         <td>
-
-                            @if(
-                            in_array($item->kondisi->nama_kondisi, ['Baik','Rusak Ringan'])
-                            && !$item->peminjamanAktif
-                            )
-
                             <a href="{{ route('pengguna.peminjaman.create', $item->id) }}"
                                 class="btn btn-sm btn-success">
                                 Pinjam
                             </a>
-
-                            @else
-                            <span class="text-muted">-</span>
-                            @endif
-
                         </td>
 
                     </tr>
 
                     @empty
                     <tr>
-                        <td colspan="5"
-                            class="text-center text-muted">
-                            Tidak ada item
+                        <td colspan="6" class="text-center text-muted">
+                            Tidak ada item yang bisa dipinjam
                         </td>
                     </tr>
                     @endforelse

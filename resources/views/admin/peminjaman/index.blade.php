@@ -8,19 +8,29 @@
 
 <div class="card shadow-sm">
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <form method="GET" class="d-flex" style="gap:.5rem">
-                <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari peminjam, item, status...">
-                <button class="btn btn-primary btn-sm">Cari</button>
-            </form>
 
-            @if($peminjaman instanceof \Illuminate\Pagination\LengthAwarePaginator)
-            <small class="text-muted">Menampilkan {{ $peminjaman->firstItem() ?? 0 }} - {{ $peminjaman->lastItem() ?? 0 }} dari {{ $peminjaman->total() }}</small>
-            @endif
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex gap-2">
+
+                <form method="GET" class="d-flex" style="gap:.5rem">
+                    <input type="text" name="q"
+                           value="{{ request('q') }}"
+                           class="form-control form-control-sm"
+                           placeholder="Cari peminjam, item, status...">
+                    <button class="btn btn-primary btn-sm">Cari</button>
+                </form>
+
+                <a href="{{ route('admin.pengembalian.scanner') }}"
+                   class="btn btn-info btn-sm">
+                   📱 Scan QR
+                </a>
+
+            </div>
         </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped align-middle mb-0">
+
                 <thead class="table-light">
                     <tr>
                         <th>No</th>

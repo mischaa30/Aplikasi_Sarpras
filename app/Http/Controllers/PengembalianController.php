@@ -49,6 +49,14 @@ class PengembalianController extends Controller
         );
     }
 
+    /**
+     * Show QR scanner page
+     */
+    public function scanner()
+    {
+         return view('pengembalian.scanner');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -119,5 +127,50 @@ class PengembalianController extends Controller
 
         return $this->roleRedirect()
             ->with('success', 'Pengembalian berhasil dicatat');
+    }
+
+    /**
+     * API endpoint to validate QR scan and redirect to pengembalian form
+     */
+
+    public function scan(Request $request)
+    {
+        // kalau QR hanya ID
+        if ($request->raw) {
+
+            $peminjaman = Peminjaman::find($request->raw);
+
+            if (!$peminjaman) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ID tidak ditemukan'
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'peminjaman_id' => $peminjaman->id
+            ]);
+        }
+
+        // kalau QR JSON
+        $data = $request->all();
+
+        $peminjaman = Peminjaman::whereHas(
+            'user',
+            fn($q) => $q->where('username', $data['peminjam'] ?? '')
+        )->first();
+
+        if (!$peminjaman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak cocok'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'peminjaman_id' => $peminjaman->id
+        ]);
     }
 }

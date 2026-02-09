@@ -182,6 +182,16 @@ Route::middleware(['auth', 'admin', 'no-back'])
         Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
 
             Route::get(
+                'scanner',
+                [PengembalianController::class, 'scanner']
+            )->name('scanner');
+
+            Route::post(
+                'scan',
+                [PengembalianController::class, 'scan']
+            )->name('scan');
+
+            Route::get(
                 '{peminjaman}',
                 [PengembalianController::class, 'create']
             )->name('create');
@@ -308,6 +318,16 @@ Route::middleware(['auth', 'petugas', 'no-back'])
            PENGEMBALIAN
         ====================== */
         Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+
+            Route::get(
+                'scanner',
+                [PengembalianController::class, 'scanner']
+            )->name('scanner');
+
+            Route::post(
+                'scan',
+                [PengembalianController::class, 'scan']
+            )->name('scan');
 
             Route::get(
                 '{peminjaman}',

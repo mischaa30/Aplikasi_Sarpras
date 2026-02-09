@@ -96,8 +96,34 @@
                 border: none !important;
             }
         }
+
+        /* Responsive untuk HP */
+        @media (max-width: 768px) {
+
+            .sidebar {
+                left: -220px;
+                /* sembunyi */
+                transition: 0.3s;
+            }
+
+            .sidebar.active {
+                left: 0;
+                /* muncul */
+            }
+
+            main {
+                margin-left: 0;
+                /* full */
+            }
+        }
     </style>
 </head>
+<script>
+    document.getElementById('btnToggle')?.addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+</script>
+
 
 <body>
 
@@ -105,9 +131,18 @@
     <div class="topbar">
 
         <!-- KIRI -->
-        <div class="fw-bold text-primary fs-5">
-            APLIKASI SARPRAS
+        <div class="d-flex align-items-center gap-2">
+
+            <!-- Tombol menu (HP) -->
+            <button class="btn btn-outline-primary d-md-none" id="btnToggle">
+                ☰
+            </button>
+
+            <span class="fw-bold text-primary fs-5">
+                APLIKASI SARPRAS
+            </span>
         </div>
+
 
         <!-- KANAN -->
         <div>

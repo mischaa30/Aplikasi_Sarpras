@@ -62,11 +62,11 @@
                         <td>{{ $p->approver->username ?? '-' }}</td>
                         <td>
                             @if($p->status === 'Dikembalikan' && $p->riwayatKondisi->count() > 0)
-                                <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ $p->id }}" aria-expanded="false">
-                                    Lihat Detail
-                                </button>
+                            <button class="btn btn-sm btn-info" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ $p->id }}" aria-expanded="false">
+                                Lihat Detail
+                            </button>
                             @else
-                                <span class="text-muted">-</span>
+                            <span class="text-muted">-</span>
                             @endif
                         </td>
                     </tr>
@@ -77,7 +77,7 @@
                         <td colspan="8">
                             <div class="p-3 bg-light">
                                 <h6 class="fw-bold mb-3">📦 Detail Pengembalian</h6>
-                                
+
                                 @foreach($p->riwayatKondisi as $riwayat)
                                 <div class="card mb-3">
                                     <div class="card-body">
@@ -101,9 +101,9 @@
                                                 <br>
                                                 <small>
                                                     @if($riwayat->deskripsi)
-                                                        {{ $riwayat->deskripsi }}
+                                                    {{ $riwayat->deskripsi }}
                                                     @else
-                                                        <span class="text-muted italic">-</span>
+                                                    <span class="text-muted italic">-</span>
                                                     @endif
                                                 </small>
                                             </div>
@@ -112,11 +112,11 @@
                                                 @if($riwayat->foto)
                                                 <small class="text-muted">📸 Foto:</small>
                                                 <br>
-                                                <img src="{{ asset('storage/' . $riwayat->foto) }}" 
-                                                     alt="Foto Kondisi" 
-                                                     class="img-thumbnail" 
-                                                     style="max-width: 150px; max-height: 150px; cursor: pointer;"
-                                                     onclick="window.open('{{ asset('storage/' . $riwayat->foto) }}', '_blank')">
+                                                <img src="{{ asset('storage/' . $riwayat->foto) }}"
+                                                    alt="Foto Kondisi"
+                                                    class="img-thumbnail"
+                                                    style="max-width: 150px; max-height: 150px; cursor: pointer;"
+                                                    onclick="window.open('{{ asset('storage/' . $riwayat->foto) }}', '_blank')">
                                                 @else
                                                 <small class="text-muted">Tidak ada foto</small>
                                                 @endif

@@ -67,7 +67,10 @@ class UserController extends Controller
             'id_role'  => $r->id_role
         ]);
 
-        return redirect()->route('admin.user.index');
+        return redirect()
+            ->route('admin.user.index')
+            ->with('success', 'User berhasil ditambahkan');
+
     }
 
 
@@ -112,7 +115,9 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('admin.user.index');
+        return redirect()
+            ->route('admin.user.index')
+            ->with('success', 'User berhasil diperbarui');
     }
 
 

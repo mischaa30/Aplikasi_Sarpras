@@ -12,7 +12,7 @@
     <div class="card-body">
 
         <form method="POST"
-              action="{{ route('admin.lokasi.store') }}">
+              action="{{ route('admin.lokasi.store') }}"  class="confirm-submit">
 
             @csrf
 

@@ -12,7 +12,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.sarpras.store') }}">
+        <form method="POST" action="{{ route('admin.sarpras.store') }}" class="confirm-submit">
             @csrf
 
             <div class="mb-3">
@@ -35,7 +35,7 @@
                     <option value="">-- Pilih Sub Kategori --</option>
                     @foreach ($childKategori as $c)
                         <option value="{{ $c->id }}">
-                            {{ $c->parent->nama_kategori }} - {{ $c->nama_kategori }}
+                           {{ optional($c->parent)->nama_kategori }} - {{ $c->nama_kategori }}
                         </option>
                     @endforeach
                 </select>

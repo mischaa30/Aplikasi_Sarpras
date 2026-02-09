@@ -12,7 +12,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.sarpras.item.store', $sarpras->id) }}">
+        <form method="POST" action="{{ route('admin.sarpras.item.store', $sarpras->id) }}"  class="confirm-submit">
             @csrf
 
             <div class="mb-3">

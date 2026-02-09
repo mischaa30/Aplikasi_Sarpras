@@ -12,7 +12,7 @@
     </div>
 
     <div class="card-body">
-        <form method="POST" action="{{ route('admin.user.update',$user->id) }}">
+        <form method="POST" action="{{ route('admin.user.update',$user->id) }}" class="confirm-submit">
             @csrf
             @method('PUT')
 

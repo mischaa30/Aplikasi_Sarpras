@@ -177,21 +177,35 @@ Route::middleware(['auth', 'admin', 'no-back'])
             )->name('tolak');
         });
 
+        /* =====================
+   PENGEMBALIAN (ADMIN)
+===================== */
+Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
 
-        /* Pengembalian */
-        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-            
+    // Halaman Scanner
+    Route::get(
+        '/scanner',
+        [PengembalianController::class,'scanner']
+    )->name('scanner');
 
-            Route::get(
-                '{peminjaman}',
-                [PengembalianController::class, 'create']
-            )->name('create');
+    // Proses Scan QR (AJAX)
+    Route::post(
+        '/scan',
+        [PengembalianController::class,'scan']
+    )->name('scan');
 
-            Route::post(
-                '/store',
-                [PengembalianController::class, 'store']
-            )->name('store');
-        });
+    // Form Pengembalian
+    Route::get(
+        '/{peminjaman}',
+        [PengembalianController::class,'create']
+    )->name('create');
+
+    // Simpan Pengembalian
+    Route::post(
+        '/store',
+        [PengembalianController::class,'store']
+    )->name('store');
+});
 
 
         /* Pengaduan */
@@ -306,21 +320,31 @@ Route::middleware(['auth', 'petugas', 'no-back'])
         });
 
         /* =====================
-           PENGEMBALIAN
-        ====================== */
-        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-            
+   PENGEMBALIAN (PETUGAS)
+===================== */
+Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
 
-            Route::get(
-                '{peminjaman}',
-                [PengembalianController::class, 'create']
-            )->name('create');
+    Route::get(
+        '/scanner',
+        [PengembalianController::class,'scanner']
+    )->name('scanner');
 
-            Route::post(
-                '/store',
-                [PengembalianController::class, 'store']
-            )->name('store');
-        });
+    Route::post(
+        '/scan',
+        [PengembalianController::class,'scan']
+    )->name('scan');
+
+    Route::get(
+        '/{peminjaman}',
+        [PengembalianController::class,'create']
+    )->name('create');
+
+    Route::post(
+        '/store',
+        [PengembalianController::class,'store']
+    )->name('store');
+});
+
 
         /* =====================
            PENGADUAN
@@ -415,3 +439,4 @@ Route::middleware(['auth', 'pengguna', 'no-back'])
             [PengaduanController::class, 'store']
         )->name('pengaduan.store');
     });
+

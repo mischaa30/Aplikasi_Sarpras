@@ -2,17 +2,11 @@
 
 namespace App\Http\Controllers;
 
-//ambil atau memanggil data model
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Activity_Log;
-
-//ambil data dari form
 use Illuminate\Http\Request;
-
-//hash pw
 use Illuminate\Support\Facades\Hash;
-
 
 class UserController extends Controller
 {
@@ -23,20 +17,21 @@ class UserController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = User::whereNull('deleted_at')->with('role');
+        $query = User::whereNull('deleted_at')
+                     ->where('id', '!=', auth()->id()) // ❌ exclude admin sendiri
+                     ->with('role');
 
         if ($q) {
             $query->where(function ($qq) use ($q) {
                 $qq->where('username', 'like', "%{$q}%")
-                    ->orWhereHas('role', function ($qr) use ($q) {
-                        $qr->where('nama_role', 'like', "%{$q}%");
-                    });
+                   ->orWhereHas('role', function ($qr) use ($q) {
+                       $qr->where('nama_role', 'like', "%{$q}%");
+                   });
             });
         }
 
         $user = $query->paginate(25);
-        return view('admin.user.index', compact('user')); //kirim data ke view user.index
-        //
+        return view('admin.user.index', compact('user'));
     }
 
     /**
@@ -44,9 +39,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        $role = Role::all(); //ambil data role
-        return view('admin.user.create', compact('role')); //kirim data
-        //
+        $role = Role::all();
+        return view('admin.user.create', compact('role'));
     }
 
     /**
@@ -54,7 +48,6 @@ class UserController extends Controller
      */
     public function store(Request $r)
     {
-        //Menghindari data ganda & tidak valid
         $r->validate([
             'username' => 'required|unique:users',
             'password' => 'required|min:4',
@@ -67,19 +60,8 @@ class UserController extends Controller
             'id_role'  => $r->id_role
         ]);
 
-        return redirect()
-            ->route('admin.user.index')
-            ->with('success', 'User berhasil ditambahkan');
-    }
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
+        return redirect()->route('admin.user.index')
+                         ->with('success', 'User berhasil ditambahkan');
     }
 
     /**
@@ -87,10 +69,14 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::findOrFail($id); // Mengambil data user berdasarkan id
-        $role = Role::all(); //Mengambil semua role
-        return view('admin.user.edit', compact('user', 'role')); //Mengirim data ke view edit
-        //
+        if ($id == auth()->id()) {
+            return redirect()->route('admin.user.index')
+                             ->with('eror', 'Tidak bisa mengedit akun sendiri!');
+        }
+
+        $user = User::findOrFail($id);
+        $role = Role::all();
+        return view('admin.user.edit', compact('user', 'role'));
     }
 
     /**
@@ -98,10 +84,14 @@ class UserController extends Controller
      */
     public function update(Request $r, User $user)
     {
+        if ($user->id == auth()->id()) {
+            return redirect()->back()->with('eror', 'Tidak bisa mengubah akun sendiri!');
+        }
+
         $r->validate([
             'username' => 'required',
             'id_role'  => 'required',
-            'password' => 'nullable|min:4' // password boleh kosong
+            'password' => 'nullable|min:4'
         ]);
 
         $data = [
@@ -109,39 +99,45 @@ class UserController extends Controller
             'id_role'  => $r->id_role
         ];
 
-        // Kalau password diisi → update
         if (!empty($r->password)) {
             $data['password'] = Hash::make($r->password);
         }
 
         $user->update($data);
 
-        return redirect()
-            ->route('admin.user.index')
-            ->with('success', 'User berhasil diperbarui');
+        return redirect()->route('admin.user.index')
+                         ->with('success', 'User berhasil diperbarui');
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
-        //menghapus data user sesuai id
+        if ($id == auth()->id()) {
+            return redirect()->back()->with('eror', 'Tidak bisa menghapus akun sendiri!');
+        }
+
         User::findOrFail($id)->delete();
-        return redirect()->route('admin.user.index'); //kembali ke halaman data user
-        //
+        return redirect()->route('admin.user.index')
+                         ->with('success', 'User berhasil dihapus');
     }
 
+    /**
+     * Restore a soft-deleted user.
+     */
     public function restore($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
 
+        if ($user->id == auth()->id()) {
+            return redirect()->back()->with('eror', 'Tidak bisa merestore akun sendiri!');
+        }
+
         $user->restore();
 
-        // CATAT ACTIVITY LOG
         Activity_Log::create([
-            'user_id'   => auth()->id(), // admin yg restore
+            'user_id'   => auth()->id(),
             'aksi'      => 'restore_user',
             'deskripsi' => 'Restore user: ' . $user->username,
         ]);
@@ -149,30 +145,42 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User berhasil direstore');
     }
 
+    /**
+     * Display trashed users.
+     */
     public function trash(Request $request)
     {
         $q = $request->q ?? null;
 
-        $query = User::onlyTrashed()->with('role');
+        $query = User::onlyTrashed()
+                     ->where('id', '!=', auth()->id()) // ❌ exclude admin sendiri
+                     ->with('role');
 
         if ($q) {
             $query->where('username', 'like', "%{$q}%");
         }
 
         $user = $query->paginate(25);
-
         return view('admin.user.trash', compact('user'));
     }
 
+    /**
+     * Permanently delete a trashed user.
+     */
     public function forceDelete($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
+
+        if ($user->id == auth()->id()) {
+            return redirect()->back()->with('eror', 'Tidak bisa menghapus akun sendiri!');
+        }
+
         $name = $user->username;
         $user->forceDelete();
 
         Activity_Log::create([
-            'user_id' => auth()->id(),
-            'aksi' => 'force_delete_user',
+            'user_id'   => auth()->id(),
+            'aksi'      => 'force_delete_user',
             'deskripsi' => 'Permanently deleted user: ' . $name,
         ]);
 

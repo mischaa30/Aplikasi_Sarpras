@@ -11,6 +11,8 @@ class Activity_Log extends Model
         'user_id',
         'aksi',
         'deskripsi',
+        'ip',
+        'user_agent',
     ];
 
     public function user()

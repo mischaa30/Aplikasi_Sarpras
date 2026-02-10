@@ -46,6 +46,12 @@ class AuthController extends Controller
             }
         }
 
+        //LOG GAGAL LOGIN
+        Activity_Log::create([
+            'user_id' => null,
+            'aksi' => 'gagal login',
+            'deskripsi' => 'gagal login',
+        ]);
         return back()->with('eror', 'Login gagal');
     }
 

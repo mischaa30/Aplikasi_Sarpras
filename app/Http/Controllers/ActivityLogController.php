@@ -61,7 +61,7 @@ class ActivityLogController extends Controller
     public function login(Request $request)
     {
         $query = Activity_Log::with('user')
-            ->whereIn('aksi', ['login', 'logout']);
+            ->whereIn('aksi', ['login', 'logout', 'gagal login']);
 
         //FILTER TANGGAL
         if ($request->filled('tanggal')) {

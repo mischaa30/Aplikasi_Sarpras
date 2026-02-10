@@ -29,6 +29,11 @@
                 </select>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Jumlah</label>
+                <input type="number" name="jumlah" class="form-control" value="1" min="1" required>
+            </div>
+
             <div class="d-flex justify-content-end gap-2">
                 <a href="{{ route('admin.sarpras.index', $sarpras->id) }}"
                    class="btn btn-outline-secondary">

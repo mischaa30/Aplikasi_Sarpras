@@ -59,12 +59,12 @@
 
                         <form action="{{ route('admin.lokasi.destroy',$l->id) }}"
                             method="POST"
-                            class="d-inline"
-                            onsubmit="return confirm('Hapus lokasi ini?')">
+                            class="d-inline confirm-delete"
+                            data-confirm-message="Hapus lokasi ini?">
                             @csrf
                             @method('DELETE')
 
-                            <button class="btn btn-danger btn-sm">
+                            <button class="btn btn-danger btn-sm" type="submit">
                                 Hapus
                             </button>
                         </form>

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pengaduan extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\LogsActivity;
 
     protected $table = 'pengaduans';
 

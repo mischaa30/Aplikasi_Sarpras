@@ -170,6 +170,11 @@ class PengembalianController extends Controller
                     $peminjaman->update([
                         'flag_hilang' => 1
                     ]);
+                } else {
+                    // Increment stock back if not lost
+                    if ($detail->sarpras) {
+                        $detail->sarpras->increment('stok');
+                    }
                 }
             }
 
@@ -210,19 +215,37 @@ class PengembalianController extends Controller
         // Jika QR = JSON
         $data = $request->all();
 
+        // 1. Cek ID langsung dari JSON
+        if (isset($data['id'])) {
+            $peminjaman = Peminjaman::find($data['id']);
 
-        $peminjaman = Peminjaman::whereHas('user', function($q) use ($data){
+            if ($peminjaman) {
+                 return response()->json([
+                    'success' => true,
+                    'peminjaman_id' => $peminjaman->id
+                ]);
+            }
+        }
 
+        // 2. Fallback: Cari by Username & Item (Hanya yang status Disetujui)
+        $query = Peminjaman::whereHas('user', function($q) use ($data){
             $q->where('username', $data['peminjam'] ?? '');
+        })->where('status', 'Disetujui');
 
-        })->first();
+        // Jika di QR ada info item, filter juga
+        if (isset($data['item']) && $data['item'] !== '-') {
+            $query->whereHas('item', function($q) use ($data) {
+                $q->where('nama_item', $data['item']);
+            });
+        }
+
+        $peminjaman = $query->latest()->first();
 
 
         if (!$peminjaman) {
-
             return response()->json([
                 'success' => false,
-                'message' => 'QR tidak valid'
+                'message' => 'Peminjaman aktif tidak ditemukan untuk data QR ini'
             ]);
         }
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KategoriSarpras extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, \App\Traits\LogsActivity;
     use SoftDeletes;
     // menentukan tabel
     protected $table = 'kategori_sarpras';

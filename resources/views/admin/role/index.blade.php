@@ -38,7 +38,7 @@
                     <td>
                         <a href="{{ route('admin.role.edit', $r->id) }}" class="btn btn-warning btn-sm">Edit</a>
 
-                        <form action="{{ route('admin.role.destroy', $r->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus role?')">
+                        <form action="{{ route('admin.role.destroy', $r->id) }}" method="POST" class="d-inline confirm-delete" data-confirm-message="Yakin hapus role?">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Hapus</button>

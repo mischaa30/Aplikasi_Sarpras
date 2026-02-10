@@ -27,11 +27,24 @@ class SarprasItemController extends Controller
 
     public function store(Request $r, Sarpras $sarpras)
     {
-        SarprasItem::create([
-            'sarpras_id' => $sarpras->id,
-            'nama_item' => $r->nama_item,
-            'kondisi_sarpras_id' => $r->kondisi_sarpras_id
+        $r->validate([
+            'nama_item' => 'required',
+            'kondisi_sarpras_id' => 'required',
+            'jumlah' => 'required|integer|min:1'
         ]);
+
+        $jumlah = (int) $r->jumlah;
+
+        for ($i = 0; $i < $jumlah; $i++) {
+            SarprasItem::create([
+                'sarpras_id' => $sarpras->id,
+                'nama_item' => $r->nama_item,
+                'kondisi_sarpras_id' => $r->kondisi_sarpras_id,
+                'jumlah' => 1 // Always 1 per record
+            ]);
+        }
+
+        $sarpras->increment('stok', $jumlah);
 
         return back();
     }
@@ -52,7 +65,10 @@ class SarprasItemController extends Controller
 
     public function destroy(SarprasItem $item)
     {
+        $sarpras = $item->sarpras;
+        $jumlah = $item->jumlah ?? 1; // Default to 1 if null
         $item->delete();
+        $sarpras->decrement('stok', $jumlah);
         return back();
     }
 }

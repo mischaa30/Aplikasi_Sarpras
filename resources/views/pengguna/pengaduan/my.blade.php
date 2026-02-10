@@ -42,6 +42,7 @@
                             <th>Lokasi</th>
                             <th>Status</th>
                             <th>Foto</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
 
@@ -73,6 +74,12 @@
                                 @else
                                 -
                                 @endif
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('pengguna.pengaduan.show', $p->id) }}"
+                                   class="btn btn-sm btn-info text-white">
+                                   Detail
+                                </a>
                             </td>
                         </tr>
 

@@ -41,7 +41,7 @@
                             <button class="btn btn-success btn-sm" type="submit">Restore</button>
                         </form>
 
-                        <form action="{{ route('admin.user.forceDelete', $u->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus permanen?')">
+                        <form action="{{ route('admin.user.forceDelete', $u->id) }}" method="POST" class="d-inline confirm-delete" data-confirm-message="Yakin hapus permanen?">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm" type="submit">Hapus Permanen</button>

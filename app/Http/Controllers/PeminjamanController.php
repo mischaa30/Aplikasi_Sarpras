@@ -72,7 +72,7 @@ class PeminjamanController extends Controller
             'sarpras_item_id' => $item->id
         ]);
 
-        return redirect()->route('pengguna.peminjaman.index');
+        return redirect()->route('pengguna.peminjaman.index')->with('success', 'Peminjaman berhasil dibuat dan menunggu persetujuan');
     }
 
     public function exportPdf(Request $request)

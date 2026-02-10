@@ -32,14 +32,14 @@ class RoleController extends Controller
             'nama_role' => $r->nama_role
         ]);
 
-        return redirect()->route('admin.role.index');
+        return redirect()->route('admin.role.index')->with('success', 'Role berhasil ditambahkan');
     }
 
     // soft delete role
     public function destroy(Role $role)
     {
         $role->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Role berhasil dihapus');
     }
 
     // restore role

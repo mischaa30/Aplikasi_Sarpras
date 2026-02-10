@@ -58,7 +58,7 @@
                         -
                         @endif
                     </td>
-                    <td>{{ $s->items->count() }}</td>
+                    <td>{{ $s->stok }}</td>
                     <td>
                         <div class="d-flex flex-column gap-1">
 

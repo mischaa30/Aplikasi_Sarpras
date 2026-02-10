@@ -7,6 +7,7 @@ use App\Models\Lokasi;
 
 class SarprasItem extends Model
 {
+    use \App\Traits\LogsActivity;
     protected $table = 'sarpras_item';
 
     protected $fillable = [

@@ -51,7 +51,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="3" class="text-center text-muted">
+                    <td colspan="4" class="text-center text-muted">
                         Unit belum tersedia
                     </td>
                 </tr>

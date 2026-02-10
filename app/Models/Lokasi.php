@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lokasi extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, \App\Traits\LogsActivity;
 
     protected $table = 'lokasis';
 

@@ -72,4 +72,32 @@ class ActivityLogController extends Controller
 
         return view('admin.activity-log.login', compact('data'));
     }
+
+    public function exportPdfPengaduan(Request $request)
+    {
+        $query = Pengaduan::with(['user', 'status', 'diprosesOleh']);
+
+        // FILTER TANGGAL
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->whereBetween('created_at', [
+                $request->from,
+                $request->to
+            ]);
+        }
+
+        // FILTER STATUS
+        if ($request->filled('status')) {
+            $status = $request->status;
+            $query->whereHas('status', function ($q) use ($status) {
+                $q->where('nama_status_pengaduan', $status);
+            });
+        }
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.activity-log.pdf_pengaduan_log', compact('data'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('activity-log-pengaduan.pdf');
+    }
 }

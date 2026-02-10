@@ -12,8 +12,14 @@ class Activity_Log extends Model
         'user_id',
         'aksi',
         'deskripsi',
-        'ip',
+        'ip', // Keep 'ip' for backward compat if any code uses it, but prefer 'ip_address'
+        'ip_address',
         'user_agent',
+        'meta_data'
+    ];
+
+    protected $casts = [
+        'meta_data' => 'array'
     ];
 
     public function user()

@@ -29,13 +29,13 @@ class KondisiSarprasController extends Controller
             'nama_kondisi' => $r->nama_kondisi
         ]);
 
-        return redirect()->route('admin.kondisi.index');
+        return redirect()->route('admin.kondisi.index')->with('success', 'Kondisi berhasil ditambahkan');
     }
 
     public function destroy(KondisiSarpras $kondisiSarpras)
     {
         $kondisiSarpras->delete();
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Kondisi berhasil dihapus');
     }
 
     public function restore($id)

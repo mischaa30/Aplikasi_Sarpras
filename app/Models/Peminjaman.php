@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
 {
+    use \App\Traits\LogsActivity;
     protected $table = 'peminjaman';
 
     protected $fillable = [

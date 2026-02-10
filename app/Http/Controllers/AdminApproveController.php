@@ -63,6 +63,13 @@ class AdminApproveController extends Controller
             'disetujui_oleh' => auth()->id(), // ← SIMPAN ACC
         ]);
 
+        // Decrement stock for each item
+        foreach ($peminjaman->detail as $detail) {
+            if ($detail->sarpras) {
+                $detail->sarpras->decrement('stok');
+            }
+        }
+
         return back()->with('success', 'Peminjaman disetujui');
     }
 
@@ -94,6 +101,7 @@ class AdminApproveController extends Controller
         ])->findOrFail($id);
 
         $qrData = [
+            'id' => $peminjaman->id,
             'peminjam' => $peminjaman->user->username ?? '-',
             'item' => $peminjaman->item?->nama_item ?? '-',
             'tgl_pinjam' => $peminjaman->tgl_pinjam,

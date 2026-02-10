@@ -38,7 +38,7 @@
                     <td>
                         <a href="{{ route('admin.kondisi.edit', $k->id) }}" class="btn btn-warning btn-sm">Edit</a>
 
-                        <form action="{{ route('admin.kondisi.destroy', $k->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus kondisi?')">
+                        <form action="{{ route('admin.kondisi.destroy', $k->id) }}" method="POST" class="d-inline confirm-delete" data-confirm-message="Yakin hapus kondisi?">
                             @csrf
                             @method('DELETE')
                             <button class="btn btn-danger btn-sm">Hapus</button>

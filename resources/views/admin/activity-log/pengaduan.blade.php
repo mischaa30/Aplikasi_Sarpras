@@ -21,8 +21,11 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-auto mt-4">
+                <div class="col-md-auto mt-4 d-flex gap-2">
                     <button class="btn btn-primary px-4">Filter</button>
+                    <button type="submit" formaction="{{ route('admin.activity.pengaduan.export') }}" formtarget="_blank" class="btn btn-danger px-4">
+                        Export PDF
+                    </button>
                 </div>
             </form>
         </div>

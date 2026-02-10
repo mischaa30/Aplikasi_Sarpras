@@ -150,12 +150,16 @@ class SarprasController extends Controller
             'id_lokasi' => $request->id_lokasi
         ]);
 
-        return redirect()->route('admin.sarpras.index');
+        return redirect()->route('admin.sarpras.index')->with('success', 'Sarpras berhasil ditambahkan');
     }
 
     public function show(Sarpras $sarpras)
     {
-        $sarpras->load('items.kondisi');
+        $sarpras->load(['items' => function($itemQuery) {
+            $itemQuery->whereDoesntHave('peminjamanAktif.peminjaman', function($peminjamanQuery) {
+                $peminjamanQuery->where('status', 'Disetujui');
+            })->with('kondisi');
+        }]);
 
         return view('admin.sarpras.show', [
             'sarpras' => $sarpras,
@@ -208,13 +212,13 @@ class SarprasController extends Controller
     public function update(Request $r, Sarpras $sarpras)
     {
         $sarpras->update($r->all());
-        return redirect()->route('admin.sarpras.index');
+        return redirect()->route('admin.sarpras.index')->with('success', 'Sarpras berhasil diupdate');
     }
 
     public function destroy(Sarpras $sarpras)
     {
         $sarpras->delete();
-        return redirect()->route('admin.sarpras.index');
+        return redirect()->route('admin.sarpras.index')->with('success', 'Sarpras berhasil dihapus');
     }
     public function indexPetugas(Request $request)
     {

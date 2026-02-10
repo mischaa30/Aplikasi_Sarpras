@@ -103,7 +103,7 @@ class KategoriSarprasController extends Controller
             'kode_kategori' => $kode
         ]);
 
-        return redirect()->route('admin.kategori.index');
+        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -121,7 +121,7 @@ class KategoriSarprasController extends Controller
             'parent_id' => $r->parent_id
         ]);
 
-        return redirect()->route('admin.kategori.index');
+        return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diupdate');
     }
     public function destroy($id)
 {

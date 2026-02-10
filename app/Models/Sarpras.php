@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sarpras extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, \App\Traits\LogsActivity;
     protected $fillable = [
         'kode_sarpras',
         'nama_sarpras',

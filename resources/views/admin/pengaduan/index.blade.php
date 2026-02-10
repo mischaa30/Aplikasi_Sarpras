@@ -13,6 +13,9 @@
             <form method="GET" class="d-flex" style="gap:.5rem">
                 <input type="text" name="q" value="{{ request('q') }}" class="form-control form-control-sm" placeholder="Cari judul, pelapor, kategori, lokasi...">
                 <button class="btn btn-primary btn-sm">Cari</button>
+                <a href="{{ route('admin.pengaduan.export.pdf') }}" class="btn btn-danger btn-sm" target="_blank">
+                    PDF
+                </a>
             </form>
 
             @if($data instanceof \Illuminate\Pagination\LengthAwarePaginator)

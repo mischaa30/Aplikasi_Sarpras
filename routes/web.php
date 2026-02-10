@@ -230,11 +230,20 @@ Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
                 '{id}/catatan',
                 [PengaduanController::class, 'addCatatan']
             )->name('catatan');
+
+            Route::get(
+                '/export-pdf',
+                [PengaduanController::class, 'exportPdfAdmin']
+            )->name('export.pdf');
         });
 
 
         /* Activity Log */
         Route::prefix('activity-log')->name('activity.')->group(function () {
+
+            // SYSTEM LOG (NEW)
+            Route::get('/system', [\App\Http\Controllers\AdminSystemLogController::class, 'index'])
+                ->name('system');
 
             Route::get('/login', [ActivityLogController::class, 'login'])
                 ->name('login');
@@ -245,7 +254,10 @@ Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
             Route::get('/pengaduan', [ActivityLogController::class, 'pengaduan'])
                 ->name('pengaduan');
 
-            // PDF EXPORT
+            Route::get('/pengaduan/export', [ActivityLogController::class, 'exportPdfPengaduan'])
+                ->name('pengaduan.export');
+
+            // PDF EXPORT PEMINJAMAN
             Route::get(
                 '/export-pdf',
                 [PeminjamanController::class, 'exportPdf']
@@ -434,9 +446,18 @@ Route::middleware(['auth', 'pengguna', 'no-back'])
             [PengaduanController::class, 'create']
         )->name('pengaduan.create');
 
+        Route::get(
+            '/pengaduan/export-pdf',
+            [PengaduanController::class, 'exportPdfUser']
+        )->name('pengaduan.pdf');
+
+        Route::get(
+            '/pengaduan/{id}',
+            [PengaduanController::class, 'detailUser']
+        )->name('pengaduan.show');
+
         Route::post(
             '/pengaduan',
             [PengaduanController::class, 'store']
         )->name('pengaduan.store');
     });
-

@@ -57,6 +57,38 @@ class PengaduanController extends Controller
         return view('pengguna.pengaduan.my', compact('data'));
     }
 
+    public function exportPdfUser(Request $request)
+    {
+        $query = Pengaduan::with('status', 'kategori', 'lokasi', 'diprosesOleh')
+            ->where('user_id', Auth::id());
+
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        $data = $query->latest()->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pengguna.pengaduan.pdf', compact('data'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('riwayat-pengaduan.pdf');
+    }
+
+    public function detailUser($id)
+    {
+        $pengaduan = Pengaduan::with(
+            'status',
+            'kategori',
+            'lokasi',
+            'catatan.user',
+            'diprosesOleh'
+        )->where('id', $id)
+        ->where('user_id', Auth::id())
+        ->firstOrFail();
+
+        return view('pengguna.pengaduan.show', compact('pengaduan'));
+    }
+
     public function create()
     {
         return view('pengguna.pengaduan.create', [
@@ -127,6 +159,25 @@ class PengaduanController extends Controller
         $data = $query->latest()->paginate(25);
 
         return $this->roleView('pengaduan.index', compact('data'));
+    }
+
+    public function exportPdfAdmin(Request $request)
+    {
+        $query = Pengaduan::with('user', 'status', 'kategori', 'diprosesOleh')
+            ->whereHas('status', function ($q2) {
+                $q2->whereNotIn('nama_status_pengaduan', ['Selesai', 'Ditutup']);
+            });
+
+        if ($request->filled('tanggal')) {
+            $query->whereDate('created_at', $request->tanggal);
+        }
+
+        $data = $query->latest()->get();
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.activity-log.pdf_pengaduan', compact('data'))
+            ->setPaper('A4', 'landscape');
+
+        return $pdf->download('daftar-pengaduan.pdf');
     }
 
     public function show($id)

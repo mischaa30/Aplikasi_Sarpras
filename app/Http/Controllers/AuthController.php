@@ -33,6 +33,8 @@ class AuthController extends Controller
                 'user_id' => Auth::id(),
                 'aksi' => 'login',
                 'deskripsi' => 'User login ke sistem',
+                'ip_address' => $r->ip(),
+                'user_agent' => $r->userAgent()
             ]);
 
             $user = Auth::user();
@@ -48,9 +50,11 @@ class AuthController extends Controller
 
         //LOG GAGAL LOGIN
         Activity_Log::create([
-            'user_id' => null,
+            'user_id' => null, // or try to find user by username if possible, but null is safer here
             'aksi' => 'gagal login',
-            'deskripsi' => 'gagal login',
+            'deskripsi' => "Gagal login username: {$r->username}",
+            'ip_address' => $r->ip(),
+            'user_agent' => $r->userAgent()
         ]);
         return back()->with('eror', 'Login gagal');
     }
@@ -63,6 +67,8 @@ class AuthController extends Controller
             'user_id' => Auth::id(),
             'aksi' => 'logout',
             'deskripsi' => 'User logout dari sistem',
+            'ip_address' => $r->ip(),
+            'user_agent' => $r->userAgent()
         ]);
 
         Auth::logout();

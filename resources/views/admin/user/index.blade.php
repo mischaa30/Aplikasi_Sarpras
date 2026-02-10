@@ -50,6 +50,7 @@
                             Edit
                         </a>
 
+                        @if($u->id != auth()->id())
                         <form action="{{ route('admin.user.destroy', $u->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
@@ -57,6 +58,9 @@
                                 Hapus
                             </button>
                         </form>
+                        @else
+                        <span class="text-muted"></span>
+                        @endif
                     </td>
                 </tr>
                 @empty

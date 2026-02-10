@@ -17,9 +17,7 @@ class UserController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = User::whereNull('deleted_at')
-                     ->where('id', '!=', auth()->id()) // ❌ exclude admin sendiri
-                     ->with('role');
+        $query = User::whereNull('deleted_at')->with('role');
 
         if ($q) {
             $query->where(function ($qq) use ($q) {
@@ -69,11 +67,6 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if ($id == auth()->id()) {
-            return redirect()->route('admin.user.index')
-                             ->with('eror', 'Tidak bisa mengedit akun sendiri!');
-        }
-
         $user = User::findOrFail($id);
         $role = Role::all();
         return view('admin.user.edit', compact('user', 'role'));
@@ -84,10 +77,6 @@ class UserController extends Controller
      */
     public function update(Request $r, User $user)
     {
-        if ($user->id == auth()->id()) {
-            return redirect()->back()->with('eror', 'Tidak bisa mengubah akun sendiri!');
-        }
-
         $r->validate([
             'username' => 'required',
             'id_role'  => 'required',
@@ -110,7 +99,7 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (soft delete).
      */
     public function destroy($id)
     {
@@ -129,11 +118,6 @@ class UserController extends Controller
     public function restore($id)
     {
         $user = User::onlyTrashed()->findOrFail($id);
-
-        if ($user->id == auth()->id()) {
-            return redirect()->back()->with('eror', 'Tidak bisa merestore akun sendiri!');
-        }
-
         $user->restore();
 
         Activity_Log::create([
@@ -152,9 +136,7 @@ class UserController extends Controller
     {
         $q = $request->q ?? null;
 
-        $query = User::onlyTrashed()
-                     ->where('id', '!=', auth()->id()) // ❌ exclude admin sendiri
-                     ->with('role');
+        $query = User::onlyTrashed()->with('role');
 
         if ($q) {
             $query->where('username', 'like', "%{$q}%");

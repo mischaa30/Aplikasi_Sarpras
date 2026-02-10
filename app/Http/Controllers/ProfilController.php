@@ -15,23 +15,37 @@ class ProfilController extends Controller
             'user' => Auth::user()
         ]);
     }
-
     public function update(Request $r)
     {
-        $r->validate([
-            'username' => 'required',
-            'password' => 'nullable|min:4'
-        ]);
-
         $user = User::findOrFail(Auth::id());
 
+        $r->validate([
+            'username' => 'required',
+
+            // hanya wajib jika password_baru diisi
+            'password_lama' => 'nullable',
+            'password_baru' => 'nullable|min:4|confirmed',
+        ]);
+
+        // update username
         $user->username = $r->username;
 
-        if ($r->password) {
-            $user->password = Hash::make($r->password);
+        // jika user isi password baru → proses ganti password
+        if ($r->filled('password_baru')) {
+
+            // cek password lama
+            if (!Hash::check($r->password_lama, $user->password)) {
+                return back()->withErrors([
+                    'password_lama' => 'Password lama salah'
+                ])->withInput();
+            }
+
+            // simpan password baru
+            $user->password = Hash::make($r->password_baru);
         }
 
         $user->save();
-        return back()->with('succes', 'Profil berhasil di update');
+
+        return back()->with('success', 'Profil berhasil diupdate');
     }
 }

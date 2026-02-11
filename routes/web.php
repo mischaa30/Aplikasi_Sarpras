@@ -17,6 +17,8 @@ use App\Http\Controllers\PengaduanController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\LaporanAssetHealthController;
+use App\Http\Controllers\InspeksiItemController;
+use App\Http\Controllers\InspeksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +125,11 @@ Route::middleware(['auth', 'admin', 'no-back'])
 
         Route::resource('lokasi', LokasiController::class);
 
+        /* Checklist Inspeksi */
+        Route::resource('inspeksi_items', InspeksiItemController::class)
+            ->names('inspeksi_items')
+            ->parameters(['inspeksi_items' => 'inspeksiItem']);
+
         /* Sarpras Item */
         Route::prefix('sarpras')->name('sarpras.')->group(function () {
 
@@ -177,35 +184,41 @@ Route::middleware(['auth', 'admin', 'no-back'])
             )->name('tolak');
         });
 
+        /* Inspeksi (Admin) */
+        Route::prefix('inspeksi')->name('inspeksi.')->group(function () {
+            Route::get('{peminjaman}/{tipe}', [InspeksiController::class, 'form'])->name('form');
+            Route::post('{peminjaman}/{tipe}', [InspeksiController::class, 'store'])->name('store');
+        });
+
         /* =====================
    PENGEMBALIAN (ADMIN)
 ===================== */
-Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
 
-    // Halaman Scanner
-    Route::get(
-        '/scanner',
-        [PengembalianController::class,'scanner']
-    )->name('scanner');
+            // Halaman Scanner
+            Route::get(
+                '/scanner',
+                [PengembalianController::class, 'scanner']
+            )->name('scanner');
 
-    // Proses Scan QR (AJAX)
-    Route::post(
-        '/scan',
-        [PengembalianController::class,'scan']
-    )->name('scan');
+            // Proses Scan QR (AJAX)
+            Route::post(
+                '/scan',
+                [PengembalianController::class, 'scan']
+            )->name('scan');
 
-    // Form Pengembalian
-    Route::get(
-        '/{peminjaman}',
-        [PengembalianController::class,'create']
-    )->name('create');
+            // Form Pengembalian
+            Route::get(
+                '/{peminjaman}',
+                [PengembalianController::class, 'create']
+            )->name('create');
 
-    // Simpan Pengembalian
-    Route::post(
-        '/store',
-        [PengembalianController::class,'store']
-    )->name('store');
-});
+            // Simpan Pengembalian
+            Route::post(
+                '/store',
+                [PengembalianController::class, 'store']
+            )->name('store');
+        });
 
 
         /* Pengaduan */
@@ -294,10 +307,10 @@ Route::middleware(['auth', 'petugas', 'no-back'])
             '/sarpras',
             [SarprasController::class, 'indexPetugas']
         )->name('sarpras.index');
-    Route::get(
-        '/sarpras/{sarpras}/detail',
-        [SarprasController::class, 'detailPetugas']
-    )->name('sarpras.detail');
+        Route::get(
+            '/sarpras/{sarpras}/detail',
+            [SarprasController::class, 'detailPetugas']
+        )->name('sarpras.detail');
 
         /* =====================
            PEMINJAMAN (APPROVE)
@@ -331,31 +344,36 @@ Route::middleware(['auth', 'petugas', 'no-back'])
             )->name('activity');
         });
 
+        /* Inspeksi (Petugas) */
+        Route::prefix('inspeksi')->name('inspeksi.')->group(function () {
+            Route::get('{peminjaman}/{tipe}', [InspeksiController::class, 'form'])->name('form');
+            Route::post('{peminjaman}/{tipe}', [InspeksiController::class, 'store'])->name('store');
+        });
         /* =====================
    PENGEMBALIAN (PETUGAS)
 ===================== */
-Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
 
-    Route::get(
-        '/scanner',
-        [PengembalianController::class,'scanner']
-    )->name('scanner');
+            Route::get(
+                '/scanner',
+                [PengembalianController::class, 'scanner']
+            )->name('scanner');
 
-    Route::post(
-        '/scan',
-        [PengembalianController::class,'scan']
-    )->name('scan');
+            Route::post(
+                '/scan',
+                [PengembalianController::class, 'scan']
+            )->name('scan');
 
-    Route::get(
-        '/{peminjaman}',
-        [PengembalianController::class,'create']
-    )->name('create');
+            Route::get(
+                '/{peminjaman}',
+                [PengembalianController::class, 'create']
+            )->name('create');
 
-    Route::post(
-        '/store',
-        [PengembalianController::class,'store']
-    )->name('store');
-});
+            Route::post(
+                '/store',
+                [PengembalianController::class, 'store']
+            )->name('store');
+        });
 
 
         /* =====================

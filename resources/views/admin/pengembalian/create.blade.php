@@ -9,6 +9,13 @@
 <div class="card">
     <div class="card-body">
 
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ route('admin.inspeksi.form', [$peminjaman->id, 'sesudah']) }}"
+               class="btn btn-outline-primary">
+                Inspeksi Sesudah Pinjam
+            </a>
+        </div>
+
         <form method="POST"
             action="{{ route('admin.pengembalian.store') }}"
             enctype="multipart/form-data">
@@ -57,7 +64,7 @@
                         <option value="">-- Pilih Kondisi --</option>
 
                         @foreach($listKondisi as $k)
-                        <option value="{{ $k->id }}">
+                        <option value="{{ $k->id }}" {{ ($prefillKondisiId ?? null) == $k->id ? 'selected' : '' }}>
                             {{ $k->nama_kondisi }}
                         </option>
                         @endforeach

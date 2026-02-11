@@ -57,7 +57,7 @@
                         <option value="">-- Pilih Kondisi --</option>
 
                         @foreach($listKondisi as $k)
-                        <option value="{{ $k->id }}">
+                        <option value="{{ $k->id }}" {{ ($prefillKondisiId ?? null) == $k->id ? 'selected' : '' }}>
                             {{ $k->nama_kondisi }}
                         </option>
                         @endforeach

@@ -187,6 +187,11 @@
             Lokasi
         </a>
 
+        <a href="{{ route('admin.inspeksi_items.index') }}"
+            class="{{ request()->routeIs('admin.inspeksi_items.*') ? 'active bg-primary text-white' : '' }}">
+            Checklist Inspeksi
+        </a>
+
         <a href="{{ route('admin.sarpras.index') }}"
             class="{{ request()->routeIs('admin.sarpras.*') ? 'active bg-primary text-white' : '' }}">
             Sarpras

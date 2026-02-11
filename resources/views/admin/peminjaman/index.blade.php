@@ -94,6 +94,11 @@
 
                             <div class="d-flex flex-column gap-1">
 
+                                <a href="{{ route('admin.inspeksi.form', [$p->id, 'sebelum']) }}"
+                                   class="btn btn-outline-primary btn-sm w-100">
+                                    Inspeksi Sebelum Pinjam
+                                </a>
+
                                 <form method="POST"
                                       action="/admin/peminjaman/{{ $p->id }}/setujui"
                                       class="confirm-approve">

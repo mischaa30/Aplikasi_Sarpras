@@ -64,9 +64,29 @@ class PengembalianController extends Controller
 
         $listKondisi = KondisiSarpras::all();
 
+        // Prefill kondisi dari hasil inspeksi SESUDAH (ambil yang terburuk)
+        $inspeksiSesudah = \App\Models\Inspeksi::with('hasil.kondisi')
+            ->where('peminjaman_id', $peminjaman->id)
+            ->where('tipe', 'Sesudah')
+            ->first();
+
+        $prefillKondisiId = null;
+        if ($inspeksiSesudah) {
+            $order = [
+                'Baik' => 1,
+                'Rusak Ringan' => 2,
+                'Rusak Berat' => 3,
+                'Hilang' => 4
+            ];
+            $worst = $inspeksiSesudah->hasil->sortByDesc(function ($h) use ($order) {
+                return $order[$h->kondisi->nama_kondisi] ?? 0;
+            })->first();
+            $prefillKondisiId = $worst?->kondisi_sarpras_id;
+        }
+
         return $this->roleView(
             'pengembalian.create',
-            compact('peminjaman','listKondisi')
+            compact('peminjaman','listKondisi','prefillKondisiId')
         );
     }
 
@@ -86,6 +106,17 @@ class PengembalianController extends Controller
 
         ]);
 
+        // Wajib ada inspeksi sesudah pinjam
+        $inspeksiSesudah = \App\Models\Inspeksi::with('hasil')
+            ->where('peminjaman_id', $request->peminjaman_id)
+            ->where('tipe', 'Sesudah')
+            ->first();
+
+        if (!$inspeksiSesudah || $inspeksiSesudah->hasil->count() === 0) {
+            return back()
+                ->withInput()
+                ->with('error', 'Inspeksi sesudah pinjam wajib dilakukan sebelum menyimpan pengembalian');
+        }
 
         $peminjaman = Peminjaman::findOrFail($request->peminjaman_id);
 

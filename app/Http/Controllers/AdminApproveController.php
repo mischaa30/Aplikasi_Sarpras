@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peminjaman;
+use App\Models\Inspeksi;
+use App\Models\InspeksiItemResult;
+use App\Models\KondisiSarpras;
 use Illuminate\Http\Request;
 
 class AdminApproveController extends Controller
@@ -57,6 +60,23 @@ class AdminApproveController extends Controller
     public function setujui($id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
+
+        $inspeksi = Inspeksi::with('hasil.kondisi')
+            ->where('peminjaman_id', $peminjaman->id)
+            ->where('tipe', 'Sebelum')
+            ->first();
+
+        if (!$inspeksi || $inspeksi->hasil->count() === 0) {
+            return back()->with('error', 'Inspeksi sebelum pinjam wajib dilakukan terlebih dahulu');
+        }
+
+        $adaRusakBerat = $inspeksi->hasil->contains(function ($h) {
+            return $h->kondisi?->nama_kondisi === 'Rusak Berat' || $h->kondisi?->nama_kondisi === 'Hilang';
+        });
+
+        if ($adaRusakBerat) {
+            return back()->with('error', 'Peminjaman tidak dapat disetujui: hasil inspeksi menunjukkan Rusak Berat/Hilang');
+        }
 
         $peminjaman->update([
             'status' => 'Disetujui',

@@ -132,15 +132,15 @@
 
                             @elseif($p->status === 'Disetujui')
 
-                            <div class="d-flex gap-1">
+                            <div class="d-grid gap-2 d-md-flex">
 
                                 <a href="{{ route('admin.peminjaman.bukti',$p->id) }}"
-                                   class="btn btn-info btn-sm w-50">
+                                   class="btn btn-info btn-sm">
                                     Bukti
                                 </a>
 
                                 <a href="{{ route('admin.pengembalian.create',$p->id) }}"
-                                   class="btn btn-warning btn-sm w-50">
+                                   class="btn btn-warning btn-sm">
                                     Pendataan
                                 </a>
 

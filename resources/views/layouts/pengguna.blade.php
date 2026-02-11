@@ -96,13 +96,65 @@
                 margin-left: 0;
                 /* full */
             }
+
+            .sidebar-overlay {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,.25);
+                display: none;
+            }
+
+            .sidebar.active + .sidebar-overlay {
+                display: block;
+            }
+
+            body.sidebar-open {
+                overflow: hidden;
+            }
         }
     </style>
 </head>
 
 <script>
-    document.getElementById('btnToggle')?.addEventListener('click', function() {
-        document.querySelector('.sidebar').classList.toggle('active');
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('btnToggle');
+        if (btn) {
+            btn.addEventListener('click', function () {
+                var sb = document.querySelector('.sidebar');
+                if (sb) {
+                    sb.classList.toggle('active');
+                    var isActive = sb.classList.contains('active');
+                    document.body.classList.toggle('sidebar-open', isActive);
+                }
+            });
+        }
+        var ov = document.getElementById('sidebarOverlay');
+        if (ov) {
+            ov.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    var sb = document.querySelector('.sidebar');
+                    if (sb) {
+                        sb.classList.remove('active');
+                        document.body.classList.remove('sidebar-open');
+                    }
+                }
+            });
+        }
+        var links = document.querySelectorAll('.sidebar a');
+        links.forEach(function (a) {
+            a.addEventListener('click', function () {
+                if (window.innerWidth <= 768) {
+                    var sb = document.querySelector('.sidebar');
+                    if (sb) {
+                        sb.classList.remove('active');
+                        document.body.classList.remove('sidebar-open');
+                    }
+                }
+            });
+        });
     });
 </script>
 
@@ -178,12 +230,13 @@
 
     </div>
 
-
     <!-- Main Content -->
     <main>
         
         @yield('content')
     </main>
+
+    <div id="sidebarOverlay" class="sidebar-overlay d-md-none"></div>
 
 </body>
 

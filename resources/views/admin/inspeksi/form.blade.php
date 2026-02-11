@@ -19,9 +19,15 @@
 
 <div class="card">
     <div class="card-body">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <a href="javascript:history.back()" class="btn btn-outline-secondary">Kembali</a>
-            <span class="text-muted">Kategori: {{ $peminjaman->item?->sarpras?->kategori?->nama_kategori ?? $peminjaman->detail->first()?->sarpras?->kategori?->nama_kategori }}</span>
+        <div class="row align-items-center mb-2">
+            <div class="col-12 col-md-6 mb-2 mb-md-0">
+                <div class="d-grid d-md-inline">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">Kembali</a>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 text-md-end">
+                <span class="text-muted">Kategori: {{ $peminjaman->item?->sarpras?->kategori?->nama_kategori ?? $peminjaman->detail->first()?->sarpras?->kategori?->nama_kategori }}</span>
+            </div>
         </div>
         <form method="POST" action="{{ route(request()->is('admin/*') ? 'admin.inspeksi.store' : 'petugas.inspeksi.store', [$peminjaman->id, strtolower($tipe)]) }}">
             @csrf
@@ -62,7 +68,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="text-end">
+            <div class="d-grid d-md-flex justify-content-md-end">
                 <button class="btn btn-primary">Simpan Inspeksi {{ $tipe }}</button>
             </div>
         </form>

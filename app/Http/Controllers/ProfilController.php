@@ -23,7 +23,7 @@ class ProfilController extends Controller
             'username' => 'required',
 
             // hanya wajib jika password_baru diisi
-            'password_lama' => 'nullable',
+            'password_lama' => 'required_with:password_baru',
             'password_baru' => 'nullable|min:4|confirmed',
         ]);
 
@@ -37,6 +37,13 @@ class ProfilController extends Controller
             if (!Hash::check($r->password_lama, $user->password)) {
                 return back()->withErrors([
                     'password_lama' => 'Password lama salah'
+                ])->withInput();
+            }
+
+            // tidak boleh sama dengan password lama
+            if (Hash::check($r->password_baru, $user->password)) {
+                return back()->withErrors([
+                    'password_baru' => 'Password baru tidak boleh sama dengan password lama'
                 ])->withInput();
             }
 

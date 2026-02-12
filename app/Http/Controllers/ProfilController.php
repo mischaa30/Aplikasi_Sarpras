@@ -53,6 +53,6 @@ class ProfilController extends Controller
 
         $user->save();
 
-        return back()->with('success', 'Profil berhasil diupdate');
+        return back()->with('success', 'Profil berhasil diupdate')->withInput();
     }
 }

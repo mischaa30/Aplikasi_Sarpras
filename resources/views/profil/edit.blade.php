@@ -47,7 +47,8 @@ $role = strtolower(auth()->user()->role->nama_role ?? '');
                             <input type="password"
                                    id="password_lama"
                                    name="password_lama"
-                                   class="form-control @error('password_lama') is-invalid @enderror">
+                                   class="form-control @error('password_lama') is-invalid @enderror"
+                                   value="{{ old('password_lama') }}">
 
                             <span class="input-group-text toggle-pass" data-target="password_lama">
                                 <i class="bi bi-eye"></i>
@@ -67,7 +68,8 @@ $role = strtolower(auth()->user()->role->nama_role ?? '');
                             <input type="password"
                                    id="password_baru"
                                    name="password_baru"
-                                   class="form-control @error('password_baru') is-invalid @enderror">
+                                   class="form-control @error('password_baru') is-invalid @enderror"
+                                   value="{{ old('password_baru') }}">
 
                             <span class="input-group-text toggle-pass" data-target="password_baru">
                                 <i class="bi bi-eye"></i>
@@ -93,7 +95,8 @@ $role = strtolower(auth()->user()->role->nama_role ?? '');
                             <input type="password"
                                    id="password_konfirmasi"
                                    name="password_baru_confirmation"
-                                   class="form-control">
+                                   class="form-control"
+                                   value="{{ old('password_baru_confirmation') }}">
 
                             <span class="input-group-text toggle-pass" data-target="password_konfirmasi">
                                 <i class="bi bi-eye"></i>
